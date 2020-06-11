@@ -20,6 +20,11 @@ complementary_modified_sekiguchi(coefs)
 ### utils
 Utilities
 #### methods
-quad_sum(*spectra)
+quad_sum(\*spectra)
 
 norm2(spectrum)
+
+### unsorted
+unsorted methods
+#### methods
+lms_filter(coefs, input, error)
