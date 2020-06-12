@@ -49,7 +49,10 @@ class Vis:
                     flag*=rms(readout[i])<=rms_thresholds[i]
                 if flag:
                     break
-                    
+                else:
+                    t0 = time.time()
+                    readout = [[]]*len(channels)
+
     def actuator_diag(self, STAGE, DOFs, act_block='TEST', act_suffix='OFFSET',
                       sense_block='DAMP', sense_suffix='INMON',
                       matrix='EUL2COIL', force=[], no_of_coils=None):
