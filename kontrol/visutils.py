@@ -32,18 +32,18 @@ class visutils:
         """
         if matrix == 'EUL2COIL':
             try:
-                ezcaObj.read(STAGE+'_'+matrix+'_1_1')
+                self.ezcaObj.read(STAGE+'_'+matrix+'_1_1')
             except:
                 try:
                     matrix='EUL2OSEM'
-                    ezcaObj.read(STAGE+'_'+matrix+'_1_1')
+                    self.ezcaObj.read(STAGE+'_'+matrix+'_1_1')
                 except:
                     print('Actuation matrix is neither EUL2COIL nor EUL2OSEM, '\
                           'returning')
                     return(None)
 
         matrix_prefix = STAGE + '_' + matrix
-        read_matrix = lambda i, j: ezcaObj.read(matrix_prefix+'_%d_%d'%(i,j))
+        read_matrix = lambda i, j: self.ezcaObj[matrix_prefix+'_%d_%d'%(i,j)]
 
         if no_of_coils == None:
             print('no_of_coils not specified, trying to guess from matrix')
