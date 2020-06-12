@@ -34,7 +34,7 @@ class Vis:
         matrix_prefix = STAGE + '_' + matrix
         return(self.ezcaObj.read(matrix_prefix+'_%d_%d'%(i,j)))
 
-    def calming(self, channels, rms_thresholds, t_int=5):
+    def calming(self, channels, rms_thresholds, t_int=5, dt=0.1):
         """
         """
         readout = [[]]*len(channels)
@@ -43,8 +43,7 @@ class Vis:
         while 1:
             for i in range(len(channels)):
                 val = self.ezcaObj.read(channels[i])
-                if val!=previous_val:
-                    readout[i] += readout[i]+[val]
+                readout[i] += readout[i]+[val]
                 # print(readout[i])
                 previous_val=val
             if time.time()-t0 >= t_int:
@@ -58,6 +57,8 @@ class Vis:
                 else:
                     t0 = time.time()
                     readout = [[]]*len(channels)
+            print(time.time()-t0)
+            time.sleep(1/8)
 
     def actuator_diag(self, STAGE, DOFs, act_block='TEST', act_suffix='OFFSET',
                       sense_block='DAMP', sense_suffix='INMON',
