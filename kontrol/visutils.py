@@ -43,7 +43,7 @@ class Vis:
         while 1:
             for i in range(len(channels)):
                 val = self.ezcaObj.read(channels[i])
-                readout[i] += readout[i]+[val]
+                readout[i] = readout[i]+[val]
                 print(len(readout[i]))
                 # previous_val=val
             if time.time()-t0 >= t_int:
