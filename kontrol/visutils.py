@@ -47,18 +47,18 @@ class visutils:
 
         if no_of_coils == None:
             print('no_of_coils not specified, trying to guess from matrix')
-        no_of_coils = 1
-        while 1:
-            try:
-                read_matrix(no_of_coils+1, 1)
-                no_of_coils += 1
-            except:
-                # no_of_coils -= 1
-                break
-            if no_of_coils >= 10:
-                print('no_of_coils greater or equals to 10. Assume fakeezca is'\
-                      ' used.')
-                break
+            no_of_coils = 1
+            while 1:
+                try:
+                    read_matrix(no_of_coils+1, 1)
+                    no_of_coils += 1
+                except:
+                    # no_of_coils -= 1
+                    break
+                if no_of_coils >= 10:
+                    print('no_of_coils greater or equals to 10. Assume fakeezca is'\
+                          ' used.')
+                    break
 
         original_matrix = np.zeros((no_of_coils, len(DOFs)))
         original_matrix = np.matrix(original_matrix)
