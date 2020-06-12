@@ -50,9 +50,10 @@ class visutils:
         no_of_coils = 1
         while 1:
             try:
-                read_matrix(no_of_coils, 1)
+                read_matrix(no_of_coils+1, 1)
                 no_of_coils += 1
             except:
+                # no_of_coils -= 1
                 break
             if no_of_coils >= 10:
                 print('no_of_coils greater or equals to 10. Assume fakeezca is'\
