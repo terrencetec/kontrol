@@ -6,7 +6,7 @@ except:
     print('Cannot find ezca, importing local fakeezca as ezca.')
     import fakeezca as ezca
 
-class visutils:
+class Vis:
     """
     """
     def __init__(self, NAME, IFO=None):
@@ -24,6 +24,10 @@ class visutils:
         else:
             self.IFO = IFO
         self.ezcaObj = ezca.Ezca(self.IFO+':VIS-'+self.NAME)
+
+    def read_matrix(self, STAGE, matrix, i, j):
+        matrix_prefix = STAGE + '_' + matrix
+        return(self.ezcaObj[matrix_prefix+'_%d_%d'%(i,j)])
 
     def actuator_diag(self, STAGE, DOFs, act_block='TEST', act_suffix='OFFSET',
                       sense_block='DAMP', sense_suffix='INMON',
@@ -43,14 +47,14 @@ class visutils:
                     return(None)
 
         matrix_prefix = STAGE + '_' + matrix
-        read_matrix = lambda i, j: self.ezcaObj[matrix_prefix+'_%d_%d'%(i,j)]
+        _read_matrix = lambda i, j: self.read_matrix(STAGE, matrix, i, j)
 
         if no_of_coils == None:
             print('no_of_coils not specified, trying to guess from matrix')
             no_of_coils = 1
             while 1:
                 try:
-                    read_matrix(no_of_coils+1, 1)
+                    _read_matrix(no_of_coils+1, 1)
                     no_of_coils += 1
                 except:
                     # no_of_coils -= 1
@@ -64,5 +68,5 @@ class visutils:
         original_matrix = np.matrix(original_matrix)
         for i in range(no_of_coils):
             for j in range(len(DOFs)):
-                original_matrix[i, j] = read_matrix(i+1, j+1)
+                original_matrix[i, j] = _read_matrix(i+1, j+1)
         print(original_matrix)
