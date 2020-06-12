@@ -5,6 +5,9 @@ try:
 except:
     print('Cannot find ezca, importing local fakeezca as ezca.')
     import fakeezca as ezca
+import time
+from utils import rms
+default_force = 1000  # default inject in counts.
 
 class Vis:
     """
@@ -26,9 +29,27 @@ class Vis:
         self.ezcaObj = ezca.Ezca(self.IFO+':VIS-'+self.NAME)
 
     def read_matrix(self, STAGE, matrix, i, j):
+        """
+        """
         matrix_prefix = STAGE + '_' + matrix
-        return(self.ezcaObj[matrix_prefix+'_%d_%d'%(i,j)])
+        return(self.ezcaObj.read(matrix_prefix+'_%d_%d'%(i,j)))
 
+    def calming(self, channels, rms_thresholds, t_int=5):
+        """
+        """
+        readout = [[]]*len(channels)
+        t0 = time.time()
+        while 1:
+            for i in range(len(channels)):
+                readout[i] += readout[i]+[self.ezcaObj.read(channels[i])]
+            if time.time()-t0 >= t_int:
+                flag = True
+                for i in range(len(channels)):
+                    print(channel[i],':', rms(readout[i]))
+                    flag*=rms(readout[i])<=rms_thresholds[i]
+                if flag:
+                    break
+                    
     def actuator_diag(self, STAGE, DOFs, act_block='TEST', act_suffix='OFFSET',
                       sense_block='DAMP', sense_suffix='INMON',
                       matrix='EUL2COIL', force=[], no_of_coils=None):
@@ -59,14 +80,41 @@ class Vis:
                 except:
                     # no_of_coils -= 1
                     break
-                if no_of_coils >= 10:
-                    print('no_of_coils greater or equals to 10. Assume fakeezca is'\
-                          ' used.')
+                if no_of_coils >= 6:  ## FIXME: Think of a better way.
+                    print('no_of_coils greater or equals to 6. Specify '\
+                          'no_of_coils to bypass this.')
                     break
 
-        original_matrix = np.zeros((no_of_coils, len(DOFs)))
+        original_matrix = np.zeros((no_of_coils, len(DOFs)))  # Here we assume\
+            # that the number of rows is the number of coils and columns are\
+            # numbers of DOFs.
         original_matrix = np.matrix(original_matrix)
         for i in range(no_of_coils):
             for j in range(len(DOFs)):
                 original_matrix[i, j] = _read_matrix(i+1, j+1)
-        print(original_matrix)
+        print('Current '+matrix+'\n', original_matrix)
+
+        if force == []:
+            print('force not specified, defaulting to %d cnts '\
+                  'for all degrees of freedom.'%(default_force))
+            force = [default_force]*len(DOFs)
+        elif len(force) != len(DOFs):
+            print('len(force):%d not equal to len(DOFs):'\
+                  '%d.'%(len(force),len(DOFs)))
+            if len(force) == 1:
+                print('Assume force = %d cnts for all DOFs'%force[0])
+                force=[force[0]]*len(DOFs)
+            else:
+                print('Replacing unspecified force with default %d cnts'\
+                      %(default_force))
+                for _ in range(len(DOFs)-len(force)):
+                    force += [default_force]
+        print('Actuating in '+STAGE+'_'+act_block+'_', DOFs, '_'+act_suffix,
+              'with force', force,' cnts')
+
+        act_channel = lambda DOF: STAGE+'_'+act_block+'_'+DOF+'_'+act_suffix
+        sense_channel = lambda DOF: (STAGE+'_'+sense_block+'_'+DOF+'_'+
+                                    sense_suffix)
+        x0 = np.zeros_like(DOFs)
+        for i in range(len(DOFs)):
+            x0[i] = self.ezcaObj.read(sense_channel(DOFs[i]))

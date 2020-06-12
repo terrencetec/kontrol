@@ -17,3 +17,7 @@ def norm2(spectrum):
     spectrum_array = np.array(spectrum)
     norm = np.sqrt(sum(spectrum_array**2))
     return(norm)
+
+def rms(ts):
+    ts = np.array(ts)
+    return((np.average(ts**2)-np.average(ts)**2)**0.5)
