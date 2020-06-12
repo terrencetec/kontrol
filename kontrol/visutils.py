@@ -4,8 +4,7 @@ try:
     import ezca
 except:
     print('Cannot find ezca, importing local fakeezca as ezca.')
-    import .fakeezca as ezca
-
+    import fakeezca as ezca
 
 class visutils:
     """
