@@ -45,7 +45,7 @@ class Vis:
             if time.time()-t0 >= t_int:
                 flag = True
                 for i in range(len(channels)):
-                    print(channel[i],':', rms(readout[i]))
+                    print(channels[i],':', rms(readout[i]))
                     flag*=rms(readout[i])<=rms_thresholds[i]
                 if flag:
                     break
