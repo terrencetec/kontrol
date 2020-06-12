@@ -18,7 +18,7 @@ class visutils:
             IFO: string
                 The interferometer prefix. E.g. "K1".
         """
-        self.NAME = name
+        self.NAME = NAME
         if IFO == None:
             self.IFO = os.getenv('IFO', 'K1')
         else:
