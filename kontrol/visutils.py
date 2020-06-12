@@ -63,5 +63,5 @@ class visutils:
         original_matrix = np.matrix(original_matrix)
         for i in range(no_of_coils):
             for j in range(len(DOFs)):
-                original_matrix[i, j] = read_matrix(i, j)
+                original_matrix[i, j] = read_matrix(i+1, j+1)
         print(original_matrix)
