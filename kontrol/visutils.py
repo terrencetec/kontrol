@@ -41,12 +41,15 @@ class Vis:
         t0 = time.time()
         while 1:
             for i in range(len(channels)):
-                readout[i] += readout[i]+[self.ezcaObj.read(channels[i])]
+                val = self.ezcaObj.read(channels[i])
+                readout[i] += readout[i]+[val if val !=readout[i][-1]]
+                print(readout[i])
             if time.time()-t0 >= t_int:
                 flag = True
                 for i in range(len(channels)):
                     print(channels[i],':', rms(readout[i]))
                     flag*=rms(readout[i])<=rms_thresholds[i]
+                    print(flag)
                 if flag:
                     break
                 else:
