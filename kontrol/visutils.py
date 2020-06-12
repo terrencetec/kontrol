@@ -23,7 +23,7 @@ class visutils:
             self.IFO = os.getenv('IFO', 'K1')
         else:
             self.IFO = IFO
-        self.ezcaObj = ezca.Ezca(IFO+':VIS-'+NAME)
+        self.ezcaObj = ezca.Ezca(self.IFO+':VIS-'+self.NAME)
 
     def actuator_diag(self, STAGE, DOFs, act_block='TEST', act_suffix='OFFSET',
                       sense_block='DAMP', sense_suffix='INMON',
