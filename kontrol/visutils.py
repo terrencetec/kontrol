@@ -1,3 +1,5 @@
+"""KAGRA VIS system utility functions.
+"""
 import os
 import numpy as np
 try:
@@ -10,8 +12,17 @@ from utils import rms
 default_force = 1000  # default inject in counts.
 
 class Vis:
+    """Utility functions for KAGRA VIS system. Declare with the name of the
+    optic. E.g. visutils.Vis('BS').
+
+    Methods:
+        actuator_diag(self, STAGE, DOFs, act_block='TEST', act_suffix='OFFSET',
+                          sense_block='DAMP', sense_suffix='INMON',
+                          matrix='EUL2COIL', force=[], no_of_coils=None, t_ramp=10,
+                          t_avg=10, dt=1/8):
+        And others...
     """
-    """
+
     def __init__(self, NAME, IFO=None):
         """
         Args:
@@ -29,13 +40,14 @@ class Vis:
         self.ezcaObj = ezca.Ezca(self.IFO+':VIS-'+self.NAME)
 
     def read_matrix(self, STAGE, matrix, i, j):
-        """
+        """Read a single entry from a real-time model matrix.
         """
         matrix_prefix = STAGE + '_' + matrix
         return(self.ezcaObj.read(matrix_prefix+'_%d_%d'%(i,j)))
 
     def calming(self, channels, rms_thresholds, t_int=5, dt=1):
-        """
+        """A function that will loop untils the given channels has residual RMS
+        lower than the given rms_thresholds.
         """
         readout = [[]]*len(channels)
         t0 = time.time()
@@ -62,6 +74,21 @@ class Vis:
             time.sleep(dt)
 
     def read_avg(self, channels, t_avg=10, dt=1/8):
+        """Return a time-averaged value given an ezca channel.
+
+        Args:
+            channels: list
+                A list of channel names to be measured.
+        Optional Args:
+            t_avg: int/float
+                The averaging time for measuring the displacement readouts.
+            dt: int/float
+                The sampling spacing while measuring the average readouts.
+
+        Returns:
+            x0: list
+                a list of average values read from the specified channels.
+        """
         x0s = [[]]*len(channels)
         print('Getting average readings for %.1f seconds'%t_avg)
         t0 = time.time()
@@ -76,7 +103,66 @@ class Vis:
                       sense_block='DAMP', sense_suffix='INMON',
                       matrix='EUL2COIL', force=[], no_of_coils=None, t_ramp=10,
                       t_avg=10, dt=1/8):
-        """
+        """ !!! INTERACTS WITH REAL SYSTEMS, USE WITH CAUTION !!!
+        Actuates a particular stage in its degrees of freedom to obtain the
+        stage-wise diagonalizaion actuation matrix. For now, the injection is
+        only DC. The default actuation channel is 'K1:...TEST_OFFSET' and the
+        default sensor channel is 'K1:...DAMP_INMON'.
+        IMPORTANT: Do specify the force even though it is an optional argument.
+        This is to prevent the system to be violently perturbed.
+
+        Args:
+            STAGE: string
+                The stage of interest in capatal letter. E.g. 'BS' or 'ITMX'
+            DOFS: list
+                A list of strings containing the degrees of freedom of the stage
+                . e.g. ['L', 'T', 'Y']. The order must follow how the actuation
+                matrix is arranged.
+
+        Optional Args:
+            act_block: string
+                The name of the block in the real-time system that is used for
+                the injection. Defaults to 'TEST' because it is usually used for
+                such purpose.
+            act_suffix: string
+                The suffix of the channel name which we inject the actuation
+                signal. Defaults to 'OFFSET'.
+            sense_block: string
+                The name of the block in the real-time system that is used to
+                measure readout. Note that the readouts must be diagonalized
+                beforehand in order for actuation diagonalization to work.
+                Defaults to 'DAMP'
+            sense_prefix: string
+                The suffix of the readout channel name. Defaults to 'INMON'.
+            matrix: string
+                The name of the block containing the actuation diagonalization
+                matrix entries. Defaults to 'EUL2COIL'. The script automatically
+                checks if the stage uses EUL2COIL or EUL2OSEM automatically. If
+                other matrices is of interest, specify explicitly.
+            force: list
+                The force in number of counts to put in the actuation channels.
+                If not specified, the default no. of counts for all channels
+                is 1000 counts. If only one number is specified, all DoFs will
+                be actuated by that number. If more numbers are specified but
+                less than the number of DoFs specified, then the rest will be
+                set to default. Note that this number is relative to any
+                additional offsets already present in the actuation channel.
+                E.g. if the actuation has originally 10 counts and a force of
+                10 counts is specified, the final number of counts will be 20.
+            no_of_coils: int
+                The number of actuators/coils of the stage. If not specified,
+                the scipt will guess from the number of rows of the actuation
+                matrix.
+            t_ramp: int/float
+                The ramp time in seconds for actuation. Defaults to 10.
+            t_avg: int/float
+                The averaging time for measuring the displacement readouts.
+            dt: int/float
+                The sampling spacing while measuring the average readouts.
+
+        Returns
+            new_matrix: numpy.matrixlib.defmatrix.matrix
+                The final matrix to be entered to the actuation matrix.
         """
         if matrix == 'EUL2COIL':
             try:
@@ -186,13 +272,17 @@ class Vis:
             # while (self.ezcaObj.is_offset_ramping(act_prefix) or
                 #    self.ezcaObj.is_gain_ramping(act_prefix)):
                 # pass
-        print(coupling)
+        # print(coupling)
         coupling = np.matrix(coupling)
-        print(coupling)
+        # print(coupling)
         for i in range(len(coupling)):
             coupling[i] = coupling[i]/force[i]
-        print(coupling)
+        # print(coupling)
         coupling = coupling.T
-        print(coupling)
-        decoupling = coupling.I
-        print(decoupling)
+        normalization = np.matrix(np.diag(np.diag(coupling)))
+        # print(coupling)
+        decoupling = normalization*coupling.I
+        new_matrix = original_matrix*decoupling
+        print('original %s:\n'%matrix, original_matrix)
+        print('new %s:\n'%matrix, new_matrix)
+        return(new_matrix)

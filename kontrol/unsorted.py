@@ -16,7 +16,7 @@ def lms_update(coefs, input, error, mu=None, mu_max=None, returnmu=False):
             The error to be minimzed.
         mu: float
             The step size of the steepest descent algorithm. It should be
-            larger than zero and smaller that 2/lambda_max where lambda_max is
+            larger than zero and smaller that 1/lambda_max where lambda_max is
             the larger eigenvalue of the autocorrelation matrix of the input. if
             not given, then it will be estimated from the given input.
         mu_max: float
