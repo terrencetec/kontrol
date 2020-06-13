@@ -61,6 +61,17 @@ class Vis:
             # print(time.time()-t0)
             time.sleep(dt)
 
+    def read_avg(self, channels, t_avg=10, dt=1/8):
+        x0s = [[]]*len(channels)
+        print('Getting average readings for %.1f seconds'%t_avg)
+        t0 = time.time()
+        while (time.time()-t0 <= t_avg):
+            for i in range(len(channels)):
+                x0s[i] = x0s[i] + [self.ezcaObj.read(channels[i])]
+            time.sleep(dt)
+        x0 = [np.average(readouts) for readouts in x0s]
+        return(x0)
+
     def actuator_diag(self, STAGE, DOFs, act_block='TEST', act_suffix='OFFSET',
                       sense_block='DAMP', sense_suffix='INMON',
                       matrix='EUL2COIL', force=[], no_of_coils=None, t_ramp=10,
@@ -124,16 +135,64 @@ class Vis:
         print('Actuating in '+STAGE+'_'+act_block+'_', DOFs, '_'+act_suffix,
               'with force', force,' cnts')
 
-        act_channel = lambda DOF: STAGE+'_'+act_block+'_'+DOF+'_'+act_suffix
-        sense_channel = lambda DOF: (STAGE+'_'+sense_block+'_'+DOF+'_'+
-                                    sense_suffix)
-        x0s = [[]]**len(DOFs)
-        x0 = []
-        print('Getting initial readings for %.1f seconds'%t_avg)
-        t0 = time.time()
-        while (time.time()-t0 <= t_avg):
-            for i in range(len(DOFs)):
-                x0s[i] = x0s[i] + [self.ezcaObj.read(sense_channel(DOFs[i]))]
-            time.sleep(dt)
-        x0 = [np.average(readouts) for readouts in x0s]
+        act_prefix = STAGE+'_'+act_block
+        act_channel = lambda DOF: act_prefix+'_'+DOF+'_'+act_suffix
+        sense_prefix = STAGE+'_'+sense_block
+        sense_channel = lambda DOF: sense_prefix+'_'+DOF+'_'+sense_suffix
+
+        # x0s = [[]]*len(DOFs)
+        # x0 = []
+        # print('Getting initial readings for %.1f seconds'%t_avg)
+        # t0 = time.time()
+        # while (time.time()-t0 <= t_avg):
+        #     for i in range(len(DOFs)):
+        #         x0s[i] = x0s[i] + [self.ezcaObj.read(sense_channel(DOFs[i]))]
+        #     time.sleep(dt)
+        sense_channels = [sense_channel(DOF) for DOF in DOFs]
+        x0 = self.read_avg(sense_channels, t_avg)
         print(x0)
+
+        for i in range(len(DOFs)):
+            readout = self.ezcaObj.read(act_channel(DOFs[i]))
+            readout *= self.ezcaObj.read(act_prefix+'_'+DOFs[i]+'GAIN')
+            if abs(readout) < 1e-5:
+                try:
+                    self.ezcaObj.switch(act_prefix+'_'+DOFs[i],
+                                        act_suffix, 'OFF')
+                except:
+                    pass
+
+                self.ezcaObj.write(act_channel(DOFs[i]), 0)  # Clear out any\
+                    # initial readings if there is any.
+            self.ezcaObj.write(act_prefix+'_'+DOFs[i]+'GAIN', 1)
+            self.ezcaObj.write(act_prefix+'_'+DOFs[i]+'TRAMP', t_ramp)
+            try:
+                self.ezcaObj.switch(act_prefix+'_'+DOFs[i], act_suffix, 'ON')
+            except:
+                pass
+
+        force0 = [self.ezcaObj.read(act_channel(DOF)) for DOF in DOFs]
+
+        coupling= [[]]*len(DOFs)
+        for i in range(len(DOFs)):
+            self.ezcaObj.write(act_channel(DOFs[i]), force[i]+force0[i])
+            time.sleep(t_ramp)
+            # while (self.ezcaObj.is_offset_ramping(act_prefix) or
+            #        self.ezcaObj.is_gain_ramping(act_prefix)):
+            #     pass
+            coupling[i] = self.read_avg(sense_channels, t_avg, dt)
+            self.ezcaObj.write(act_channel(DOFs[i]), force0[i])
+            time.sleep(t_ramp)
+            # while (self.ezcaObj.is_offset_ramping(act_prefix) or
+                #    self.ezcaObj.is_gain_ramping(act_prefix)):
+                # pass
+        print(coupling)
+        coupling = np.matrix(coupling)
+        print(coupling)
+        for i in range(len(coupling)):
+            coupling[i] = coupling[i]/force[i]
+        print(coupling)
+        coupling = coupling.T
+        print(coupling)
+        decoupling = coupling.I
+        print(decoupling)
