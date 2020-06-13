@@ -44,26 +44,27 @@ class Vis:
             for i in range(len(channels)):
                 val = self.ezcaObj.read(channels[i])
                 readout[i] = readout[i]+[val]
-                print(len(readout[i]))
+                # print(len(readout[i]))
                 # previous_val=val
             if time.time()-t0 >= t_int:
                 flag = True
                 for i in range(len(channels)):
-                    print(channels[i],':', rms(readout[i]))
-                    flag*=rms(readout[i])<=rms_thresholds[i]
-                    print(flag)
+                    # print(channels[i],':', rms(readout[i]))
+                    flag *= rms(readout[i])<=rms_thresholds[i]
+                    # print(flag)
                 if flag:
                     break
                 else:
                     # t0 = time.time()
                     for i in range(len(readout)):
                         readout[i].pop(0)
-            print(time.time()-t0)
+            # print(time.time()-t0)
             time.sleep(dt)
 
     def actuator_diag(self, STAGE, DOFs, act_block='TEST', act_suffix='OFFSET',
                       sense_block='DAMP', sense_suffix='INMON',
-                      matrix='EUL2COIL', force=[], no_of_coils=None):
+                      matrix='EUL2COIL', force=[], no_of_coils=None, t_ramp=10,
+                      t_avg=10, dt=1/8):
         """
         """
         if matrix == 'EUL2COIL':
@@ -126,6 +127,13 @@ class Vis:
         act_channel = lambda DOF: STAGE+'_'+act_block+'_'+DOF+'_'+act_suffix
         sense_channel = lambda DOF: (STAGE+'_'+sense_block+'_'+DOF+'_'+
                                     sense_suffix)
-        x0 = np.zeros_like(DOFs)
-        for i in range(len(DOFs)):
-            x0[i] = self.ezcaObj.read(sense_channel(DOFs[i]))
+        x0s = [[]]**len(DOFs)
+        x0 = []
+        print('Getting initial readings for %.1f seconds'%t_avg)
+        t0 = time.time()
+        while (time.time()-t0 <= t_avg):
+            for i in range(len(DOFs)):
+                x0s[i] = x0s[i] + [self.ezcaObj.read(sense_channel(DOFs[i]))]
+            time.sleep(dt)
+        x0 = [np.average(readouts) for readouts in x0s]
+        print(x0)
