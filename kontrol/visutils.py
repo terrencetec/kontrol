@@ -196,7 +196,7 @@ class Vis:
         original_matrix = np.zeros((no_of_coils, len(DOFs)))  # Here we assume\
             # that the number of rows is the number of coils and columns are\
             # numbers of DOFs.
-        original_matrix = np.matrix(original_matrix)  # FIXME use np.array
+        original_matrix = np.array(original_matrix)  # FIXME use np.array
         for i in range(no_of_coils):
             for j in range(len(DOFs)):
                 original_matrix[i, j] = _read_matrix(i+1, j+1)
@@ -272,16 +272,16 @@ class Vis:
                 #    self.ezcaObj.is_gain_ramping(act_prefix)):
                 # pass
         # print(coupling)
-        coupling = np.matrix(coupling)
+        coupling = np.array(coupling)
         # print(coupling)
         for i in range(len(coupling)):
             coupling[i] = coupling[i]/force[i]
         # print(coupling)
         coupling = coupling.T
-        normalization = np.matrix(np.diag(np.diag(coupling)))
+        normalization = np.array(np.diag(np.diag(coupling)))
         # print(coupling)
-        decoupling = normalization*coupling.I
-        new_matrix = original_matrix*decoupling
+        decoupling = np.matmul(normalization, np.linalg.inv(coupling))
+        new_matrix = np.matmul(original_matrix, decoupling)
         print('original %s:\n'%matrix, original_matrix)
         print('new %s:\n'%matrix, new_matrix)
         return new_matrix
