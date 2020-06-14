@@ -6,9 +6,11 @@ try:
     import ezca
 except:
     print('Cannot find ezca, importing local fakeezca as ezca.')
-    import fakeezca as ezca
+    from . import fakeezca as ezca
 import time
-from utils import rms
+from .utils import rms
+from .unsorted import nlms_update
+
 default_force = 1000  # default inject in counts.
 
 class Vis:
@@ -286,3 +288,86 @@ class Vis:
         print('original %s:\n'%matrix, original_matrix)
         print('new %s:\n'%matrix, new_matrix)
         return(new_matrix)
+
+    def find_sensor_correction_gain(self, gain_channel='IP_SENSCORR_L_GAIN',
+            input_channel='IP_SENSCORR_L_INMON',
+            error_channel='IP_BLEND_ACCL_OUTPUT',
+            rms_threshold=0.01, t_int=10, dt=1/8, update_law=nlms_update,
+            step_size=0.5, step_size_limits=(1e-3, 1), reducing_lms_step=False,
+            reduction_ratio=0.99, timeout=300, *args, **kwargs):
+        """Using LMS algorithms to find sensor correction gain.
+
+        Optional args:
+            gain_channel: string
+                The sensor correction gain channel.
+            input_channel: string
+                The input channel to the adaptive filter. Seismometer
+                displacement output in this case.
+            error_channel: string
+                The error signal used in LMS algorithm to correct the adaptive
+                gain. The blended inertial sensor signal in this case.
+            rms_threshold: float
+                The RMS threshold of the adaptive gain for termination of the
+                gain finding loop. Defaults to 0.01 (for 1% sensor correction
+                mismatch).
+            t_int: int/float
+                Integration time for calculated the RMS in seconds.
+                Defaults to 10 (roughly band-limited to above 0.1 Hz).
+            dt: int/float
+                Time space between each sample in seconds. Defaults to 1/8.
+            update_law: function in kontrol.unsorted  ## FIXME unsorted
+                LMS or normalized LMS algorithm for updating the sensor
+                correction gain. Default to be kontrol.unsorted.nlms_update,
+                a Normalized LMS algorithm.
+            step_size: int/float
+                Step size to be used in the LMS algorithm. Defaults to be 0.5.
+            step_size_limits: 2-tuple
+                Lower and upper limit of the step size. Defaults to be (1e-3, 1)
+            reducing_lms_step: boolean
+                Allow reducing step size for better convergence. The step size
+                will be reduced by a factor of reduction_ratio when the cost
+                function (RMS of the error) remains the same or increased.
+                Defaults to be False.
+            timeout: int/float
+                Timeout for the loop in seconds. Defaults to be 300.
+
+        Returns:
+            ts: list
+                Time axis of the whole process.
+            gains: list
+                Sensor correction gain time series history.
+            inputs: list
+                Input time series.
+            errors: list
+                Error time series.
+        """
+        kwargs['mu_limits'] = step_size_limits
+        kwargs['returnmu'] = True
+        gain = self.ezcaObj.read(gain_channel)
+        t0 = time.time()
+        ts = [0]
+        inputs = [self.ezcaObj.read(input_channel)]
+        errors = [self.ezcaObj.read(error_channel)]
+        gains = [gain]
+        last_error_rms=0
+        while 1:
+            gain, step_size = nlms_update(coefs=[gains[-1]],
+                input=[inputs[-1]], error=errors[-1], mu=step_size, **kwargs)
+            self.ezcaObj.write(gain_channel, gain[0])
+            gains += [gain[0]]
+            time.sleep(dt)
+            input = self.ezcaObj.read(input_channel)
+            error = self.ezcaObj.read(input_channel)
+            ts += [time.time() - t0]
+            errors += [error]
+            if ts[-1] >= t_int:
+                mask = np.array(ts) >= (ts[-1]-t_int)
+                gains_masked = np.array(gains)[mask]
+                errors_masked = np.array(errors)[mask]
+                if rms(gains_masked) <= rms_threshold or ts[-1] >= timeout:
+                    break
+                if rms(errors_masked) >= last_error_rms and reducing_lms_step:
+                    step_size *= reduction_ratio
+                    # print(step_size)
+                last_error_rms = rms(errors_masked)
+        return(ts, gains, inputs, errors)

@@ -3,7 +3,7 @@
 # 2020/06/13 Added fake_system compatibility for simulating virtual systems.
 # Fake guardian module with dummy Ezca class for debugging on non-CDS machines
 from random import gauss
-import fake_system
+from . import fake_system
 class Ezca():
     class Device():
         def __init__(self, prefix, delim=''):
