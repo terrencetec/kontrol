@@ -18,16 +18,17 @@ def complementary_sekiguchi(coefs):
             Complementary high pass-filter
     """
     blend_freq = coefs[0]
-    hpf_numerator = [
-        1,
-        7*blend_freq,
-        21*blend_freq**2,
-        35*blend_freq**3,
-        0, 0, 0, 0,
-    ]
-    hpf = tf(hpf_numerator, [1]) * tf([1], [1, blend_freq])**7
-    lpf = 1 - hpf
-    return(lpf, hpf)
+    _coefs = [blend_freq]*4
+    # hpf_numerator = [
+    #     1,
+    #     7*blend_freq,
+    #     21*blend_freq**2,
+    #     35*blend_freq**3,
+    #     0, 0, 0, 0,
+    # ]
+    # hpf = tf(hpf_numerator, [1]) * tf([1], [1, blend_freq])**7
+    # lpf = 1 - hpf
+    return(complementary_modified_sekiguchi(_coefs))
 
 def complementary_modified_sekiguchi(coefs):
     """Modified Sekiguchi Filter.

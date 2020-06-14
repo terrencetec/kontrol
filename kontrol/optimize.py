@@ -80,17 +80,17 @@ def optimize_complementary_filter(filter_, spectra, f,
 
     if x0 is not None:
         kwargs['x0'] = x0
-    if bounds == None:
+    if bounds is None:
         kwargs['fun'] = cost
         method = minimize
         print('Optimizing with scipy.optimize.minimize')
-        if x0 == None:
+        if x0 is None:
             print('x0 must be specified if bounds are not specified')
             return(None)
     else:
         kwargs['bounds'] = bounds
         kwargs['func'] = cost
-        if x0 == None:
+        if x0 is None:
             method = differential_evolution
             print('Optimizing with scipy.optimize.differential_evolution')
         else:

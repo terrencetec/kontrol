@@ -20,4 +20,4 @@ def norm2(spectrum):
 
 def rms(ts):
     ts = np.array(ts)
-    return((np.average(ts**2)-np.average(ts)**2)**0.5)
+    return(np.std(ts, ddof=0))

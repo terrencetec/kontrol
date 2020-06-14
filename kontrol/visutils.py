@@ -25,21 +25,18 @@ class Vis:
         And others...
     """
 
-    def __init__(self, NAME, IFO=None):
+    def __init__(self, name, ifo='K1'):
         """
         Args:
-            VIS: string
+            name: string
                 The VIS suspension name. E.g. "BS" or "ITMY". This will be used
                 to create ezca prefix, etc.
-            IFO: string
+            ifo: string
                 The interferometer prefix. E.g. "K1".
         """
-        self.NAME = NAME
-        if IFO == None:
-            self.IFO = os.getenv('IFO', 'K1')
-        else:
-            self.IFO = IFO
-        self.ezcaObj = ezca.Ezca(self.IFO+':VIS-'+self.NAME)
+        self.name = name
+        self.ifo = ifo
+        self.ezcaObj = ezca.Ezca(self.ifo+':VIS-'+self.name)
 
     def read_matrix(self, STAGE, matrix, i, j):
         """Read a single entry from a real-time model matrix.
@@ -57,7 +54,7 @@ class Vis:
         while 1:
             for i in range(len(channels)):
                 val = self.ezcaObj.read(channels[i])
-                readout[i] = readout[i]+[val]
+                readout[i] = readout[i]+[val]  # FIXME append() is faster than +
                 # print(len(readout[i]))
                 # previous_val=val
             if time.time()-t0 >= t_int:
@@ -181,7 +178,7 @@ class Vis:
         matrix_prefix = STAGE + '_' + matrix
         _read_matrix = lambda i, j: self.read_matrix(STAGE, matrix, i, j)
 
-        if no_of_coils == None:
+        if no_of_coils is None:
             print('no_of_coils not specified, trying to guess from matrix')
             no_of_coils = 1
             while 1:
@@ -199,7 +196,7 @@ class Vis:
         original_matrix = np.zeros((no_of_coils, len(DOFs)))  # Here we assume\
             # that the number of rows is the number of coils and columns are\
             # numbers of DOFs.
-        original_matrix = np.matrix(original_matrix)
+        original_matrix = np.matrix(original_matrix)  # FIXME use np.array
         for i in range(no_of_coils):
             for j in range(len(DOFs)):
                 original_matrix[i, j] = _read_matrix(i+1, j+1)
@@ -287,7 +284,7 @@ class Vis:
         new_matrix = original_matrix*decoupling
         print('original %s:\n'%matrix, original_matrix)
         print('new %s:\n'%matrix, new_matrix)
-        return(new_matrix)
+        return new_matrix
 
     def find_sensor_correction_gain(self, gain_channel='IP_SENSCORR_L_GAIN',
             input_channel='IP_SENSCORR_L_INMON',
@@ -295,7 +292,8 @@ class Vis:
             rms_threshold=0.01, t_int=10, dt=1/8, update_law=nlms_update,
             step_size=0.5, step_size_limits=(1e-3, 1), reducing_lms_step=False,
             reduction_ratio=0.99, timeout=300, *args, **kwargs):
-        """Using LMS algorithms to find sensor correction gain.
+        """!!! INTERACTS WITH REAL SYSTEMS, USE WITH CAUTION !!!
+        Using LMS algorithms to find sensor correction gain.
 
         Optional args:
             gain_channel: string
