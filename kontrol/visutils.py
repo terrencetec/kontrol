@@ -2,11 +2,6 @@
 """
 import os
 import numpy as np
-try:
-    import ezca
-except:
-    print('Cannot find ezca, importing local fakeezca as ezca.')
-    from . import fakeezca as ezca
 import time
 from .utils import rms
 from .unsorted import nlms_update
@@ -18,19 +13,21 @@ class Vis:
     optic. E.g. visutils.Vis('BS').
 
     Methods:
-        actuator_diag(self, STAGE, DOFs, act_block='TEST', act_suffix='OFFSET',
+        actuator_diag(self, stage, dofs, act_block='TEST', act_suffix='OFFSET',
                           sense_block='DAMP', sense_suffix='INMON',
                           matrix='EUL2COIL', force=[], no_of_coils=None, t_ramp=10,
                           t_avg=10, dt=1/8):
         And others...
     """
 
-    def __init__(self, name, ifo='K1'):
+    def __init__(self, name, ezca, ifo='K1'):
         """
         Args:
             name: string
                 The VIS suspension name. E.g. "BS" or "ITMY". This will be used
                 to create ezca prefix, etc.
+            ezca: module
+                The ezca module to be used. Specify ezca or fakeezca.
             ifo: string
                 The interferometer prefix. E.g. "K1".
         """
@@ -38,10 +35,10 @@ class Vis:
         self.ifo = ifo
         self.ezcaObj = ezca.Ezca(self.ifo+':VIS-'+self.name)
 
-    def read_matrix(self, STAGE, matrix, i, j):
+    def read_matrix(self, stage, matrix, i, j):
         """Read a single entry from a real-time model matrix.
         """
-        matrix_prefix = STAGE + '_' + matrix
+        matrix_prefix = stage + '_' + matrix
         return(self.ezcaObj.read(matrix_prefix+'_%d_%d'%(i,j)))
 
     def calming(self, channels, rms_thresholds, t_int=5, dt=1):
@@ -98,7 +95,7 @@ class Vis:
         x0 = [np.average(readouts) for readouts in x0s]
         return(x0)
 
-    def actuator_diag(self, STAGE, DOFs, act_block='TEST', act_suffix='OFFSET',
+    def actuator_diag(self, stage, dofs, act_block='TEST', act_suffix='OFFSET',
                       sense_block='DAMP', sense_suffix='INMON',
                       matrix='EUL2COIL', force=[], no_of_coils=None,
                       update_matrix=False, t_ramp=10, t_avg=10, dt=1/8):
@@ -111,9 +108,9 @@ class Vis:
         This is to prevent the system to be violently perturbed.
 
         Args:
-            STAGE: string
+            stage: string
                 The stage of interest in capatal letter. E.g. 'BS' or 'ITMX'
-            DOFS: list
+            dofS: list
                 A list of strings containing the degrees of freedom of the stage
                 . e.g. ['L', 'T', 'Y']. The order must follow how the actuation
                 matrix is arranged.
@@ -168,18 +165,18 @@ class Vis:
         """
         if matrix == 'EUL2COIL':
             try:
-                self.ezcaObj.read(STAGE+'_'+matrix+'_1_1')
+                self.ezcaObj.read(stage+'_'+matrix+'_1_1')
             except:
                 try:
                     matrix='EUL2OSEM'
-                    self.ezcaObj.read(STAGE+'_'+matrix+'_1_1')
+                    self.ezcaObj.read(stage+'_'+matrix+'_1_1')
                 except:
                     print('Actuation matrix is neither EUL2COIL nor EUL2OSEM, '\
                           'returning')
                     return(None)
 
-        matrix_prefix = STAGE + '_' + matrix
-        _read_matrix = lambda i, j: self.read_matrix(STAGE, matrix, i, j)
+        matrix_prefix = stage + '_' + matrix
+        _read_matrix = lambda i, j: self.read_matrix(stage, matrix, i, j)
 
         if no_of_coils is None:
             print('no_of_coils not specified, trying to guess from matrix')
@@ -196,80 +193,80 @@ class Vis:
                           'no_of_coils to bypass this.')
                     break
 
-        original_matrix = np.zeros((no_of_coils, len(DOFs)))  # Here we assume\
+        original_matrix = np.zeros((no_of_coils, len(dofs)))  # Here we assume\
             # that the number of rows is the number of coils and columns are\
             # numbers of DOFs.
         original_matrix = np.array(original_matrix)  # FIXME use np.array
         for i in range(no_of_coils):
-            for j in range(len(DOFs)):
+            for j in range(len(dofs)):
                 original_matrix[i, j] = _read_matrix(i+1, j+1)
         print('Current '+matrix+'\n', original_matrix)
 
         if force == []:
             print('force not specified, defaulting to %d cnts '\
                   'for all degrees of freedom.'%(default_force))
-            force = [default_force]*len(DOFs)
-        elif len(force) != len(DOFs):
-            print('len(force):%d not equal to len(DOFs):'\
-                  '%d.'%(len(force),len(DOFs)))
+            force = [default_force]*len(dofs)
+        elif len(force) != len(dofs):
+            print('len(force):%d not equal to len(dofs):'\
+                  '%d.'%(len(force),len(dofs)))
             if len(force) == 1:
-                print('Assume force = %d cnts for all DOFs'%force[0])
-                force=[force[0]]*len(DOFs)
+                print('Assume force = %d cnts for all dofs'%force[0])
+                force=[force[0]]*len(dofs)
             else:
                 print('Replacing unspecified force with default %d cnts'\
                       %(default_force))
-                for _ in range(len(DOFs)-len(force)):
+                for _ in range(len(dofs)-len(force)):
                     force += [default_force]
-        print('Actuating in '+STAGE+'_'+act_block+'_', DOFs, '_'+act_suffix,
+        print('Actuating in '+stage+'_'+act_block+'_', dofs, '_'+act_suffix,
               'with force', force,' cnts')
 
-        act_prefix = STAGE+'_'+act_block
-        act_channel = lambda DOF: act_prefix+'_'+DOF+'_'+act_suffix
-        sense_prefix = STAGE+'_'+sense_block
-        sense_channel = lambda DOF: sense_prefix+'_'+DOF+'_'+sense_suffix
+        act_prefix = stage+'_'+act_block
+        act_channel = lambda dof: act_prefix+'_'+dof+'_'+act_suffix
+        sense_prefix = stage+'_'+sense_block
+        sense_channel = lambda dof: sense_prefix+'_'+dof+'_'+sense_suffix
 
-        # x0s = [[]]*len(DOFs)
+        # x0s = [[]]*len(dofs)
         # x0 = []
         # print('Getting initial readings for %.1f seconds'%t_avg)
         # t0 = time.time()
         # while (time.time()-t0 <= t_avg):
-        #     for i in range(len(DOFs)):
-        #         x0s[i] = x0s[i] + [self.ezcaObj.read(sense_channel(DOFs[i]))]
+        #     for i in range(len(dofs)):
+        #         x0s[i] = x0s[i] + [self.ezcaObj.read(sense_channel(dofs[i]))]
         #     time.sleep(dt)
-        sense_channels = [sense_channel(DOF) for DOF in DOFs]
+        sense_channels = [sense_channel(dof) for dof in dofs]
         x0 = self.read_avg(sense_channels, t_avg)
         print(x0)
 
-        for i in range(len(DOFs)):
-            readout = self.ezcaObj.read(act_channel(DOFs[i]))
-            readout *= self.ezcaObj.read(act_prefix+'_'+DOFs[i]+'GAIN')
+        for i in range(len(dofs)):
+            readout = self.ezcaObj.read(act_channel(dofs[i]))
+            readout *= self.ezcaObj.read(act_prefix+'_'+dofs[i]+'GAIN')
             if abs(readout) < 1e-5:
                 try:
-                    self.ezcaObj.switch(act_prefix+'_'+DOFs[i],
+                    self.ezcaObj.switch(act_prefix+'_'+dofs[i],
                                         act_suffix, 'OFF')
                 except:
                     pass
 
-                self.ezcaObj.write(act_channel(DOFs[i]), 0)  # Clear out any\
+                self.ezcaObj.write(act_channel(dofs[i]), 0)  # Clear out any\
                     # initial readings if there is any.
-            self.ezcaObj.write(act_prefix+'_'+DOFs[i]+'GAIN', 1)
-            self.ezcaObj.write(act_prefix+'_'+DOFs[i]+'TRAMP', t_ramp)
+            self.ezcaObj.write(act_prefix+'_'+dofs[i]+'GAIN', 1)
+            self.ezcaObj.write(act_prefix+'_'+dofs[i]+'TRAMP', t_ramp)
             try:
-                self.ezcaObj.switch(act_prefix+'_'+DOFs[i], act_suffix, 'ON')
+                self.ezcaObj.switch(act_prefix+'_'+dofs[i], act_suffix, 'ON')
             except:
                 pass
 
-        force0 = [self.ezcaObj.read(act_channel(DOF)) for DOF in DOFs]
+        force0 = [self.ezcaObj.read(act_channel(dof)) for dof in dofs]
 
-        coupling= [[]]*len(DOFs)
-        for i in range(len(DOFs)):
-            self.ezcaObj.write(act_channel(DOFs[i]), force[i]+force0[i])
+        coupling= [[]]*len(dofs)
+        for i in range(len(dofs)):
+            self.ezcaObj.write(act_channel(dofs[i]), force[i]+force0[i])
             time.sleep(t_ramp)
             # while (self.ezcaObj.is_offset_ramping(act_prefix) or
             #        self.ezcaObj.is_gain_ramping(act_prefix)):
             #     pass
             coupling[i] = self.read_avg(sense_channels, t_avg, dt)
-            self.ezcaObj.write(act_channel(DOFs[i]), force0[i])
+            self.ezcaObj.write(act_channel(dofs[i]), force0[i])
             time.sleep(t_ramp)
             # while (self.ezcaObj.is_offset_ramping(act_prefix) or
                 #    self.ezcaObj.is_gain_ramping(act_prefix)):
@@ -290,8 +287,9 @@ class Vis:
         if update_matrix:
             print('update_matrix is True, updating the current %s'%matrix)
             for i in range(len(new_matrix)):
-                for j in range(len(new_matrix)):
-                    self.ezcaObj.write(matrix_prefix+'_%d_%d'%(new_matrix[i,j]))
+                for j in range(len(new_matrix[i])):
+                    self.ezcaObj.write(matrix_prefix+'_%d_%d'%(i+1, j+1),
+                                       new_matrix[i, j])
         return new_matrix
 
     def find_sensor_correction_gain(self, gain_channel='IP_SENSCORR_L_GAIN',
