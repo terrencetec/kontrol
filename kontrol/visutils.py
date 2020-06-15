@@ -100,8 +100,8 @@ class Vis:
 
     def actuator_diag(self, STAGE, DOFs, act_block='TEST', act_suffix='OFFSET',
                       sense_block='DAMP', sense_suffix='INMON',
-                      matrix='EUL2COIL', force=[], no_of_coils=None, t_ramp=10,
-                      t_avg=10, dt=1/8):
+                      matrix='EUL2COIL', force=[], no_of_coils=None,
+                      update_matrix=False, t_ramp=10, t_avg=10, dt=1/8):
         """ !!! INTERACTS WITH REAL SYSTEMS, USE WITH CAUTION !!!
         Actuates a particular stage in its degrees of freedom to obtain the
         stage-wise diagonalizaion actuation matrix. For now, the injection is
@@ -152,6 +152,9 @@ class Vis:
                 The number of actuators/coils of the stage. If not specified,
                 the scipt will guess from the number of rows of the actuation
                 matrix.
+            update_matrix: boolean
+                If true, update the current matrix in the real-time system with
+                the new one. Deefaults to False.
             t_ramp: int/float
                 The ramp time in seconds for actuation. Defaults to 10.
             t_avg: int/float
@@ -284,6 +287,11 @@ class Vis:
         new_matrix = np.matmul(original_matrix, decoupling)
         print('original %s:\n'%matrix, original_matrix)
         print('new %s:\n'%matrix, new_matrix)
+        if update_matrix:
+            print('update_matrix is True, updating the current %s'%matrix)
+            for i in range(len(new_matrix)):
+                for j in range(len(new_matrix)):
+                    self.ezcaObj.write(matrix_prefix+'_%d_%d'%(new_matrix[i,j]))
         return new_matrix
 
     def find_sensor_correction_gain(self, gain_channel='IP_SENSCORR_L_GAIN',
@@ -293,7 +301,9 @@ class Vis:
             step_size=0.5, step_size_limits=(1e-3, 1), reducing_lms_step=False,
             reduction_ratio=0.99, timeout=300, *args, **kwargs):
         """!!! INTERACTS WITH REAL SYSTEMS, USE WITH CAUTION !!!
-        Using LMS algorithms to find sensor correction gain.
+        Using LMS algorithms to find sensor correction gain. Using only when
+        the system is under high gain feedback. The function will directly
+        tweak the sensor correction gain in the real-time system.
 
         Optional args:
             gain_channel: string
