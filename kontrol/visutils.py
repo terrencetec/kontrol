@@ -239,7 +239,7 @@ class Vis:
 
         for i in range(len(dofs)):
             readout = self.ezcaObj.read(act_channel(dofs[i]))
-            readout *= self.ezcaObj.read(act_prefix+'_'+dofs[i]+'GAIN')
+            readout *= self.ezcaObj.read(act_prefix+'_'+dofs[i]+'_GAIN')
             if abs(readout) < 1e-5:
                 try:
                     self.ezcaObj.switch(act_prefix+'_'+dofs[i],
@@ -249,8 +249,8 @@ class Vis:
 
                 self.ezcaObj.write(act_channel(dofs[i]), 0)  # Clear out any\
                     # initial readings if there is any.
-            self.ezcaObj.write(act_prefix+'_'+dofs[i]+'GAIN', 1)
-            self.ezcaObj.write(act_prefix+'_'+dofs[i]+'TRAMP', t_ramp)
+            self.ezcaObj.write(act_prefix+'_'+dofs[i]+'_GAIN', 1)
+            self.ezcaObj.write(act_prefix+'_'+dofs[i]+'_TRAMP', t_ramp)
             try:
                 self.ezcaObj.switch(act_prefix+'_'+dofs[i], act_suffix, 'ON')
             except:
