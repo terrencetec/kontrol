@@ -26,10 +26,11 @@ def test_actuator_diag():
 
     force  =[1000, 2000, 3000]  # Actuate 1000 counts in longitudinal,\
     	# 2000 counts in transverse and 3000 counts in yaw. Do specify\
-    	# this or else the program will
+    	# this or else the program will default actuations to 1000 counts.
 
     no_of_coils = 3  # Optional. Determined by the EUL2COIL matrix if\
     	# not specified.
+
     t_ramp = 0.1  # For testing pupose, we put a small number.\
         # In practice, this should be around 10 seconds or more.
 

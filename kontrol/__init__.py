@@ -4,3 +4,4 @@ from .filters import *
 from .unsorted import *
 from .visutils import *
 from .fakeezca import *
+from .test import *
