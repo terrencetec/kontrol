@@ -43,6 +43,11 @@ nlms_update(coefs, input, error, mu=0.5, mu_limits=(0, 1), returnmu=False,
 
 ### visutils
 Utilities for VIS system.
+
+These methods are wrappers around Ezca
+and will interact with the real-time systems. Any methods and interacts with the
+actual system falls into the category of this visutils. Refer to other modules
+of Kontrol for other offline methods.
 #### classes
 Vis(optic)
 #### methods
