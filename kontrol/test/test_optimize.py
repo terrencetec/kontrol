@@ -133,7 +133,6 @@ plt.xlabel("Frequency")
 plt.title("6: Globally Optimized modified Sekiguchi filter (fail/best)")
 plt.grid(True)
 
-
 print("Here is how to print the filter")
 print(lpf_opt)
 print(hpf_opt)
