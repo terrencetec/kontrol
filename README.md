@@ -69,4 +69,4 @@ Ezca.read(channel)
 
 Ezca.write(channel)
 
-Ezca.switch(sfname)
+Ezca.switch(sfname, *args)
