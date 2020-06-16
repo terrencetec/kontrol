@@ -93,7 +93,22 @@ class Vis:
                 x0s[i] = x0s[i] + [self.ezcaObj.read(channels[i])]
             time.sleep(dt)
         x0 = [np.average(readouts) for readouts in x0s]
-        return(x0)
+        return x0
+
+    def take_snapshots(self, channels):
+        """
+        """
+        for channel in channels:
+            self.snapshots[channel]=self.ezcaObj.read(channel)
+        return None
+
+    def restore_snapshots(self, channels):
+        """
+        """
+        for channel in channels:
+            val = self.snapshots[channel]
+            self.ezcaObj.write(channel, val)
+        return None
 
     def actuator_diag(self, stage, dofs, act_block='TEST', act_suffix='OFFSET',
                       sense_block='DAMP', sense_suffix='INMON',
@@ -138,8 +153,7 @@ class Vis:
             force: list
                 The force in number of counts to put in the actuation channels.
                 If not specified, the default no. of counts for all channels
-                is 1000 counts. If only one number is specified, all DoFs will
-                be actuated by that number. If more numbers are specified but
+                is 1000 counts. If more numbers are specified but
                 less than the number of DoFs specified, then the rest will be
                 set to default. Note that this number is relative to any
                 additional offsets already present in the actuation channel.
@@ -163,6 +177,7 @@ class Vis:
             new_matrix: numpy.matrixlib.defmatrix.matrix
                 The final matrix to be entered to the actuation matrix.
         """
+        
         if matrix == 'EUL2COIL':
             try:
                 self.ezcaObj.read(stage+'_'+matrix+'_1_1')
@@ -196,7 +211,7 @@ class Vis:
         original_matrix = np.zeros((no_of_coils, len(dofs)))  # Here we assume\
             # that the number of rows is the number of coils and columns are\
             # numbers of DOFs.
-        original_matrix = np.array(original_matrix)  # FIXME use np.array
+        original_matrix = np.array(original_matrix)
         for i in range(no_of_coils):
             for j in range(len(dofs)):
                 original_matrix[i, j] = _read_matrix(i+1, j+1)
@@ -209,14 +224,10 @@ class Vis:
         elif len(force) != len(dofs):
             print('len(force):%d not equal to len(dofs):'\
                   '%d.'%(len(force),len(dofs)))
-            if len(force) == 1:
-                print('Assume force = %d cnts for all dofs'%force[0])
-                force=[force[0]]*len(dofs)
-            else:
-                print('Replacing unspecified force with default %d cnts'\
-                      %(default_force))
-                for _ in range(len(dofs)-len(force)):
-                    force += [default_force]
+            print('Replacing unspecified force with default %d cnts'\
+                  %(default_force))
+            for _ in range(len(dofs)-len(force)):
+                force += [default_force]
         print('Actuating in '+stage+'_'+act_block+'_', dofs, '_'+act_suffix,
               'with force', force,' cnts')
 
@@ -225,14 +236,6 @@ class Vis:
         sense_prefix = stage+'_'+sense_block
         sense_channel = lambda dof: sense_prefix+'_'+dof+'_'+sense_suffix
 
-        # x0s = [[]]*len(dofs)
-        # x0 = []
-        # print('Getting initial readings for %.1f seconds'%t_avg)
-        # t0 = time.time()
-        # while (time.time()-t0 <= t_avg):
-        #     for i in range(len(dofs)):
-        #         x0s[i] = x0s[i] + [self.ezcaObj.read(sense_channel(dofs[i]))]
-        #     time.sleep(dt)
         sense_channels = [sense_channel(dof) for dof in dofs]
         x0 = self.read_avg(sense_channels, t_avg)
         print(x0)
@@ -246,7 +249,6 @@ class Vis:
                                         act_suffix, 'OFF')
                 except:
                     pass
-
                 self.ezcaObj.write(act_channel(dofs[i]), 0)  # Clear out any\
                     # initial readings if there is any.
             self.ezcaObj.write(act_prefix+'_'+dofs[i]+'_GAIN', 1)
@@ -262,24 +264,15 @@ class Vis:
         for i in range(len(dofs)):
             self.ezcaObj.write(act_channel(dofs[i]), force[i]+force0[i])
             time.sleep(t_ramp)
-            # while (self.ezcaObj.is_offset_ramping(act_prefix) or
-            #        self.ezcaObj.is_gain_ramping(act_prefix)):
-            #     pass
             coupling[i] = self.read_avg(sense_channels, t_avg, dt)
             self.ezcaObj.write(act_channel(dofs[i]), force0[i])
             time.sleep(t_ramp)
-            # while (self.ezcaObj.is_offset_ramping(act_prefix) or
-                #    self.ezcaObj.is_gain_ramping(act_prefix)):
-                # pass
-        # print(coupling)
+
         coupling = np.array(coupling)
-        # print(coupling)
         for i in range(len(coupling)):
             coupling[i] = coupling[i]/force[i]
-        # print(coupling)
         coupling = coupling.T
         normalization = np.array(np.diag(np.diag(coupling)))
-        # print(coupling)
         decoupling = np.matmul(normalization, np.linalg.inv(coupling))
         new_matrix = np.matmul(original_matrix, decoupling)
         print('original %s:\n'%matrix, original_matrix)
