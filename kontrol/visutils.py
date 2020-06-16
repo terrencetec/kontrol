@@ -1,6 +1,11 @@
 """KAGRA VIS system utility functions.
+
+These methods are wrappers around Ezca
+and will interact with the real-time systems. Any methods and interacts with the
+actual system falls into the category of this visutils. Refer to other modules
+of Kontrol for other offline methods.
 """
-import os
+
 import numpy as np
 import time
 from .utils import rms
@@ -14,9 +19,9 @@ class Vis:
 
     Methods:
         actuator_diag(self, stage, dofs, act_block='TEST', act_suffix='OFFSET',
-                          sense_block='DAMP', sense_suffix='INMON',
-                          matrix='EUL2COIL', force=[], no_of_coils=None, t_ramp=10,
-                          t_avg=10, dt=1/8):
+                      sense_block='DAMP', sense_suffix='INMON',
+                      matrix='EUL2COIL', force=[], no_of_coils=None, t_ramp=10,
+                      t_avg=10, dt=1/8):
         And others...
     """
 

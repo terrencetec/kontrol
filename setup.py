@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="kontrol-terrencetec", # Replace with your own username
+    name="kontrol", # Replace with your own username
     version="0.0.1",
     author="TSANG Terrence Tak Lun",
     author_email="ttltsang@link.cuhk.edu.hk",
