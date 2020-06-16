@@ -177,7 +177,7 @@ class Vis:
             new_matrix: numpy.matrixlib.defmatrix.matrix
                 The final matrix to be entered to the actuation matrix.
         """
-        
+
         if matrix == 'EUL2COIL':
             try:
                 self.ezcaObj.read(stage+'_'+matrix+'_1_1')
@@ -353,12 +353,12 @@ class Vis:
             gain, step_size = nlms_update(coefs=[gains[-1]],
                 input=[inputs[-1]], error=errors[-1], mu=step_size, **kwargs)
             self.ezcaObj.write(gain_channel, gain[0])
-            gains += [gain[0]]
             time.sleep(dt)
             input = self.ezcaObj.read(input_channel)
             error = self.ezcaObj.read(input_channel)
-            ts += [time.time() - t0]
-            errors += [error]
+            gains.append(gain[0])
+            ts.append(time.time() - t0)
+            errors.append(error)
             if ts[-1] >= t_int:
                 mask = np.array(ts) >= (ts[-1]-t_int)
                 gains_masked = np.array(gains)[mask]
