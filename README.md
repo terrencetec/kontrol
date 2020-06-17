@@ -1,4 +1,4 @@
-# kontrol
+# Kontrol
 KAGRA control python package
 
 Recommend using under Conda enironment if using k1ctr workstations.
