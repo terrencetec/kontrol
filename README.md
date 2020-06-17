@@ -48,3 +48,11 @@ Please comply with the following standards/guides as much as possible.
 
 ## How to Contribute
 Just do it.
+### Pending
+- Model reference sensor/actuator diagonalization
+- Add support for reading Shoda-san's SUMCON simulations.
+- Controller optimization
+- Optimal controller synthesis
+- python-foton interface.
+- Diaggui support.
+- [Issues](https://github.com/terrencetec/kontrol/issues)
