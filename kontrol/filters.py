@@ -1,7 +1,11 @@
+"""Standard filter references.
+"""
+
 from control import tf
 
 def complementary_sekiguchi(coefs):
     """Sekiguchi filter.
+
     4th-order complemetary filter used in Sekiguchi's
     thesis whose high-pass is structured as:
     hpf = (s^7 + 7*w_b*s^6 + 21*w_b^2*s^5 + 35*w_b^3*s^4) / (s+w_b)^7,
@@ -32,6 +36,7 @@ def complementary_sekiguchi(coefs):
 
 def complementary_modified_sekiguchi(coefs):
     """Modified Sekiguchi Filter.
+
     Takes an array of 4 coefficients and return a 4th-order complemetary
     high-pass filter and a corresponding complementary low-pass
     filter. The filter follows Sekiguchi's complemetary filter
@@ -41,11 +46,13 @@ def complementary_modified_sekiguchi(coefs):
     where a_1, a_2, a_3 and a_4 are arbitrary coefficients replacing
     the roles of the blending frequency in Sekiguchi's filter.
 
-    Args:
-        coefs: array
-            Blending frequency of the filter in [rad/s]
+    Parameters
+    ----------
+        coefs: numpy.ndarray
+            4 coefficients defining the modified Sekiguchi filter.
 
-    Returns:
+    Returns
+    -------
         lpf: control.xferfcn.TransferFunction
             Complementary low-pass filter
         hpf: control.xferfcn.Transferfunction

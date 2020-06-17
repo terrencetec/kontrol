@@ -1,7 +1,21 @@
+"""Utility functions.
+"""
+
 import numpy as np
 
 def quad_sum(*spectra):
-    """Takes any number of same length spectrum and returns the quadrature sum
+    """Takes any number of same length spectrum and returns the quadrature sum.
+
+    Parameters
+    ----------
+        *spectra:
+            Variable length argument list of the spectra.
+
+    Returns
+    -------
+        qs: np.ndarray
+            The quadrature sum of the spectra.
+
     """
     qs=np.zeros_like(spectra[0])
 #     print(args[0])
@@ -12,6 +26,16 @@ def quad_sum(*spectra):
 
 def norm2(spectrum):
     """Takes a spectrum and returns the 2-norm of the spectrum.
+
+    Parameters
+    ----------
+        spectrum: list of float or numpy.ndarray
+            The spectrum of interest
+
+    Returns
+    -------
+        norm: float
+            The 2-norm of the spectrum
     """
 #     if isinstance(spectrum.np.array)
     spectrum_array = np.array(spectrum)
@@ -19,5 +43,17 @@ def norm2(spectrum):
     return(norm)
 
 def rms(ts):
+    """Calculate the RMS fluctuation of a given time series
+
+    Parameters
+    ----------
+        ts: list of float or numpy.ndarray
+            The time series to be analyzed.
+
+    Returns
+    -------
+        float
+            The RMS of the time series.
+    """
     ts = np.array(ts)
     return(np.std(ts, ddof=0))

@@ -1,7 +1,7 @@
-"""This is an ad hoc premature filter optimization python package for designing
-andoptimization of digital filters.
+"""Optimization related control stuff.
 
-We follow PEP 8 style as much as possible.
+This is an ad hoc premature filter optimization python package for designing
+and optimization of digital filters.
 """
 
 from control import tf
@@ -21,49 +21,59 @@ def optimize_complementary_filter(filter_, spectra, f,
                                   method=differential_evolution,
                                   bounds=None, x0=None,
                                   *args, **kwargs):
-    """Take a filter function (returns (lpf, hpf)) and bounds of the filter
+    """Complementary filter optimization given noise spectra.
+
+    Take a filter function (returns (lpf, hpf)) and bounds of the filter
     coefficients, the spectrum contents that goes through the complementary
     filters and the frequency axis of the spectra. This function will minimize
     the 2-norm of the overall spectra and returns the coefficients of the
     filters which do that.
 
-    Args:
-        filter_: tuple
+    Parameters
+    ----------
+        filter_: tuple of (control.xferfcn.TransferFunction,)
             a function that returns a tuple of the list of complementary filters
             (lpf, hpf), or even (lpf, mpf, ...), where pfs are the filter in
             TransferFunction class.
-        bounds: list of tuples
+        bounds: list of tuple of (float, float)
             The numerical boundaries of the coefficients that defines the
             filters in the format [(lower bound, upper bound), ...]. If not
             specified, then local minimization methods will be used. In this
             case x0 must be provided. If specified with x0, then dual annealing
             will be used. Else, differential evolution will be used.
-        spectra: list of array_like
+        spectra: list of [list or numpy.ndarray,]
             The frequency dependent contents that is filtered by the
             complementary filters with indice matching that of filter_. Each
             spectrum must have the same length as each other and must have the
             same length as the frequency axis f.
-        f: array_like
+        f: list of float or numpy.ndarray
             The frequency axis of the spectra.
         method: function
-            2020/05/14: method is automatically selected base on the
-            specifications of bounds and x0. If a custom method is desired,
-            then make sure that the arguments are correctly specfied in **kwargs
-            and that it takes the first argument as the cost function.
-            A function of the optimization that takes the format
-            optimization(cost_function, bounds, ...)
-            I found two methods in scipy.optimize particularly useful,
-            dual_annealing and differential_evolution. dual_annealing is slower
-            for high-dimensional parameter space while differential_evolution is
-            generally faster but can at times trapped in local minimum near the
-            true optimum.
-        x0: array_like
+            The function that takes a cost function and minimizes it. Examples
+            would be scipy.optimize.minimize(), scipy.optimize.dual_annealing(),
+            and scipy.optimize.differential_evolution()
+        x0: list of float or numpy.ndarray
             The initial guess of the filter arguments. If provided, then either
             differential evolution or dual annealing will be used depending on
 
-    Returns:
+    Returns
+    -------
         result: scipy.optimize.OptimizeResult
-            the optimization result in scipy optimization result format.
+            The optimization result in scipy optimization result format.
+
+    Note
+    ----
+    2020/05/14: method is automatically selected base on the
+    specifications of bounds and x0. If a custom method is desired,
+    then make sure that the arguments are correctly specfied in **kwargs
+    and that it takes the first argument as the cost function.
+    A function of the optimization that takes the format
+    optimization(cost_function, bounds, ...)
+    I found two methods in scipy.optimize particularly useful,
+    dual_annealing and differential_evolution. dual_annealing is slower
+    for high-dimensional parameter space while differential_evolution is
+    generally faster but can at times trapped in local minimum near the
+    true optimum.
     """
 
     def cost(coefs):

@@ -1,9 +1,9 @@
 """KAGRA VIS system utility functions.
 
-These methods are wrappers around Ezca
-and will interact with the real-time systems. Any methods and interacts with the
-actual system falls into the category of this visutils. Refer to other modules
-of Kontrol for other offline methods.
+These methods are wrappers around Ezca and will interact with the real-time
+systems. Any methods and interacts with the actual system falls into the
+category of this visutils. Refer to other modules of Kontrol for other offline
+methods.
 """
 
 import numpy as np
@@ -14,20 +14,64 @@ from .unsorted import nlms_update
 default_force = 1000  # default inject in counts.
 
 class Vis:
-    """Utility functions for KAGRA VIS system. Declare with the name of the
-    optic. E.g. visutils.Vis('BS').
+    """Utility functions for KAGRA VIS system.
 
-    Methods:
-        actuator_diag(self, stage, dofs, act_block='TEST', act_suffix='OFFSET',
+    Declare with the name of the optic. E.g. visutils.Vis('BS').
+
+    Parameters
+    ----------
+        name: string
+            The name of the optic, e.g. 'BS'.
+        ezca: module
+            Ezca module. Specify ezca for real-time usage and fakeezca for
+                testing.
+        ifo: string, optional
+            The interferometer site string. Defaults to 'K1'
+
+    Attributes
+    ----------
+        name: string
+            The name of the optic, e.g. 'BS'.
+        ezcaObj: module
+            Ezca module specfied in parameter, initialized with the name of the
+                optic and the site string.
+        ifo: string
+            The interferometer site string. Defaults to 'K1'
+        snapshots: dict of {str:}
+            A temporary storage as snapshots take can be restored to the
+                real-time system.
+
+    Methods
+    -------
+        read_matrix(stage, matrix, i, j)
+            Read a single entry from a real-time model matrix.
+        calming(channels, rms_thresholds, t_int=5, dt=1)
+            Wait while Ezca channels/PVs readouts are above given RMS thresholds
+        read_avg(channels, t_avg=10, dt=1/8)
+            Read and calculate time-averaged of given Ezca channels/PVs.
+        take_snapshots(channels):
+            Take snapshots and store as a dictionary in Vis.snapshots().
+        restore_snapshots(self, channels):
+            Restore snapshots taken by Vis.take_snapshots().
+        actuator_diag(stage, dofs, act_block='TEST', act_suffix='OFFSET',
                       sense_block='DAMP', sense_suffix='INMON',
                       matrix='EUL2COIL', force=[], no_of_coils=None, t_ramp=10,
-                      t_avg=10, dt=1/8):
-        And others...
+                      t_avg=10, dt=1/8)
+            Diagonalizing actuators in a stage by applying DC forces.
+        find_sensor_correction_gain(gain_channel='IP_SENSCORR_L_GAIN',
+                input_channel='IP_SENSCORR_L_INMON',
+                error_channel='IP_BLEND_ACCL_OUTPUT',
+                rms_threshold=0.01, t_int=10, dt=1/8, update_law=nlms_update,
+                step_size=0.5, step_size_limits=(1e-3, 1),
+                reducing_lms_step=False, reduction_ratio=0.99, timeout=300,
+                **kwargs)
+            Using LMS algorithms to find sensor correction gain.                 
     """
 
     def __init__(self, name, ezca, ifo='K1'):
         """
-        Args:
+        Parameters
+        ----------
             name: string
                 The VIS suspension name. E.g. "BS" or "ITMY". This will be used
                 to create ezca prefix, etc.
@@ -39,16 +83,44 @@ class Vis:
         self.name = name
         self.ifo = ifo
         self.ezcaObj = ezca.Ezca(self.ifo+':VIS-'+self.name)
+        self.snapshots={}
 
     def read_matrix(self, stage, matrix, i, j):
         """Read a single entry from a real-time model matrix.
+
+        Parameters
+        ----------
+            stage: string
+                The stage of interest, e.g. 'IP'.
+            matrix: string
+                The matrix to be measured, e.g. 'EUL2COIL'.
+            i: int
+                Row index, counting from 1.
+            j: int
+                Column index, counting from 1
+
+        Returns
+        -------
+            float
+                The measured value from the EPICs record.
         """
         matrix_prefix = stage + '_' + matrix
         return(self.ezcaObj.read(matrix_prefix+'_%d_%d'%(i,j)))
 
     def calming(self, channels, rms_thresholds, t_int=5, dt=1):
-        """A function that will loop untils the given channels has residual RMS
-        lower than the given rms_thresholds.
+        """Wait while Ezca channels/PVs readouts are below given RMS thresholds.
+
+        Parameters
+        ----------
+            channels: list of string
+                A list of channel names to be recorded
+            rms_thresholds: list of int or list of float
+                A list of RMS thresholds for the corresponding channels
+            t_int: int or float, optional
+                Integration time for calculated the RMS in seconds.
+                Defaults to 5.
+            dt: int or float, optional
+                Time space between each sample in seconds. Defaults to 1.
         """
         readout = [[]]*len(channels)
         t0 = time.time()
@@ -75,18 +147,19 @@ class Vis:
             time.sleep(dt)
 
     def read_avg(self, channels, t_avg=10, dt=1/8):
-        """Return a time-averaged value given an ezca channel.
+        """Read and calculate time-averaged of given Ezca channels/PVs.
 
-        Args:
-            channels: list
+        Parameters
+        ----------
+            channels: list of string
                 A list of channel names to be measured.
-        Optional Args:
-            t_avg: int/float
+            t_avg: int or float, optional
                 The averaging time for measuring the displacement readouts.
-            dt: int/float
+            dt: int or float, optional
                 The sampling spacing while measuring the average readouts.
 
-        Returns:
+        Returns
+        -------
             x0: list
                 a list of average values read from the specified channels.
         """
@@ -101,14 +174,26 @@ class Vis:
         return x0
 
     def take_snapshots(self, channels):
-        """
+        """Take snapshots and store as a dictionary in Vis.snapshots().
+
+        Snaps can later be restored by Vis.restore_snapshots().
+
+        Parameters
+        ----------
+            channels: list of string
+                The channels/PVs to be stored
         """
         for channel in channels:
             self.snapshots[channel]=self.ezcaObj.read(channel)
         return None
 
     def restore_snapshots(self, channels):
-        """
+        """Restore snapshots taken by Vis.take_snapshots().
+
+        Parameters
+        ----------
+            channels: list of string
+                The channels/PVs to be restored
         """
         for channel in channels:
             val = self.snapshots[channel]
@@ -119,7 +204,9 @@ class Vis:
                       sense_block='DAMP', sense_suffix='INMON',
                       matrix='EUL2COIL', force=[], no_of_coils=None,
                       update_matrix=False, t_ramp=10, t_avg=10, dt=1/8):
-        """ !!! INTERACTS WITH REAL SYSTEMS, USE WITH CAUTION !!!
+        """Diagonalizing actuators in a stage by applying DC forces.
+
+        !!! INTERACTS WITH REAL SYSTEMS, USE WITH CAUTION !!!
         Actuates a particular stage in its degrees of freedom to obtain the
         stage-wise diagonalizaion actuation matrix. For now, the injection is
         only DC. The default actuation channel is 'K1:...TEST_OFFSET' and the
@@ -127,35 +214,34 @@ class Vis:
         IMPORTANT: Do specify the force even though it is an optional argument.
         This is to prevent the system to be violently perturbed.
 
-        Args:
+        Parameters
+        ----------
             stage: string
                 The stage of interest in capatal letter. E.g. 'BS' or 'ITMX'
-            dofS: list
+            dofs: list
                 A list of strings containing the degrees of freedom of the stage
                 . e.g. ['L', 'T', 'Y']. The order must follow how the actuation
                 matrix is arranged.
-
-        Optional Args:
-            act_block: string
+            act_block: string, optional
                 The name of the block in the real-time system that is used for
                 the injection. Defaults to 'TEST' because it is usually used for
                 such purpose.
-            act_suffix: string
+            act_suffix: string, optional
                 The suffix of the channel name which we inject the actuation
                 signal. Defaults to 'OFFSET'.
-            sense_block: string
+            sense_block: string, optional
                 The name of the block in the real-time system that is used to
                 measure readout. Note that the readouts must be diagonalized
                 beforehand in order for actuation diagonalization to work.
                 Defaults to 'DAMP'
-            sense_prefix: string
+            sense_prefix: string, optional
                 The suffix of the readout channel name. Defaults to 'INMON'.
-            matrix: string
+            matrix: string, optional
                 The name of the block containing the actuation diagonalization
                 matrix entries. Defaults to 'EUL2COIL'. The script automatically
                 checks if the stage uses EUL2COIL or EUL2OSEM automatically. If
                 other matrices is of interest, specify explicitly.
-            force: list
+            force: list of int or list of float, optional
                 The force in number of counts to put in the actuation channels.
                 If not specified, the default no. of counts for all channels
                 is 1000 counts. If more numbers are specified but
@@ -164,22 +250,23 @@ class Vis:
                 additional offsets already present in the actuation channel.
                 E.g. if the actuation has originally 10 counts and a force of
                 10 counts is specified, the final number of counts will be 20.
-            no_of_coils: int
+            no_of_coils: int, optional
                 The number of actuators/coils of the stage. If not specified,
                 the scipt will guess from the number of rows of the actuation
                 matrix.
-            update_matrix: boolean
+            update_matrix: boolean, optional
                 If true, update the current matrix in the real-time system with
                 the new one. Deefaults to False.
-            t_ramp: int/float
+            t_ramp: int or float
                 The ramp time in seconds for actuation. Defaults to 10.
-            t_avg: int/float
+            t_avg: int or float
                 The averaging time for measuring the displacement readouts.
-            dt: int/float
+            dt: int or float
                 The sampling spacing while measuring the average readouts.
 
         Returns
-            new_matrix: numpy.matrixlib.defmatrix.matrix
+        -------
+            new_matrix: numpy.ndarray
                 The final matrix to be entered to the actuation matrix.
         """
 
@@ -295,54 +382,61 @@ class Vis:
             error_channel='IP_BLEND_ACCL_OUTPUT',
             rms_threshold=0.01, t_int=10, dt=1/8, update_law=nlms_update,
             step_size=0.5, step_size_limits=(1e-3, 1), reducing_lms_step=False,
-            reduction_ratio=0.99, timeout=300, *args, **kwargs):
-        """!!! INTERACTS WITH REAL SYSTEMS, USE WITH CAUTION !!!
-        Using LMS algorithms to find sensor correction gain. Using only when
-        the system is under high gain feedback. The function will directly
-        tweak the sensor correction gain in the real-time system.
+            reduction_ratio=0.99, timeout=300, **kwargs):
+        """Using LMS algorithms to find sensor correction gain.
 
-        Optional args:
-            gain_channel: string
+        !!! INTERACTS WITH REAL SYSTEMS, USE WITH CAUTION !!!
+        Using only when the system is under high gain feedback.
+        The function will directly tweak the sensor correction gain in the
+        real-time system.
+
+        Parameters
+        ----------
+            gain_channel: string, optional
                 The sensor correction gain channel.
-            input_channel: string
+            input_channel: string, optional
                 The input channel to the adaptive filter. Seismometer
                 displacement output in this case.
-            error_channel: string
+            error_channel: string, optional
                 The error signal used in LMS algorithm to correct the adaptive
                 gain. The blended inertial sensor signal in this case.
-            rms_threshold: float
+            rms_threshold: int or float, optional
                 The RMS threshold of the adaptive gain for termination of the
                 gain finding loop. Defaults to 0.01 (for 1% sensor correction
                 mismatch).
-            t_int: int/float
+            t_int: int or float, optional
                 Integration time for calculated the RMS in seconds.
                 Defaults to 10 (roughly band-limited to above 0.1 Hz).
-            dt: int/float
+            dt: int or float, optional
                 Time space between each sample in seconds. Defaults to 1/8.
-            update_law: function in kontrol.unsorted  ## FIXME unsorted
+            update_law: function, optional
                 LMS or normalized LMS algorithm for updating the sensor
-                correction gain. Default to be kontrol.unsorted.nlms_update,
+                correction gain. See kontrol.unsorted.
+                Defaults to kontrol.unsorted.nlms_update,
                 a Normalized LMS algorithm.
-            step_size: int/float
+            step_size: int or float, optional
                 Step size to be used in the LMS algorithm. Defaults to be 0.5.
-            step_size_limits: 2-tuple
+            step_size_limits: tuple of (int or float, int or float), optinal
                 Lower and upper limit of the step size. Defaults to be (1e-3, 1)
-            reducing_lms_step: boolean
+            reducing_lms_step: boolean, optional
                 Allow reducing step size for better convergence. The step size
                 will be reduced by a factor of reduction_ratio when the cost
                 function (RMS of the error) remains the same or increased.
                 Defaults to be False.
-            timeout: int/float
+            timeout: int or float, optional
                 Timeout for the loop in seconds. Defaults to be 300.
+            **kwargs:
+                Keyword arguments that will be passed to update_law()
 
-        Returns:
-            ts: list
+        Returns
+        -------
+            ts: list of float
                 Time axis of the whole process.
-            gains: list
+            gains: list of float
                 Sensor correction gain time series history.
-            inputs: list
+            inputs: list of float
                 Input time series.
-            errors: list
+            errors: list of float
                 Error time series.
         """
         kwargs['mu_limits'] = step_size_limits
