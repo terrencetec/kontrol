@@ -1,5 +1,7 @@
 from kontrol import visutils
 from kontrol import fakeezca as ezca
+import kontrol
+import matplotlib.pyplot as plt
 # import ezca  #  Alternatively import fakeezca as ezca for testing.
 
 def test_actuator_diag():
@@ -43,3 +45,45 @@ def test_actuator_diag():
     	update_matrix=False, t_ramp=t_ramp, t_avg=t_avg, dt=1/8)
 
     print(EUL2COIL_new)
+
+def test_find_sensor_correction_gain():
+    """
+    """
+
+    BS = visutils.Vis('BS', ezca)
+
+    rms_threshold = 0.01  # The adaptive loop terminates when the RMS of the
+        # adaptive gain is less than 0.01. This corresponds to 1% of
+        # inter calibration mismatch.
+
+    t_int = 10  # The integration time for calculating the RMS.
+
+    update_law = kontrol.unsorted.nlms_update  # Normalized LMS algorithm
+        # Normal LMS algorithm is also avaiable in kontrol.unsorted, but is less
+        # robust.
+
+    reducing_lms_step = True  # If True, then the step size of the LMS will
+        # be reduced by a factor of reduction ratio when the mean square error
+        # is higher or equal to previous iterations. This leads to better
+        # convergence of the sensor correction gain.
+
+    timeout = 20  # The loop will terminate regardless of the convergence when
+        # the algorithm has been running for 20 seconds. Set to, say 300 when
+        # using it in the real system.
+
+    ts, gains, inputs, errors = BS.find_sensor_correction_gain(
+        gain_channel='IP_SENSCORR_L_GAIN',
+        input_channel='IP_SENSCORR_L_INMON',
+        error_channel='IP_BLEND_ACCL_OUT16',
+        rms_threshold=rms_threshold, t_int=t_int, dt=1/8, update_law=update_law,
+        step_size=0.5, step_size_limits=(1e-3, 1),
+        reducing_lms_step=reducing_lms_step,
+        reduction_ratio=0.99, timeout=timeout)
+
+    plt.subplot(211)
+    plt.plot(ts, gains, label='Gain')
+    plt.legend(loc=0)
+    plt.subplot(212)
+    plt.plot(ts, errors, label='Error')
+    plt.legend(loc=0)
+    plt.show()

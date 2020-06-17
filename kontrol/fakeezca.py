@@ -5,7 +5,6 @@
 # Fake guardian module with dummy Ezca class for debugging on non-CDS machines
 
 from random import gauss
-from . import fake_system
 
 class Ezca():
     class Device():
