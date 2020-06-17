@@ -1,7 +1,7 @@
 # Kontrol
 Kontrol (also pronounced "control") is a python package for KAGRA control system
 related work. It is intented for both offline and real-time (via Ezca and maybe
-nds2 later) usage. In principle, it should cover all control related topics
+diaggui and nds2 later) usage. In principle, it should cover all control related topics
 ranging from sensor/actuator diagonalization to system identification and
 control filter design.
 
