@@ -49,6 +49,7 @@ Please comply with the following standards/guides as much as possible.
 ## How to Contribute
 Just do it.
 ### Pending
+- Documentation.
 - Model reference sensor/actuator diagonalization
 - Add support for reading Shoda-san's SUMCON simulations.
 - Controller optimization
