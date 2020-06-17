@@ -3,6 +3,22 @@ KAGRA control python package
 
 Recommend using under Conda environment if using k1ctr workstations.
 
+## How to Install
+For local usage, type
+  $ git clone https://github.com/terrencetec/kontrol.git
+  $ cd kontrol
+  $ pip install .
+
+For k1ctr workstations, make sure a virtual environment is enabled before
+installing anything
+
+## Required packages
+* numpy
+* scipy
+* matplotlib
+* control
+* ezca (installed in KAGRA workstations, will use local fakeezca if not installed.)
+
 ## Standards and Tools
 Please comply with the following standards/guides as much as possible.
 * Coding style
@@ -19,13 +35,6 @@ Please comply with the following standards/guides as much as possible.
   * [Sphinx](https://www.sphinx-doc.org/)
   * [Read The Docs](https://readthedocs.org/)
   * [Documenting Python Code: A Complete Guide](https://realpython.com/documenting-python-code/)
-
-## Required packages
-* numpy
-* scipy
-* matplotlib
-* control
-* ezca (installed in KAGRA workstations, will use local fakeezca if not installed.)
 
 ## Modules
 ### optimize
