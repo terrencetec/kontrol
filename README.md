@@ -5,12 +5,12 @@ Recommend using under Conda environment if using k1ctr workstations.
 
 ## How to Install
 For local usage, type
-  $ git clone https://github.com/terrencetec/kontrol.git
-  $ cd kontrol
-  $ pip install .
+`$ git clone https://github.com/terrencetec/kontrol.git`
+`$ cd kontrol`
+`$ pip install .`
 
 For k1ctr workstations, make sure a virtual environment is enabled before
-installing anything
+installing anything.
 
 ## Required packages
 * numpy
