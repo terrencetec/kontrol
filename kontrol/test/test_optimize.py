@@ -9,7 +9,8 @@ from control import *
 f = np.linspace(1e-1,1e2,1000)  # Frequency axis
 noise_low_pass1 = np.ones_like(f)  # LVDT-like noise
 noise_low_pass2_tf = tf([(2*np.pi*2)**2],[1,2*np.pi*2/10,(2*np.pi*2)**2])
-noise_low_pass2 = abs(noise_low_pass2_tf.horner(2*np.pi*1j*f)[0][0])  # Seismic-like noise
+noise_low_pass2 = abs(noise_low_pass2_tf.horner(2*np.pi*1j*f)[0][0])  # \
+    # Seismic-like noise
 noise_low_pass = quad_sum(noise_low_pass1, noise_low_pass2)
 noise_high_pass = 1/f**3.5  # Geophone-like noise
 plt.figure()
@@ -28,7 +29,8 @@ result = optimize_complementary_filter(filter_=complementary_filter,
 
 plt.figure()
 
-lpf_opt, hpf_opt = complementary_filter(result.x)  # In scipy.optimize.OptimizeResult, x is the attribute of be optimized parameters.
+lpf_opt, hpf_opt = complementary_filter(result.x)  # In \
+    # scipy.optimize.OptimizeResult, x is the attribute of be optimized parameters.
 plt.subplot(231)
 plt.loglog(f, abs(lpf_opt.horner(2*np.pi*1j*f)[0][0]), label='Complementary low-pass')
 plt.loglog(f, abs(hpf_opt.horner(2*np.pi*1j*f)[0][0]), label='Complementary high-pass')
