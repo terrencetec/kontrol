@@ -11,7 +11,7 @@ the python-control package and depends on the slycot module. This is
 automatically installed when installing python-control with Conda while not
 with pip. So, using under Conda environment is highly recommended.
 
-- **Documentation:** Does not exist yet.
+- **Documentation:** https://kontrol.readthedocs.io/
 - **Repository:** https://github.com/terrencetec/kontrol.git
 
 Getting Started
