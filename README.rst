@@ -14,22 +14,48 @@ with pip. So, using under Conda environment is highly recommended.
 - **Documentation:** Does not exist yet.
 - **GitHub:** https://github.com/terrencetec/kontrol
 
-## How to Install Kontrol
-### Required packages
+Getting Started
+======================
+
+Dependencies
+-----------------
+
+Required
+^^^^^^^^
+
 * numpy
 * scipy
 * matplotlib
 * control
-* ezca (installed in KAGRA workstations, will use local fakeezca if not installed.)
-###
+
+Optional
+^^^^^^^^
+* ezca (Needed for accessing EPICs records/real-time model process variables.
+
+Use kontrol.fakeezca if not needed)
+
+If you would like to install Kontrol on your local machine with, then pip
+should install the required dependencies automatically for you. However, if
+you use Kontrol in a Conda environment, you should install the dependencies
+before installing Kontrol to avoid using pip. In Conda environment, simply type
+
+.. code-block:: bash
+
+  conda install -c conda-forge numpy scipy matplotlib control ezca
+
+Install from source
+-------------------
+
 For local usage, type
-```
-$ git clone https://github.com/terrencetec/kontrol.git
-$ cd kontrol
-$ pip install .
-```
+
+.. code-block:: bash
+
+  $ git clone https://github.com/terrencetec/kontrol.git
+  $ cd kontrol
+  $ pip install .
+
 For k1ctr workstations, make sure a virtual environment is enabled before
-installing anything.
+installing any packages.
 
 ## Standards and Tools
 Please comply with the following standards/guides as much as possible.
