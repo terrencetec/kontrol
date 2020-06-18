@@ -86,8 +86,7 @@ Documentation
 - **NumPy docstrings**: https://numpydoc.readthedocs.io/en/latest/format.html
 - **Sphinx**: https://www.sphinx-doc.org/
 - **Read The Docs**: https://readthedocs.org/
-- **Documenting Python Code: A Complete Guide**:
-https://realpython.com/documenting-python-code/
+- **Documenting Python Code: A Complete Guide**: https://realpython.com/documenting-python-code/
 
 How to Contribute
 -----------------
