@@ -11,6 +11,3 @@ There will be an upcoming Hinf/H2 function for controller synthesis which uses
 the python-control package and depends on the slycot module. This is
 automatically installed when installing python-control with Conda while not
 with pip. So, using under Conda environment is highly recommended.
-
-- **Documentation:** https://kontrol.readthedocs.io/
-- **GitHub:** https://github.com/terrencetec/kontrol
