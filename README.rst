@@ -102,4 +102,4 @@ Pending
 - Optimal controller synthesis
 - python-foton interface.
 - Diaggui support.
-- [Issues](https://github.com/terrencetec/kontrol/issues)
+- **Issues**: https://github.com/terrencetec/kontrol/issues
