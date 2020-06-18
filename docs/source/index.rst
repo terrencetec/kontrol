@@ -18,7 +18,7 @@ automatically installed when installing python-control with Conda while not
 with pip. So, using under Conda environment is highly recommended.
 
 - **Documentation:** Does not exist yet.
-- **GitHub:** https://github.com/terrencetec/kontrol
+- **Repository:** https://github.com/terrencetec/kontrol.git
 
 .. toctree::
    :maxdepth: 3
@@ -29,6 +29,7 @@ with pip. So, using under Conda environment is highly recommended.
    installation
    modules
    contact
+   developers
 
 Indices and tables
 ==================

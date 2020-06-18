@@ -1,5 +1,5 @@
-Kontrol
-=======
+Python Kontrol Library
+======================
 Kontrol (also pronounced "control") is a python package for KAGRA control system
 related work. It is intented for both offline and real-time (via Ezca and maybe
 diaggui and nds2 later) usage. In principle, it should cover all control related topics
@@ -12,7 +12,7 @@ automatically installed when installing python-control with Conda while not
 with pip. So, using under Conda environment is highly recommended.
 
 - **Documentation:** Does not exist yet.
-- **GitHub:** https://github.com/terrencetec/kontrol
+- **Repository:** https://github.com/terrencetec/kontrol.git
 
 Getting Started
 ======================
