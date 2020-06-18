@@ -17,9 +17,7 @@ Required
 
 Optional
 ^^^^^^^^
-* ezca (Needed for accessing EPICs records/real-time model process variables.
-
-Use kontrol.fakeezca if not needed)
+* ezca (Needed for accessing EPICs records/real-time model process variables. Use kontrol.fakeezca if not needed)
 
 If you would like to install Kontrol on your local machine with, then pip
 should install the required dependencies automatically for you. However, if
