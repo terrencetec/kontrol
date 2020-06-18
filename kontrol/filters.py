@@ -4,23 +4,38 @@
 from control import tf
 
 def complementary_sekiguchi(coefs):
-    """Sekiguchi filter.
+    r"""4th-order complementary filters specified by the blending frequencies.
 
-    4th-order complemetary filter used in Sekiguchi's
-    thesis whose high-pass is structured as:
-    hpf = (s^7 + 7*w_b*s^6 + 21*w_b^2*s^5 + 35*w_b^3*s^4) / (s+w_b)^7,
-    where w_b is the blending frequency in [rad/s]
-
-    Args:
-        blend_freq: float
+    Parameters
+    ----------
+        coefs: float
             Blending frequency of the filter in [rad/s]
 
-    Returns:
+    Returns
+    -------
         lpf: control.xferfcn.TransferFunction
             Complementary low pass-filter
         hpf: control.xferfcn.Transferfunction
             Complementary high pass-filter
+
+    Notes
+    -----
+    4th-order complemetary filter used in Sekiguchi's
+    thesis [1]_ whose high-pass is structured as:
+
+    .. math::
+        H = \frac{s^7 + 7w_bs^6 + 21w_b^2s^5 + 35w_b^3s^4}{(s+w_b)^7}
+
+    where :math:`w_b` is the blending frequency in [rad/s].
+
+    References
+    ----------
+    .. [1]
+        T. Sekiguchi, A Study of Low Frequency Vibration Isolation System
+        for Large Scale Gravitational Wave Detectors
+
     """
+
     blend_freq = coefs[0]
     _coefs = [blend_freq]*4
     # hpf_numerator = [
@@ -35,20 +50,11 @@ def complementary_sekiguchi(coefs):
     return(complementary_modified_sekiguchi(_coefs))
 
 def complementary_modified_sekiguchi(coefs):
-    """Modified Sekiguchi Filter.
-
-    Takes an array of 4 coefficients and return a 4th-order complemetary
-    high-pass filter and a corresponding complementary low-pass
-    filter. The filter follows Sekiguchi's complemetary filter
-    but is modified for flexibility. The high-pass filter takes
-    from of:
-    hpf = (s^7 + 7*a_1*s^6 + 21*a_2^2*s^5 + 35*a_3^3*s^4) / (s+a_4)^7,
-    where a_1, a_2, a_3 and a_4 are arbitrary coefficients replacing
-    the roles of the blending frequency in Sekiguchi's filter.
+    r"""Modified Sekiguchi Filter with guaranteed 4th-order high-pass.
 
     Parameters
     ----------
-        coefs: numpy.ndarray
+        coefs: list of (int or float) or numpy.ndarray
             4 coefficients defining the modified Sekiguchi filter.
 
     Returns
@@ -57,7 +63,18 @@ def complementary_modified_sekiguchi(coefs):
             Complementary low-pass filter
         hpf: control.xferfcn.Transferfunction
             Complementary high-pass filter
+
+    Notes
+    -----
+        The modified Sekiguchi complemetary filter is structured as:
+
+        .. math::
+            H = \frac{s^7 + 7a_1s^6 + 21a_2^2s^5 + 35a_3^3s^4}{(s+a_4)^7}
+
+        where :math:`a_1`, :math:`a_2`, :math:`a_3`, :math:`a_4` are some
+        parameters that defines the filter.
     """
+
     a1, a2, a3, a4 = coefs
     hpf_numerator = [
         1,

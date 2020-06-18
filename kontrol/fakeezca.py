@@ -3,7 +3,9 @@
 # 2020/06/13 Added fake_system compatibility for simulating virtual systems.
 # 2020/06/12 Added random Gaussian noise to the readout.
 # Fake guardian module with dummy Ezca class for debugging on non-CDS machines
-
+""" Fake guardian module with dummy Ezca class for debugging on non-CDS \
+machines
+"""
 from random import gauss
 
 class Ezca():

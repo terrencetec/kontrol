@@ -1,4 +1,5 @@
-# Kontrol
+Kontrol
+=======
 Kontrol (also pronounced "control") is a python package for KAGRA control system
 related work. It is intented for both offline and real-time (via Ezca and maybe
 diaggui and nds2 later) usage. In principle, it should cover all control related topics
@@ -11,15 +12,16 @@ automatically installed when installing python-control with Conda while not
 with pip. So, using under Conda environment is highly recommended.
 
 - **Documentation:** Does not exist yet.
+- **GitHub:** https://github.com/terrencetec/kontrol
 
-## Required packages
+## How to Install Kontrol
+### Required packages
 * numpy
 * scipy
 * matplotlib
 * control
 * ezca (installed in KAGRA workstations, will use local fakeezca if not installed.)
-
-## How to Install
+###
 For local usage, type
 ```
 $ git clone https://github.com/terrencetec/kontrol.git
@@ -50,6 +52,7 @@ Please comply with the following standards/guides as much as possible.
 Just do it.
 ### Pending
 - Documentation.
+- tests!
 - Model reference sensor/actuator diagonalization
 - Add support for reading Shoda-san's SUMCON simulations.
 - Controller optimization
