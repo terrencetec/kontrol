@@ -8,4 +8,4 @@
 /*.egg-info
 
 # Development folder
-/dev/
+!**/dev/
