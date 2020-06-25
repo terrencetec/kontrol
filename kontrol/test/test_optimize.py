@@ -21,7 +21,7 @@ plt.xlabel("Frequency")
 
 # Using sekiguchi's filter
 complementary_filter = complementary_sekiguchi
-result = optimize_complementary_filter(filter_=complementary_filter,
+result = optimize_complementary_filter(complementary_filter=complementary_filter,
                                       bounds=[(2*np.pi*min(f), 2*np.pi*max(f))],
                                       spectra=[noise_low_pass, noise_high_pass],
                                       f=f,
@@ -43,7 +43,7 @@ sekiguchi_result = result
 # Using the modified Sekiguchi filter with the above result as initial guess (use local minimization)
 # This method should return the a suboptimal result using the modified filter.
 complementary_filter = complementary_modified_sekiguchi
-result = optimize_complementary_filter(filter_=complementary_filter,
+result = optimize_complementary_filter(complementary_filter=complementary_filter,
 #                                         bounds=[(2*np.pi*min(f), 2*np.pi*max(f))]*4,
                                         spectra=[noise_low_pass, noise_high_pass],
                                         f=f,
@@ -64,7 +64,7 @@ plt.grid(True)
 # At other times, it will return the suboptimal (see the second optimization result).
 # This is random because the global methods we are using have a stochastic nature.
 complementary_filter = complementary_modified_sekiguchi
-result = optimize_complementary_filter(filter_=complementary_filter,
+result = optimize_complementary_filter(complementary_filter=complementary_filter,
                                         bounds=[(2*np.pi*min(f), 2*np.pi*max(f))]*4,
                                         spectra=[noise_low_pass, noise_high_pass],
                                         f=f,
@@ -81,7 +81,7 @@ plt.grid(True)
 
 # Using the modified Sekiguchi filter directly without initial guess
 # Most of the time this procedure will trap in local minima or boundary.
-result = optimize_complementary_filter(filter_=complementary_modified_sekiguchi,
+result = optimize_complementary_filter(complementary_filter=complementary_modified_sekiguchi,
                                         bounds=[(2*np.pi*min(f), 2*np.pi*max(f))]*4,
                                         spectra=[noise_low_pass, noise_high_pass],
                                         f=f,
@@ -100,7 +100,7 @@ plt.grid(True)
 # as initial guess (use local minimization)
 # This method should return the an optimal (should be optimal) result using the modified filter.
 complementary_filter = complementary_modified_sekiguchi
-result = optimize_complementary_filter(filter_=complementary_filter,
+result = optimize_complementary_filter(complementary_filter=complementary_filter,
                                         # bounds=[(2*np.pi*min(f), 2*np.pi*max(f))]*4,
                                         spectra=[noise_low_pass, noise_high_pass],
                                         f=f,
@@ -120,7 +120,7 @@ plt.grid(True)
 # This method should also return the an optimal (should be optimal) result using the modified filter.
 # But this is slower. And, sometimes the optimization will also be trapped.
 complementary_filter = complementary_modified_sekiguchi
-result = optimize_complementary_filter(filter_=complementary_filter,
+result = optimize_complementary_filter(complementary_filter=complementary_filter,
                                         bounds=[(2*np.pi*min(f), 2*np.pi*max(f))]*4,
                                         spectra=[noise_low_pass, noise_high_pass],
                                         f=f,
