@@ -9,3 +9,6 @@
 
 # Development folder
 !**/dev/
+
+#/build
+/build/
