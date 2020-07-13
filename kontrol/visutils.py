@@ -334,19 +334,24 @@ class Vis:
             self.ezcaObj.write(act_channel(dofs[i]), force[i]+force0[i])
             time.sleep(t_ramp)
             coupling[i] = self.read_avg(sense_channels, t_avg, dt)
+            print(coupling[i])
+            for j in range(len(coupling[i])):
+                coupling[i][j]=(coupling[i][j]-x0[j])/force0[i]
+            print(coupling[i])
             self.ezcaObj.write(act_channel(dofs[i]), force0[i])
             time.sleep(t_ramp)
 
         coupling = np.array(coupling)
 
-        for i in range(len(coupling)):
-            coupling[i] = coupling[i] - np.array(x0)
+        # for i in range(len(coupling)):
+        #     coupling[i] = coupling[i] - np.array(x0)
 
-        for i in range(len(coupling)):
-            coupling[i] = coupling[i]/force[i]
         coupling = coupling.T
+        # for i in range(len(coupling)):
+        #     coupling[i] = coupling[i]/force[i]
+        #
         normalization = np.array(np.diag(np.diag(coupling)))
-        decoupling = np.matmul(normalization, np.linalg.inv(coupling))
+        decoupling = np.matmul(np.linalg.inv(coupling), normalization)
         new_matrix = np.matmul(original_matrix, decoupling)
         print('original %s:\n'%matrix, original_matrix)
         print('new %s:\n'%matrix, new_matrix)
