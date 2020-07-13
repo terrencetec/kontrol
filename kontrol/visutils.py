@@ -338,8 +338,10 @@ class Vis:
             time.sleep(t_ramp)
 
         coupling = np.array(coupling)
-        coupling = coupling - np.array(x0)
-        
+
+        for i in range(len(coupling)):
+            coupling[i] = coupling[i] - np.array(x0)
+
         for i in range(len(coupling)):
             coupling[i] = coupling[i]/force[i]
         coupling = coupling.T
