@@ -445,6 +445,7 @@ class Vis:
             gains.append(gain[0])
             ts.append(time.time() - t0)
             errors.append(error)
+            inputs.append(input)
             if ts[-1] >= t_int:
                 mask = np.array(ts) >= (ts[-1]-t_int)
                 gains_masked = np.array(gains)[mask]
