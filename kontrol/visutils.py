@@ -336,7 +336,7 @@ class Vis:
             coupling[i] = self.read_avg(sense_channels, t_avg, dt)
             print(coupling[i])
             for j in range(len(coupling[i])):
-                coupling[i][j]=(coupling[i][j]-x0[j])/force0[i]
+                coupling[i][j]=(coupling[i][j]-x0[j])/force[i]
             print(coupling[i])
             self.ezcaObj.write(act_channel(dofs[i]), force0[i])
             time.sleep(t_ramp)
