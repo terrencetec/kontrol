@@ -87,6 +87,23 @@ def complementary_modified_sekiguchi(coefs):
     lpf = 1 - hpf
     return(lpf, hpf)
 
+def complementary_lucia(coefs):
+    """Lucia's complementary filter
+
+    Parameters
+    ----------
+        coefs: list of float or numpy.ndarray of floats
+
+    """
+    p1, p2, z1, w1, q1, w2, q2 = coefs
+    hpf = tf([1], [1/p1, 1])**5 * tf([1], [1/p2, 1])**3
+    hpf *= tf([1/z1, 1], [1])
+    hpf *= tf([1, w1/q1, w1**2], [w1**2]) * tf([1, w2/q2, w2**2], [w2**2])
+    hpf *= tf([1, 0],[1])**3
+    hpf *= hpf.den[0][0][0]/hpf.num[0][0][0]
+    lpf = 1 - hpf
+    return(lpf, hpf)
+
 def your_custom_filter(coefs,):
     """Define any filter using this suggested format.
     """
