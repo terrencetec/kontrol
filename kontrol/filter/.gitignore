@@ -8,6 +8,3 @@
 /*.egg-info
 
 !**/__pycache__/
-
-# Development folder
-!**/dev/
