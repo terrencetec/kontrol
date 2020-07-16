@@ -1,1 +1,2 @@
-# Kontrol subpackage for control filter synthesis, design and optimization.
+"""Kontrol subpackage for control filter synthesis, design and optimization."""
+from .complementary import *

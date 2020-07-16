@@ -12,7 +12,7 @@ from scipy.optimize import (
                             minimize, Bounds)
 import time
 from .utils import quad_sum, norm2
-from .filters import complementary_sekiguchi, complementary_modified_sekiguchi
+# from .filters import complementary_sekiguchi, complementary_modified_sekiguchi
 
 # We are using functions for filters for now, for simplicity.
 # In the future we should switch to classes which are more manageable.

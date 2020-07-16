@@ -7,6 +7,11 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   kontrol.filter
+   kontrol.model
+   kontrol.sensact
+   kontrol.systemid
+
 Submodules
 ----------
 

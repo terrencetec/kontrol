@@ -21,7 +21,7 @@ with pip. So, using under Conda environment is highly recommended.
 - **Repository:** https://github.com/terrencetec/kontrol.git
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 4
    :caption: Contents:
 
    self

@@ -1,7 +1,7 @@
-from kontrol import (
-                    quad_sum, complementary_sekiguchi,
-                    complementary_modified_sekiguchi,
-                    optimize_complementary_filter)
+from kontrol import quad_sum, optimize_complementary_filter
+from kontrol.filter import (
+    complementary_sekiguchi,
+    complementary_modified_sekiguchi)
 import numpy as np
 import matplotlib.pyplot as plt
 from control import *

@@ -44,3 +44,12 @@ Pending
 - python-foton interface.
 - Diaggui support.
 - *Issues*: https://github.com/terrencetec/kontrol/issues
+
+Cheat sheet
+-----------
+Auto generate source files (sphinx)
+in /kontrol, type
+
+.. code-block:: bash
+
+  sphinx-apidoc -o docs/source kontrol
