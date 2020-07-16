@@ -1,4 +1,6 @@
-"""Noise model reference"""
+"""Noise model reference
+Model of a generic piecewise noise, LVDT noise, and Geophone noise are avaliable.
+"""
 
 import numpy as np
 
@@ -37,3 +39,51 @@ def piecewise_noise(f, n0, exp=[0], fc=[0]):
         noise[i] = n0 * f[i]**exp[fc_index]
         # print(fc_index)
     return(np.array(noise))
+
+def lvdt_noise(f, n0, fc):
+    """LVDT noise
+
+    Parameters
+    ----------
+        f: list of int/float or numpy.ndarray
+            The frequency axis of the noise.
+        n0: int/float
+            The noise level at 1 Hz with the exponent of -0.5.
+        fc: int/float
+            The corner frequency at which the exponent changes from -0.5 to 0.
+    Returns
+    -------
+        noise: numpy.ndarray
+            The piecewise noise array.
+
+    Notes
+    -----
+        The LVDT noise noise typically has a :math:`f^{-0.5}` dependency \
+        before the corner frequency and is flat after that.
+    """
+
+    return(piecewise_noise(f, n0, exp=[-0.5, 0], fc=[fc]))
+
+def geophone_noise(f, n0, fc):
+    """Geophone noise
+
+    Parameters
+    ----------
+        f: list of int/float or numpy.ndarray
+            The frequency axis of the noise.
+        n0: int/float
+            The noise level at 1 Hz with the exponent of -3.5.
+        fc: int/float
+            The corner frequency at which the exponent changes from -3.5 to -1.
+    Returns
+    -------
+        noise: numpy.ndarray
+            The piecewise noise array.
+
+    Notes
+    -----
+        The LVDT noise noise typically has a :math:`f^{-3.5}` dependency \
+        before the corner frequency and depends on :math:`f^{-1}` after that.
+    """
+
+    return(piecewise_noise(f, n0, exp=[-3.5, -1], fc=[fc]))
