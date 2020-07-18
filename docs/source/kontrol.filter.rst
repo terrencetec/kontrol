@@ -16,9 +16,9 @@ kontrol.filter.optimize module
 -----------------------------------
 
 .. automodule:: kontrol.filter.optimize
-  :members:
-  :undoc-members:
-  :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------
