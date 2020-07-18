@@ -17,7 +17,7 @@ Features
 
 Upcoming
 --------
-* filter: More filters. :math:`\mathcal{H}_2`
+* filter: More filters. :math:`\\mathcal{H}_2`
 
 There will be an upcoming Hinf/H2 function for controller synthesis which uses
 the python-control package and depends on the slycot module. This is
