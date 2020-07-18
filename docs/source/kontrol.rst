@@ -24,7 +24,7 @@ kontrol.fakeezca module
    :show-inheritance:
 
 kontrol.algorithm module
------------------------
+------------------------
 
 .. automodule:: kontrol.algorithm
    :members:
