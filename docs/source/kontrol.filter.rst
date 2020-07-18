@@ -12,6 +12,13 @@ kontrol.filter.complementary module
    :undoc-members:
    :show-inheritance:
 
+kontrol.filter.optimize module
+-----------------------------------
+
+.. automodule:: kontrol.filter.optimize
+  :members:
+  :undoc-members:
+  :show-inheritance:
 
 Module contents
 ---------------

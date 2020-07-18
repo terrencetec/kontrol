@@ -23,26 +23,10 @@ kontrol.fakeezca module
    :undoc-members:
    :show-inheritance:
 
-kontrol.filters module
-----------------------
-
-.. automodule:: kontrol.filters
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-kontrol.optimize module
+kontrol.algorithm module
 -----------------------
 
-.. automodule:: kontrol.optimize
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-kontrol.unsorted module
------------------------
-
-.. automodule:: kontrol.unsorted
+.. automodule:: kontrol.algorithm
    :members:
    :undoc-members:
    :show-inheritance:
