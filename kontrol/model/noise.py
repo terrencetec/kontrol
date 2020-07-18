@@ -82,7 +82,7 @@ def geophone_noise(f, n0, fc):
 
     Notes
     -----
-        The LVDT noise noise typically has a :math:`f^{-3.5}` dependency \
+        The geophone noise noise typically has a :math:`f^{-3.5}` dependency \
         before the corner frequency and depends on :math:`f^{-1}` after that.
     """
 
