@@ -5,7 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 6
 
    kontrol.filter
    kontrol.model
