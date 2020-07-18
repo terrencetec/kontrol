@@ -10,7 +10,7 @@ setuptools.setup(
     author_email="ttltsang@link.cuhk.edu.hk",
     description="KAGRA control python package",
     long_description=long_description,
-    long_description_content_type="text/markdown",
+    long_description_content_type="text/x-rst",
     url="https://github.com/terrencetec/kontrol",
     packages=setuptools.find_packages(),
     # packages=[
