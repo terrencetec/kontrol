@@ -17,7 +17,15 @@ Features
 
 Upcoming
 --------
-* filter: More filters. $\mathcal{H}_2$
+* filter: More filters. H2/Hinf complementary filter and sensor correction
+  synthesis.
+* model: Conversion functions for Shoda-san's SUMCON suspension simulations.
+  Transfer function fitting. Seismic noise models (maybe)
+* sensact: sensor/actuation diagonalization function (given coupling matrix).
+  Calibration?
+* utils: control.xferfcn.TransferFunction to fonton zpk format.
+
+example codes.
 
 There will be an upcoming Hinf/H2 function for controller synthesis which uses
 the python-control package and depends on the slycot module. This is
