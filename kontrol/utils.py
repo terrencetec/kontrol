@@ -1,7 +1,9 @@
 """Utility functions.
+Functions: quad_sum, norm2, rms, tfmatrix2tf.
 """
 
 import numpy as np
+import control
 
 def quad_sum(*spectra):
     """Takes any number of same length spectrum and returns the quadrature sum.
@@ -57,3 +59,28 @@ def rms(ts):
     """
     ts = np.array(ts)
     return(np.std(ts, ddof=0))
+
+def tfmatrix2tf(sys):
+    """Convert a matrix of transfer functions to a MIMO transfer function.
+
+    Parameters
+    ----------
+        sys: list of (list of control.xferfcn.TransferFunction)
+            The transfer function matrix representing a MIMO system. sys[i][j]
+            is the transfer function from the i+1 input port to the j+1 output
+            port.
+    Returns
+    -------
+        control.xferfcn.TransferFunction
+            The transfer function of the MIMO system.
+    """
+    nums = list(np.zeros_like(sys))
+    dens = list(np.zeros_like(sys))
+    for i in range(len(sys)):
+        for j in range(len(sys[i])):
+            nums[i][j] = list(sys[i][j].num[0][0])
+            dens[i][j] = list(sys[i][j].den[0][0])
+        nums[i] = list(nums[i])
+        dens[i] = list(dens[i])
+    generalize_plant = control.tf(aug_P_num, aug_P_den)
+    return(generalized_plant)

@@ -9,7 +9,7 @@ methods.
 import numpy as np
 import time
 from .utils import rms
-from .unsorted import nlms_update
+from .algorithm import nlms_update
 
 default_force = 1000  # default inject in counts.
 

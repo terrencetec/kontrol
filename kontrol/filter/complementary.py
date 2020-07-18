@@ -113,6 +113,7 @@ def complementary_lucia(coefs):
 
         where :math:`K` is a constant normalizing the filter at high frequency.
     """
+    
     p1, p2, z1, w1, q1, w2, q2 = coefs
     hpf = tf([1], [1/p1, 1])**5 * tf([1], [1/p2, 1])**3
     hpf *= tf([1/z1, 1], [1])

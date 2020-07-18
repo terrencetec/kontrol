@@ -1,4 +1,4 @@
-"""Unsorted module.
+"""Algorithm module.
 
 The module now contains two LMS algorithms, lms_update() and nlms_update.
 """

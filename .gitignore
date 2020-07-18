@@ -12,3 +12,6 @@
 
 # Development folder.
 /dev/
+
+# Archive folder for old codes.
+/archive/
