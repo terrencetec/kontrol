@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2020-07-19
+### Added
+- kontrol.sensact.diagonalization.rediagonalization() for refining
+  diagonalization matrices given coupling matrix. Works for both actuation and
+  sensing matrix.
+- Added kontrol.visutils.Vis.read_full_matrix() for reading the full matrix
+  from the real-time model.
+
+### Changed
+- Used rediagonalization() in kontrol.visutils.Vis.actuator_diag()
+
 ## [1.0.0] - 2020-07-18
 ### Changed
 - filter subpackage for filter related and moved content from filters submodule

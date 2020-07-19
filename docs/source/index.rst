@@ -20,6 +20,8 @@ Features
 * utils: quadrature sum, 2-norm, rms, transfer function matrix to MIMO tf.
 * visutils: VIS utility functions, actuator diagonalization, sensor correction
   gain finding
+* sensact: rediagonalization of actuation/sensing matrices given coupling
+  matrix.
 
 Upcoming
 --------
@@ -27,8 +29,7 @@ Upcoming
   synthesis.
 * model: Conversion functions for Shoda-san's SUMCON suspension simulations.
   Transfer function fitting. Seismic noise models (maybe)
-* sensact: sensor/actuation diagonalization function (given coupling matrix).
-  Calibration?
+* sensact: maybe calibration?
 * utils: control.xferfcn.TransferFunction to fonton zpk format.
 
 example codes.
