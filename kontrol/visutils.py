@@ -10,7 +10,7 @@ import numpy as np
 import time
 from .utils import rms
 from .algorithm import nlms_update
-
+from .sensact import rediagonalization
 default_force = 1000  # default inject in counts.
 
 class Vis:
@@ -83,6 +83,42 @@ class Vis:
         matrix_prefix = stage + '_' + matrix
         return(self.ezcaObj.read(matrix_prefix+'_%d_%d'%(i,j)))
 
+    def read_full_matrix(self, stage, matrix):
+        """Read and return a matrix from the real-time model.
+
+        Parameters
+        ----------
+            stage: string
+                The stage of interest, e.g. 'IP'.
+            matrix: string
+                The matrix to be measured, e.g. 'EUL2COIL'.
+
+        Returns
+        -------
+            numpy.ndarray
+                The matrix
+        """
+        i = 1
+        j = 1
+        while 1:
+            try:
+                self.read_matrix(stage, matrix, i, 1)
+            except:
+                break
+            i += 1
+        while 1:
+            try:
+                self.read_matrix(stage, matrix, 1, j)
+            except:
+                break
+            j += 1
+        _matrix = np.zeros((i, j))
+        for a in range(len(_matrix)):
+            for b in range(len(_matrix)):
+                _matrix[a, b] = self.read_matrix(stage, matrix, a, b)
+        print('%s_%s'%(stage, matrix), _matrix)
+        return(_matrix)
+        
     def calming(self, channels, rms_thresholds, t_int=5, dt=1):
         """Wait if Ezca channels/PVs readouts are below given RMS thresholds.
 
@@ -350,9 +386,13 @@ class Vis:
         # for i in range(len(coupling)):
         #     coupling[i] = coupling[i]/force[i]
         #
-        normalization = np.array(np.diag(np.diag(coupling)))
-        decoupling = np.matmul(np.linalg.inv(coupling), normalization)
-        new_matrix = np.matmul(original_matrix, decoupling)
+        # normalization = np.array(np.diag(np.diag(coupling)))
+        # decoupling = np.matmul(np.linalg.inv(coupling), normalization)
+        # new_matrix = np.matmul(original_matrix, decoupling)
+        new_matrix = rediagonalization(
+            current_matrix = original_matrix,
+            coupling_matrix = coupling,
+            type = 'actuation')
         print('original %s:\n'%matrix, original_matrix)
         print('new %s:\n'%matrix, new_matrix)
         if update_matrix:
