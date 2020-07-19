@@ -112,11 +112,11 @@ class Vis:
             except:
                 break
             j += 1
-        _matrix = np.zeros((i, j))
+        _matrix = np.zeros((i-1, j-1))
         for a in range(len(_matrix)):
             for b in range(len(_matrix[a])):
                 _matrix[a, b] = self.read_matrix(stage, matrix, a+1, b+1)
-        print('%s_%s'%(stage, matrix), _matrix)
+        print('%s_%s\n'%(stage, matrix), _matrix)
         return(_matrix)
 
     def calming(self, channels, rms_thresholds, t_int=5, dt=1):
