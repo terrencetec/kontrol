@@ -115,10 +115,10 @@ class Vis:
         _matrix = np.zeros((i, j))
         for a in range(len(_matrix)):
             for b in range(len(_matrix)):
-                _matrix[a, b] = self.read_matrix(stage, matrix, a, b)
+                _matrix[a, b] = self.read_matrix(stage, matrix, a+1, b+1)
         print('%s_%s'%(stage, matrix), _matrix)
         return(_matrix)
-        
+
     def calming(self, channels, rms_thresholds, t_int=5, dt=1):
         """Wait if Ezca channels/PVs readouts are below given RMS thresholds.
 
