@@ -114,7 +114,7 @@ class Vis:
             j += 1
         _matrix = np.zeros((i, j))
         for a in range(len(_matrix)):
-            for b in range(len(_matrix)):
+            for b in range(len(_matrix[a])):
                 _matrix[a, b] = self.read_matrix(stage, matrix, a+1, b+1)
         print('%s_%s'%(stage, matrix), _matrix)
         return(_matrix)
