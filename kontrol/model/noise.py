@@ -40,7 +40,7 @@ def piecewise_noise(f, n0, exp=[0], fc=[0]):
         # print(fc_index)
     return(np.array(noise))
 
-def lvdt_noise(f, n0, fc):
+def lvdt_noise(f, n0, fc, exp=[-0.5, 0]):
     """LVDT noise
 
     Parameters
@@ -51,6 +51,9 @@ def lvdt_noise(f, n0, fc):
             The noise level at 1 Hz with the exponent of -0.5.
         fc: int/float
             The corner frequency at which the exponent changes from -0.5 to 0.
+        exp: list of float, optional.
+            The exponents of the frequency dependency before and after the
+            corner frequency. Defaults [-0.5, 0]
     Returns
     -------
         noise: numpy.ndarray
@@ -62,9 +65,9 @@ def lvdt_noise(f, n0, fc):
         before the corner frequency and is flat after that.
     """
 
-    return(piecewise_noise(f, n0, exp=[-0.5, 0], fc=[fc]))
+    return(piecewise_noise(f, n0, exp=exp, fc=[fc]))
 
-def geophone_noise(f, n0, fc):
+def geophone_noise(f, n0, fc, exp = [-3.5, -1]):
     """Geophone noise
 
     Parameters
@@ -75,6 +78,10 @@ def geophone_noise(f, n0, fc):
             The noise level at 1 Hz with the exponent of -3.5.
         fc: int/float
             The corner frequency at which the exponent changes from -3.5 to -1.
+        exp: list of float, optional.
+            The exponents of the frequency dependency before and after the
+            corner frequency. Defaults [-3.5, -1].
+
     Returns
     -------
         noise: numpy.ndarray
@@ -86,4 +93,4 @@ def geophone_noise(f, n0, fc):
         before the corner frequency and depends on :math:`f^{-1}` after that.
     """
 
-    return(piecewise_noise(f, n0, exp=[-3.5, -1], fc=[fc]))
+    return(piecewise_noise(f, n0, exp=exp, fc=[fc]))
