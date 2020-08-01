@@ -82,5 +82,5 @@ def tfmatrix2tf(sys):
             dens[i][j] = list(sys[i][j].den[0][0])
         nums[i] = list(nums[i])
         dens[i] = list(dens[i])
-    generalize_plant = control.tf(nums, dens)
+    generalized_plant = control.tf(nums, dens)
     return(generalized_plant)
