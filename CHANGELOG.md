@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2020-08-03
+### Added
+- kontrol.filter.optimize.h2complementary() for synthesizing optimal
+  complementary filters given two noise profiles (as transfer functions).
+
 ## [1.1.0] - 2020-07-19
 ### Added
 - kontrol.sensact.diagonalization.rediagonalization() for refining
