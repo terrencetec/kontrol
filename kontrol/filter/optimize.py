@@ -124,7 +124,7 @@ def optimize_complementary_filter(complementary_filter, spectra, f, \
     return(result)
 
 def h2complementary(n1, n2):
-    '''H2 optimal complementary filter synthesis
+    """H2 optimal complementary filter synthesis
 
     Parameters
     ----------
@@ -162,12 +162,13 @@ def h2complementary(n1, n2):
     .. [1]
         Dehaeze, T. https://tdehaeze.github.io/dehaeze20_optim_robus_compl_fil
         te/matlab/index.html
-    '''
+    """
     p = [[tf([0],[1]), n2, tf([1],[1])],
          [n1, -n2, tf([0],[1])]]
 #     p = [[n1, -n1],
 #          [tf([0],[1]), n2],
 #          [tf([1],[1]), tf([0],[1])]]
     p = tfmatrix2tf(p)
-    h1 = h2syn(ss(p), 1, 1)
-    return(k1)
+    h1 = tf(h2syn(ss(p), 1, 1))
+    h2 = 1 - h1
+    return(h1, h2)
