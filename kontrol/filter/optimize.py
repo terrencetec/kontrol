@@ -154,14 +154,14 @@ def h2complementary(n1, n2):
     It is possible that h2syn yields no solution for some tricky noise profiles
     . Try adjusting the noise profiles at some irrelevant frequencies.
 
-    Thomas Dehaeze [1] had the idea first so credits goes to him. (Properly
+    Thomas Dehaeze [1]_ had the idea first so credits goes to him. (Properly
     cite when the paper is published.)
 
     References
     ----------
     .. [1]
-        Dehaeze, T. https://tdehaeze.github.io/dehaeze20_optim_robus_compl_fil\
-        te/matlab/index.html
+        Dehaeze, T.
+        https://tdehaeze.github.io/dehaeze20_optim_robus_compl_filte/matlab/index.html
     """
     p = [[tf([0],[1]), n2, tf([1],[1])],
          [n1, -n2, tf([0],[1])]]
