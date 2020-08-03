@@ -160,7 +160,7 @@ def h2complementary(n1, n2):
     References
     ----------
     .. [1]
-        Dehaeze, T. https://tdehaeze.github.io/dehaeze20_optim_robus_compl_fil
+        Dehaeze, T. https://tdehaeze.github.io/dehaeze20_optim_robus_compl_fil\
         te/matlab/index.html
     """
     p = [[tf([0],[1]), n2, tf([1],[1])],
