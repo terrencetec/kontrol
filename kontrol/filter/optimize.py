@@ -154,7 +154,7 @@ def h2complementary(n1, n2):
     It is possible that h2syn yields no solution for some tricky noise profiles
     . Try adjusting the noise profiles at some irrelevant frequencies.
 
-    Thomas Dehaeze [1]_ had the idea first so credits goes to him. (Properly
+    Thomas Dehaeze [1] had the idea first so credits goes to him. (Properly
     cite when the paper is published.)
 
     References
