@@ -55,3 +55,42 @@ def noise_fit(noise_model, f, noise_data, weight=None, x0=None, **kwargs):
         method='Nelder-Mead', **kwargs)
     args = res.x
     return(args)
+
+def make_weight(x, *segments, default_weight=1.):
+    """Make weighting functions for data fitting
+
+    Parameters
+    ----------
+        x: list or np.ndarray
+            The data points for evaluation
+        *segments: tuples of (tuple of (float, float), float)
+            Set weights values for segments of the data.
+            The first entry specify the bound of the segment.
+            The second entry specify the weight of the segment.
+            Use np.inf for unbounded segments.
+        default_weight: float, optional
+            The default value of the weighting function.
+            Defaults to be 1.
+
+    Returns
+    -------
+        weight: np.ndarray
+            The weighting function as specfied.
+    """
+
+    weight = np.ones_like(x) * default_weight
+
+    for seg in segments:
+        lower = seg[0][0]
+        upper = seg[0][1]
+        weight_val = seg[1]
+        if lower > upper:
+            _ = lower
+            lower = upper
+            upper = _
+        mask_bool = (x >= lower) & (x <= upper)
+        mask_value = mask_bool * weight_val
+        weight *= np.logical_not(mask_bool)
+        weight += mask_value
+
+    return(weight)
