@@ -6,8 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.2.0] - 2020-08-03
+## [1.2.0] - 2020-08-07
 ### Added
+- kontrol.model.fit.make_weight() for making weighting functions for data
+  fitting.
 - kontrol.filter.optimize.h2complementary() for synthesizing optimal
   complementary filters given two noise profiles (as transfer functions).
 
