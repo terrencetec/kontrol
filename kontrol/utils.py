@@ -84,3 +84,48 @@ def tfmatrix2tf(sys):
         dens[i] = list(dens[i])
     generalized_plant = control.tf(nums, dens)
     return(generalized_plant)
+
+def remove_unstable(unstable_tf, remove_unstable_zeros=True):
+    """Negate the positive real parts of the poles and zeros of a transfer function.
+
+    Parameters
+    ----------
+        untable_tf: control.xferfcn.TransferFunction
+            The transfer function which contains unstable poles or zeros.
+        remove_unstable_zeros: boolean, optional
+            Set True to remove unstable zeros as well.
+
+    Returns
+    -------
+        stable_tf: control.xferfcn.TransferFuncion
+            The modified transfer function with flipped unstable poles and zeros.
+    """
+    stable_tf = tf([1], [1])
+
+    for pole in unstable_tf.pole():
+#         print(pole)
+        x = np.real(pole)
+        y = np.imag(pole)
+        if abs(y/x) < 1e-10:
+            y = 0
+        if x > 0:
+            wn = x + 1j*y
+        else:
+            wn = -x + 1j*y
+        stable_tf *= tf([1], [1/wn, 1])
+
+    for zero in unstable_tf.zero():
+#         print(zero)
+        x = np.real(zero)
+        y = np.imag(zero)
+        if abs(y/x) < 1e-10:
+            y = 0
+        if x > 0:
+            wn = x + 1j*y
+        else:
+            wn = -x + 1j*y
+        stable_tf *= tf([1/wn, 1], [1])
+
+    stable_tf *= float(unstable_tf.dcgain())
+
+    return(stable_tf)
