@@ -129,3 +129,64 @@ def remove_unstable(unstable_tf, remove_unstable_zeros=True):
     stable_tf *= float(unstable_tf.dcgain())
 
     return(stable_tf)
+
+def zpk(zeros, poles, gain, unit='Hz', negate=True):
+    """Zero-pole-gain definition of transfer function.
+
+    Parameters
+    ----------
+        zeros: list of floats
+            A list of the location of the zeros
+        poles: list of floats
+            A list of the location of the poles
+        gain: float
+            The static gain of the transfer function
+        unit: string, optional
+            The unit of the zeros and poles.
+            Specify 'Hz' if zeros and poles are in Hz.
+            Specify anything else if zeros and poles
+            are in radian per second.
+            Default by 'Hz'.
+        negate: boolean, optional
+            Negate zeros and poles in specification
+            so negative sign is not needed for stable
+            zeros and poles. Default to be True.
+
+    Returns
+    -------
+        zpk_tf: control.xferfcn.TransferFunction
+            The zpk defined transfer function
+
+    Notes
+    -----
+        Refrain from specifying imaginary zeros and poles.
+        Use kontrol.utils.sos() for second-order sections
+        instead.
+        The zero and poles are negated by default.
+    """
+
+    zeros = [float(z) for z in zeros]
+    poles = [float(p) for p in poles]
+
+    zeros = np.array(zeros)
+    poles = np.array(poles)
+
+    if unit == 'Hz':
+        for i in range(len(zeros)):
+            zeros[i] = 2*np.pi*zeros[i]
+        for i in range(len(poles)):
+            poles[i] = 2*np.pi*poles[i]
+
+    if negate is False:
+        for i in range(len(zeros)):
+            zeros[i] = -zeros[i]
+        for i in range(len(poles)):
+            poles[i] = -poles[i]
+
+    zpk_tf = tf([gain],[1])
+    for z in zeros:
+        zpk_tf *= tf([1/z, 1], [1])
+    for p in poles:
+        zpk_tf *= tf([1], [1/p, 1])
+
+    return(zpk_tf)
