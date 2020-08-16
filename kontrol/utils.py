@@ -4,6 +4,7 @@ Functions: quad_sum, norm2, rms, tfmatrix2tf.
 
 import numpy as np
 import control
+from control import tf
 
 def quad_sum(*spectra):
     """Takes any number of same length spectrum and returns the quadrature sum.
