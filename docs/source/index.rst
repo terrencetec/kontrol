@@ -14,10 +14,12 @@ control filter design.
 
 Features
 --------
-* filter: Complementary filter definitions and optimization
-* model: Sensor noise models and fitting.
+* filter: Complementary filter definitions, optimization, and H2 optimal
+  complementary filter synthesis.
+* model: Sensor noise models, fitting, noise to zpk regression.
 * algorithm: LMS and normalized-LMS algorithms.
-* utils: quadrature sum, 2-norm, rms, transfer function matrix to MIMO tf.
+* utils: quadrature sum, 2-norm, rms, transfer function matrix to MIMO tf, zpk
+  transfer function definition.
 * visutils: VIS utility functions, actuator diagonalization, sensor correction
   gain finding
 * sensact: rediagonalization of actuation/sensing matrices given coupling
@@ -25,7 +27,7 @@ Features
 
 Upcoming
 --------
-* filter: More filters. H2/Hinf complementary filter and sensor correction
+* filter: More filters. Hinf complementary filter and sensor correction
   synthesis.
 * model: Conversion functions for Shoda-san's SUMCON suspension simulations.
   Transfer function fitting. Seismic noise models (maybe)

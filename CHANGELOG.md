@@ -8,8 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.2.0] - 2020-08-09
 ### Added
+- kontrol.model.fit.noise2zpk() regress noise spectrum with ZPK model. 
 - kontrol.utils.zpk() a wrapper on control for specifying transfer functions
-  with lists of zeros and poles. 
+  with lists of zeros and poles.
 - kontrol.utils.remove_unstable() for negating the real part of the unstable
   poles and zeros of a transfer function.
 - kontrol.model.fit.make_weight() for making weighting functions for data

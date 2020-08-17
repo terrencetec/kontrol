@@ -94,3 +94,91 @@ def make_weight(x, *segments, default_weight=1.):
         weight += mask_value
 
     return(weight)
+
+def noise2zpk(f, noise_data, x0 = None, bounds=None, max_order=20, weight=None):
+    """ Noise spectrum regression using zpk defined transfer function.
+
+    Parameter
+    ---------
+        f: numpy.ndarray
+            Frequency axis of the noise spectrum. In Hz.
+        noise_data: numpy.ndarray
+            The amplitude/amplitude spectral density of the noise.
+        x0: numpy.ndarray, optional
+            Initial guess for of the noise model parameters. If not specified,
+            zeros and poles will be default to logrithmic center of f, gain
+            will be defaulted to noise_data[0]
+        bounds: tuple of (float, float), optional
+            The bounds for the zeros and poles in unit of Hz.
+            This will default to (min(f) - 1 decade, max(f +1 decade),
+            if not specified. The bounds for the gain goes
+            to the last entry and is defaulted to be
+            (noise_data[0]*1e-6, noise_data[0]*1e6)
+        max_order: int, optional
+            The maximum number of zeros and poles. Note that the number
+            of zeros and poles are the same in this regression.
+            Defaults to be 20, maximum allowable order in foton.
+        weight: numpy.ndarray, optional
+            Weightings in frequency domain that will be multiplied to the
+            residues before summing. This can be used to filter unwanted data
+            or to emphasize particular frequency regions.
+
+    Returns
+    -------
+        noise_zpk: control.xferfcn.TransferFunction
+            The regressed transfer function with magnitude profile
+            matching the noise spectrum specified.
+
+    Notes
+    -----
+        The reason why the numbers of zeros and poles are the same here
+        is because the magnitude have to be bounded, i.e. flat at
+        very low and very high frequencies, for H2 and H-infinity synthesis
+        to work. This doesn't really matter if the flattness only happens at
+        irrelevant frequencies. We can always modify the final filter by
+        removing the corresponding zeros/poles that make the filter flat.
+    """
+
+    if x0 is None:
+        log_center = (np.log10(max(f)) + np.log10(min(f))) / 2
+        log_center = 10**log_center
+        x0 = np.ones(max_order*2) * log_center
+        x0 = np.append(x0, noise_data[0])
+#     print(len(x0))
+    if bounds is None:
+        bounds = [(min(f)*0.1, max(f)*10)]*max_order*2
+        bounds.append([noise_data[0]*1e-6, noise_data[0]*1e6])
+#     print(len(bounds))
+    if weight is None:
+        weight = np.ones_like(noise_data)
+
+    def args2zpk(args):
+        """ Convert a list of arguments to zpk transfer function.
+
+        Parameters
+        ----------
+            args: list of floats
+                Length must be odd. The last number is gain. The first half of
+                the rest are zeros, and the second half are poles.
+        return
+        ------
+            control.xferfcn.TransferFunction
+                The transfer function defined with the arguments.
+        """
+
+        zeros = args[0:int(len(args)/2)]
+        poles = args[int(len(args)/2):len(args)-1]
+        gain = args[-1]
+        return(zpk(zeros, poles, gain))
+
+    def cost(args):
+        zpk_fit = args2zpk(args)
+        mag_fit = abs(zpk_fit.horner(2*np.pi*1j*f)[0][0])
+        residue = sum(np.sqrt(((mag_fit - noise_data) / noise_data * weight)**2))
+        return(residue)
+
+    res = minimize(cost, x0=x0, bounds=bounds, method='Powell', options={'disp':True})
+#     print(bounds)
+#     print(res.x)
+    noise_zpk = args2zpk(res.x)
+    return(noise_zpk)
