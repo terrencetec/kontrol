@@ -3,6 +3,7 @@
 from scipy.optimize import minimize
 from inspect import signature
 import numpy as np
+from ..utils import zpk
 
 def noise_fit(noise_model, f, noise_data, weight=None, x0=None, **kwargs):
     """Noise model fit, follow the argument format of scipy.optimize.curve_fit
