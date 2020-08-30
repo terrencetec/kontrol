@@ -1,3 +1,7 @@
+|logo|
+
+**A dedicated Python control system library for control system optimization and utilities in KAGRA**
+
 |website| |rtd| |license|
 
 Python Kontrol Library
@@ -130,7 +134,9 @@ Pending
 - Diaggui support.
 - **Issues**: https://github.com/terrencetec/kontrol/issues
 
-
+.. |logo| image:: .
+    :alt: Logo
+    :target: https://github.com/terrencetec/kontrol
 .. |website| image:: https://img.shields.io/badge/website-kontrol-blue.svg
     :alt: Website
     :target: https://github.com/terrencetec/kontrol
