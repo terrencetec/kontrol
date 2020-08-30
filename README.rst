@@ -1,3 +1,6 @@
+.. |rtd| image:: https://readthedocs.org/projects/pip/badge/
+   :alt: Read the Docs
+   :target: https://kontrol.readthedocs.io/
 Python Kontrol Library
 ======================
 Kontrol (also pronounced "control") is a python package for KAGRA control system
