@@ -133,3 +133,6 @@ Pending
 .. |rtd| image:: https://readthedocs.org/projects/pip/badge/
    :alt: Read the Docs
    :target: https://kontrol.readthedocs.io/
+.. |license| image:: https://img.shields.io/github/license/terrencetec/kontrol
+    :alt: License
+    :target: https://github.com/terrencetec/kontrol/blob/master/LICENSE
