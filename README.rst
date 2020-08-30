@@ -1,4 +1,4 @@
-|rtd|
+|rtd| |license|
 
 Python Kontrol Library
 ======================
