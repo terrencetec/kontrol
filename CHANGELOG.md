@@ -6,9 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.2.0] - 2020-08-09
+## [1.1.0] - 2020-09-01
 ### Added
-- kontrol.model.fit.noise2zpk() regress noise spectrum with ZPK model. 
+- kontrol.model.fit.noise2zpk() regress noise spectrum with ZPK model.
 - kontrol.utils.zpk() a wrapper on control for specifying transfer functions
   with lists of zeros and poles.
 - kontrol.utils.remove_unstable() for negating the real part of the unstable
@@ -17,9 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fitting.
 - kontrol.filter.optimize.h2complementary() for synthesizing optimal
   complementary filters given two noise profiles (as transfer functions).
-
-## [1.1.0] - 2020-07-19
-### Added
 - kontrol.sensact.diagonalization.rediagonalization() for refining
   diagonalization matrices given coupling matrix. Works for both actuation and
   sensing matrix.

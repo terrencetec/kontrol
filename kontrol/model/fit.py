@@ -175,7 +175,7 @@ def noise2zpk(f, noise_data, x0 = None, bounds=None, max_order=20, weight=None):
     def cost(args):
         zpk_fit = args2zpk(args)
         mag_fit = abs(zpk_fit.horner(2*np.pi*1j*f)[0][0])
-        residue = sum(np.sqrt(((mag_fit - noise_data) / noise_data * weight)**2))
+        residue = sum(((mag_fit - noise_data) / noise_data * weight)**2)
         return(residue)
 
     res = minimize(cost, x0=x0, bounds=bounds, method='Powell', options={'disp':True})
