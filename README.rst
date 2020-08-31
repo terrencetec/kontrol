@@ -1,3 +1,9 @@
+|logo|
+
+**A dedicated Python control system library for control system optimization and utilities in KAGRA**
+
+|website| |release| |rtd| |license|
+
 Python Kontrol Library
 ======================
 Kontrol (also pronounced "control") is a python package for KAGRA control system
@@ -127,3 +133,24 @@ Pending
 - python-foton interface.
 - Diaggui support.
 - **Issues**: https://github.com/terrencetec/kontrol/issues
+
+.. |logo| image:: .
+    :alt: Logo
+    :target: https://github.com/terrencetec/kontrol
+    
+.. |website| image:: https://img.shields.io/badge/website-kontrol-blue.svg
+    :alt: Website
+    :target: https://github.com/terrencetec/kontrol
+    
+.. |release| image:: https://img.shields.io/github/v/release/terrencetec/kontrol?include_prereleases
+   :alt: Release
+   :target: https://github.com/terrencetec/kontrol/releases
+   
+.. |rtd| image:: https://readthedocs.org/projects/pip/badge/
+   :alt: Read the Docs
+   :target: https://kontrol.readthedocs.io/
+   
+.. |license| image:: https://img.shields.io/github/license/terrencetec/kontrol
+    :alt: License
+    :target: https://github.com/terrencetec/kontrol/blob/master/LICENSE
+
