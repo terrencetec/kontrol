@@ -134,23 +134,22 @@ Pending
 - Diaggui support.
 - **Issues**: https://github.com/terrencetec/kontrol/issues
 
-.. |logo| image:: .
+.. |logo| image:: /images/kontrol_logo_128x64.svg
     :alt: Logo
     :target: https://github.com/terrencetec/kontrol
-    
+
 .. |website| image:: https://img.shields.io/badge/website-kontrol-blue.svg
     :alt: Website
     :target: https://github.com/terrencetec/kontrol
-    
+
 .. |release| image:: https://img.shields.io/github/v/release/terrencetec/kontrol?include_prereleases
    :alt: Release
    :target: https://github.com/terrencetec/kontrol/releases
-   
+
 .. |rtd| image:: https://readthedocs.org/projects/pip/badge/
    :alt: Read the Docs
    :target: https://kontrol.readthedocs.io/
-   
+
 .. |license| image:: https://img.shields.io/github/license/terrencetec/kontrol
     :alt: License
     :target: https://github.com/terrencetec/kontrol/blob/master/LICENSE
-
