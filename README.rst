@@ -146,7 +146,7 @@ Pending
    :alt: Release
    :target: https://github.com/terrencetec/kontrol/releases
 
-.. |rtd| image:: https://kontrol.readthedocs.org/projects/pip/badge/
+.. |rtd| image:: https://readthedocs.org/projects/kontrol/badge/?version=latest
    :alt: Read the Docs
    :target: https://kontrol.readthedocs.io/
 
