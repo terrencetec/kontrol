@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Kontrol Home
-====================
+============
 
 Kontrol (also pronounced "control") is a python package for KAGRA control system
 related work. It is intented for both offline and real-time (via Ezca and maybe
