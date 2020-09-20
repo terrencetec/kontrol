@@ -5,7 +5,7 @@ Submodules
 ----------
 
 kontrol.model.fit module
------------------------------------
+------------------------
 
 .. automodule:: kontrol.model.fit
    :members:
@@ -13,7 +13,7 @@ kontrol.model.fit module
    :show-inheritance:
 
 kontrol.model.noise module
------------------------------------
+--------------------------
 
 .. automodule:: kontrol.model.noise
    :members:
