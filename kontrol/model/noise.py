@@ -3,6 +3,8 @@ Model of a generic piecewise noise, LVDT noise, and Geophone noise are avaliable
 """
 
 import numpy as np
+import scipy.optimize
+
 
 def piecewise_noise(f, n0, exp=[0], fc=[0]):
     """Piecewise noise specified corner frequencies and exponents
@@ -40,6 +42,7 @@ def piecewise_noise(f, n0, exp=[0], fc=[0]):
         # print(fc_index)
     return(np.array(noise))
 
+
 def lvdt_noise(f, n0, fc, exp=[-0.5, 0]):
     """LVDT noise
 
@@ -66,6 +69,7 @@ def lvdt_noise(f, n0, fc, exp=[-0.5, 0]):
     """
 
     return(piecewise_noise(f, n0, exp=exp, fc=[fc]))
+
 
 def geophone_noise(f, n0, fc, exp = [-3.5, -1]):
     """Geophone noise

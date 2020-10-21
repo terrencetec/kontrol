@@ -6,6 +6,7 @@ import numpy as np
 import control
 from control import tf
 
+
 def quad_sum(*spectra):
     """Takes any number of same length spectrum and returns the quadrature sum.
 
@@ -27,6 +28,7 @@ def quad_sum(*spectra):
             qs[j]=np.sqrt(qs[j]**2+i[j]**2)
     return(qs)
 
+
 def norm2(spectrum):
     """Takes a spectrum and returns the 2-norm of the spectrum.
 
@@ -45,6 +47,7 @@ def norm2(spectrum):
     norm = np.sqrt(sum(spectrum_array**2))
     return(norm)
 
+
 def rms(ts):
     """Calculate the RMS fluctuation of a given time series
 
@@ -60,6 +63,40 @@ def rms(ts):
     """
     ts = np.array(ts)
     return(np.std(ts, ddof=0))
+
+
+def lmse(array1, array2, weight=None):
+    """Return the logrithmic mean square error between the two arrays
+
+    Parameters
+    ----------
+    array1: array
+        The first array
+    array2: array
+        The second array
+    weight: array, optional
+        The weighting function.
+
+    Returns
+    -------
+    float
+        Logrithmic mean square error
+    """
+    if len(array1)!=len(array2):
+        raise ValueError('array1 length {} not equal to array2 length {}'\
+            ''.format(len(array1), len(array2)))
+    array1 = np.array(array1)
+    array2 = np.array(array2)
+    if weight is None:
+        weight = np.ones_like(array1)
+    if len(array1)!=len(weight):
+        raise ValueError('weight length {} not equal to array length {}'\
+            ''.format(len(weight), len(array1)))
+    weight = np.array(weight)
+    _lmse = (1/len(array1)
+             * np.sum((np.abs(np.log10(array1)-np.log10(array2))*weight)**2))
+    return(_lmse)
+
 
 def tfmatrix2tf(sys):
     """Convert a matrix of transfer functions to a MIMO transfer function.
@@ -85,6 +122,7 @@ def tfmatrix2tf(sys):
         dens[i] = list(dens[i])
     generalized_plant = control.tf(nums, dens)
     return(generalized_plant)
+
 
 def remove_unstable(unstable_tf, remove_unstable_zeros=True):
     """Negate the positive real parts of the poles and zeros of a transfer function.
@@ -130,6 +168,7 @@ def remove_unstable(unstable_tf, remove_unstable_zeros=True):
     stable_tf *= float(unstable_tf.dcgain())
 
     return(stable_tf)
+
 
 def zpk(zeros, poles, gain, unit='Hz', negate=True):
     """Zero-pole-gain definition of transfer function.
