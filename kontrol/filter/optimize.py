@@ -121,7 +121,7 @@ def optimize_complementary_filter(complementary_filter, spectra, f, \
     result = method(**kwargs)
     print('Done. Time taken: %.2f s The 2-norm is %.2f unit'
     %(time.clock()-t0, result.fun))
-    return(result)
+    return result
 
 def h2complementary(n1, n2):
     """H2 optimal complementary filter synthesis
@@ -171,7 +171,7 @@ def h2complementary(n1, n2):
     p = tfmatrix2tf(p)
     h1 = tf(h2syn(ss(p), 1, 1))
     h2 = 1 - h1
-    return(h1, h2)
+    return h1, h2
 
 def hinfcomplementary(n1, n2):
     """H-infinity optimal complementary filter synthesis
@@ -222,4 +222,4 @@ def hinfcomplementary(n1, n2):
     K, _, _, _ = hinfsyn(ss(p), 1, 1)
     h1 = tf(K)
     h2 = 1 - h1
-    return(h1, h2)
+    return h1, h2

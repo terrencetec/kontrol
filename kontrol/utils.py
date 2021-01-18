@@ -26,7 +26,7 @@ def quad_sum(*spectra):
     for i in spectra:
         for j in range(len(i)):
             qs[j]=np.sqrt(qs[j]**2+i[j]**2)
-    return(qs)
+    return qs
 
 
 def norm2(spectrum):
@@ -45,7 +45,7 @@ def norm2(spectrum):
 #     if isinstance(spectrum.np.array)
     spectrum_array = np.array(spectrum)
     norm = np.sqrt(sum(spectrum_array**2))
-    return(norm)
+    return norm
 
 
 def rms(ts):
@@ -62,7 +62,7 @@ def rms(ts):
             The RMS of the time series.
     """
     ts = np.array(ts)
-    return(np.std(ts, ddof=0))
+    return np.std(ts, ddof=0)
 
 
 def lmse(array1, array2, weight=None):
@@ -95,7 +95,7 @@ def lmse(array1, array2, weight=None):
     weight = np.array(weight)
     _lmse = (1/len(array1)
              * np.sum((np.abs(np.log10(array1)-np.log10(array2))*weight)**2))
-    return(_lmse)
+    return _lmse
 
 
 def tfmatrix2tf(sys):
@@ -121,7 +121,7 @@ def tfmatrix2tf(sys):
         nums[i] = list(nums[i])
         dens[i] = list(dens[i])
     generalized_plant = control.tf(nums, dens)
-    return(generalized_plant)
+    return generalized_plant
 
 
 def remove_unstable(unstable_tf, remove_unstable_zeros=True):
@@ -167,7 +167,7 @@ def remove_unstable(unstable_tf, remove_unstable_zeros=True):
 
     stable_tf *= float(unstable_tf.dcgain())
 
-    return(stable_tf)
+    return stable_tf
 
 
 def zpk(zeros, poles, gain, unit='Hz', negate=True):
@@ -229,4 +229,4 @@ def zpk(zeros, poles, gain, unit='Hz', negate=True):
     for p in poles:
         zpk_tf *= tf([1], [1/p, 1])
 
-    return(zpk_tf)
+    return zpk_tf

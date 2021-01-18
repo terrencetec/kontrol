@@ -40,7 +40,7 @@ def piecewise_noise(f, n0, exp=[0], fc=[0]):
             n0 = n0 * fc[fc_index-1]**(exp[fc_index-1]-exp[fc_index])
         noise[i] = n0 * f[i]**exp[fc_index]
         # print(fc_index)
-    return(np.array(noise))
+    return np.array(noise)
 
 
 def lvdt_noise(f, n0, fc, exp=[-0.5, 0]):
@@ -68,7 +68,7 @@ def lvdt_noise(f, n0, fc, exp=[-0.5, 0]):
         before the corner frequency and is flat after that.
     """
 
-    return(piecewise_noise(f, n0, exp=exp, fc=[fc]))
+    return piecewise_noise(f, n0, exp=exp, fc=[fc])
 
 
 def geophone_noise(f, n0, fc, exp = [-3.5, -1]):
@@ -97,4 +97,4 @@ def geophone_noise(f, n0, fc, exp = [-3.5, -1]):
         before the corner frequency and depends on :math:`f^{-1}` after that.
     """
 
-    return(piecewise_noise(f, n0, exp=exp, fc=[fc]))
+    return piecewise_noise(f, n0, exp=exp, fc=[fc])

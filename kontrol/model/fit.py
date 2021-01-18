@@ -55,7 +55,7 @@ def noise_fit(noise_model, f, noise_data, weight=None, x0=None, **kwargs):
     res = minimize(cost, x0, options={'disp':True},
         method='Nelder-Mead', **kwargs)
     args = res.x
-    return(args)
+    return args
 
 def make_weight(x, *segments, default_weight=1.):
     """Make weighting functions for data fitting
@@ -94,7 +94,7 @@ def make_weight(x, *segments, default_weight=1.):
         weight *= np.logical_not(mask_bool)
         weight += mask_value
 
-    return(weight)
+    return weight
 
 def noise2zpk(f, noise_data, x0=None, bounds=None, max_order=20, weight=None):
     """ Noise spectrum regression using zpk defined transfer function.
@@ -166,7 +166,7 @@ def noise2zpk(f, noise_data, x0=None, bounds=None, max_order=20, weight=None):
 #     print(bounds)
 #     print(res.x)
     noise_zpk = _args2zpk(res.x)
-    return(noise_zpk)
+    return noise_zpk
 
 def _args2zpk(args):
     """ Convert a list of arguments to zpk transfer function.
@@ -191,7 +191,7 @@ def _cost(args, f, noise_data, weight):
     zpk_fit = _args2zpk(args)
     mag_fit = np.abs(zpk_fit.horner(2*np.pi*1j*f)[0][0])
     residue = np.sum(((mag_fit-noise_data)  * weight)**2)
-    return(residue)
+    return residue
 
 def vinagre_weight(omega, normalize=True, log=True):
     """Vinagre's weight [1]_, with options to normalize and use logrithmic.
@@ -219,7 +219,6 @@ def vinagre_weight(omega, normalize=True, log=True):
         Journal of Computational and Nonlinear Dynamics -
         J COMPUT NONLINEAR DYN. 3. 7-1077. 10.1115/1.2833906.
     """
-
     weight=np.ones_like(omega)
     for p in range(len(omega)):
         if p == 0:
@@ -232,7 +231,7 @@ def vinagre_weight(omega, normalize=True, log=True):
         weight = np.log10(weight) - min(np.log10(weight))
     if normalize:
         weight /= max(weight)
-    return(weight)
+    return weight
 
 
 def coherence_weight(coh, threshold, invert=False):
@@ -257,4 +256,26 @@ def coherence_weight(coh, threshold, invert=False):
     weight = coh>threshold
     if invert:
         weight = weight==0
-    return(weight.astype(int))
+    return weight.astype(int)
+
+
+def one_on_f_weight(f, normalize=True):
+    """ Literally 1/f weight. Useful for fitting linspace data in logspace.
+
+    Parameters
+    ----------
+    f: array
+        Frequency
+    normalize: boolean, optional
+        Normalized the weight to [0, 1].
+        Defaults to True.
+
+    Returns
+    -------
+    weight: array
+        The 1/f weight.
+    """
+    weight = 1/f
+    if normalize:
+        weight /= max(weight)
+    return(weight)

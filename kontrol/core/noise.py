@@ -106,7 +106,8 @@ class Noise:
         self.log_params = log_params
 
     def fit(self, order_bound=(0, 10), frequency_bound=None, gain_bound=None,
-            nfits=1, stop_criterion=None, tol=0., **kwargs):
+            nfits=1, stop_criterion=None, tol=0., log_params=None,
+            use_coh=True, **kwargs):
         """Use a transfer function to approximate the noise.
 
         The function will fit *ntrials* time for each system order
@@ -143,6 +144,12 @@ class Noise:
             Defaults to 0.
         log_params: boolean, optional
             Optimize the base-10 logarithm of the parameters instead.
+            This overrides self.log_params.
+            Defaults to None.
+        use_coh: boolean, optional
+            Use the coherence function between the two sensor readouts
+            to filter coherent data.
+            Defaults to True.
         **kwargs:
             Keyword arguments that will be passed to the optimization
             algorithm (scipy.optimize.differential_evolution).
@@ -150,14 +157,25 @@ class Noise:
         """
         if 'workers' not in kwargs:
             kwargs['workers'] = -1
+        if 'maxiter' not in kwargs:
+            kwargs['maxiter'] = (max(order_bound)*2+1) * 1000
         if frequency_bound is None:
             frequency_bound = [(np.min(self.f)*1e-1, np.max(self.f)*1e1)]
         if gain_bound is None:
             gain_bound = (np.min(self.asd)*1e-1, np.max(self.asd)*1e1)
         if self.weight is None:
-            self.weight = kontrol.model.fit.vinagre_weight(omega=self.f)
+            # self.weight = kontrol.model.fit.vinagre_weight(omega=self.f)
+            self.weight = kontrol.model.fit.one_on_f_weight(f=self.f)
+        if use_coh:
             self.weight *= kontrol.model.fit.coherence_weight(
                 coh=self.coh, threshold=self.coh_threshold, invert=True)
+        if log_params is not None:
+            if isinstance(log_params, bool):
+                self.log_params = log_params
+            else:
+                logger.Error('log_params:{} is not bool. Using default'
+                             'self.log_params:{} instead.'
+                             ''.format(log_params, self.log_params))
 
         norder = max(order_bound)-min(order_bound)+1
         self.all_tf = [[]] * norder
@@ -182,8 +200,8 @@ class Noise:
                     func=cost,
                     bounds=bounds,
                     args=(args2tfamp,
-                        kontrol.utils.lmse, self.f, self.asd,
-                        self.weight, self.log_params),
+                          kontrol.utils.lmse, self.f, self.asd,
+                          self.weight, self.log_params),
                     **kwargs,)
 
                 if self.log_params:
@@ -273,7 +291,7 @@ def cost(args, args2array, criterion, f, asd, weight=None, log_params=True):
     array1 = args2array(args=args, f=f)
     array2 = asd
     loss = criterion(array1=array1, array2=array2, weight=weight)
-    return(loss)
+    return loss
 
 
 def args2zpk(args):
@@ -300,7 +318,7 @@ def args2zpk(args):
     zeros = args[0:np.int(np.floor(len(args)/2))]
     poles = args[np.int(np.floor(len(args)/2)):len(args)-1]
     gain = args[-1]
-    return(zeros, poles, gain)
+    return zeros, poles, gain
 
 
 def args2tfcomplex(args, f):
@@ -330,7 +348,7 @@ def args2tfcomplex(args, f):
     for p in poles:
         tf /= (s/(2*np.pi*p) + 1)
     tf *= gain
-    return(tf)
+    return tf
 
 
 def args2controltf(args):
@@ -356,7 +374,7 @@ def args2controltf(args):
     for p in poles:
         tf /= (s/(2*np.pi*p) + 1)
     tf *= gain
-    return(tf)
+    return tf
 
 
 def args2tfamp(args, f):
@@ -377,4 +395,4 @@ def args2tfamp(args, f):
     array
         The amplitude frequency response
     """
-    return(abs(args2tfcomplex(args=args, f=f)))
+    return abs(args2tfcomplex(args=args, f=f))
