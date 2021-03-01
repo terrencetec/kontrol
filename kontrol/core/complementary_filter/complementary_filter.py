@@ -6,6 +6,9 @@ import scipy.optimize
 
 import kontrol.core.complementary_filter.conversion as conversion
 import kontrol.core.complementary_filter.math as math
+import kontrol.filter.optimize
+import kontrol.utils
+
 
 class ComplementaryFilter:
     """Complementary Filter synthesis class
@@ -55,6 +58,8 @@ class ComplementaryFilter:
         The first complementary filter.
     filter2: control.xferfcn.TransferFunction or None
         The second complementary filter.
+    noise_super: array
+        The ampitude spectral density of the super sensor noise.
     """
 
     def __init__(self, f, noise1, noise2, f2=None):
@@ -262,3 +267,19 @@ class ComplementaryFilter:
             fun=math.tf_fit_cost, args=(f, noise_asd), x0=x0,
             **minimize_kwargs)
         return res
+
+    def synthesis(self):
+        """Make complementary filter using H-infinity synthesis.
+        """
+        w1 = self.noise1_tf/self.noise2_tf
+        w2 = self.noise2_tf/self.noise1_tf
+        self.filter1, self.filter2 = kontrol.filter.optimize.hinfcomplementary(
+            n1=w1, n2=w2)
+
+        s = 1j*2*np.pi*self.f_tf_fit
+        noise1_filtered = (abs(self.filter1.horner(s)[0][0])
+                           * abs(self.noise1_tf.horner(s)[0][0]))
+        noise2_filtered = (abs(self.filter2.horner(s)[0][0])
+                           * abs(self.noise2_tf.horner(s)[0][0]))
+        self.noise_super = kontrol.utils.quad_sum(
+            noise1_filtered, noise2_filtered)

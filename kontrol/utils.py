@@ -146,8 +146,11 @@ def remove_unstable(unstable_tf, remove_unstable_zeros=True):
         x = np.real(pole)
         y = np.imag(pole)
         if abs(y/x) < 1e-10:
-            y = 0
-        if x > 0:
+            if x > 0:
+                wn = x
+            else:
+                wn = -x
+        elif x > 0:
             wn = x + 1j*y
         else:
             wn = -x + 1j*y
@@ -158,8 +161,11 @@ def remove_unstable(unstable_tf, remove_unstable_zeros=True):
         x = np.real(zero)
         y = np.imag(zero)
         if abs(y/x) < 1e-10:
-            y = 0
-        if x > 0:
+            if x > 0:
+                wn = x
+            else:
+                wn = -x
+        elif x > 0:
             wn = x + 1j*y
         else:
             wn = -x + 1j*y
