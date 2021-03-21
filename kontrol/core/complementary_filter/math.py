@@ -2,7 +2,7 @@
 """
 import numpy as np
 
-import kontrol.core.complementary_filter.conversion as conversion
+from . import conversion
 
 
 def log_mse(x1, x2):
