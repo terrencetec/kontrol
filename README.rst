@@ -146,6 +146,6 @@ Pending
     :alt: travis-ci
     :target: https://travis-ci.com/terrencetec/kontrol
 
-.. |codecov| image:: https://codecov.io/gh/terrencetec/kontrol/branch/master/graph/badge.svg?token=NMEBAYFE2N
+.. |codecov| image:: https://codecov.io/gh/terrencetec/kontrol/branch/master/graph/badge.svg?token=CI5TW1L81H
     :alt: codecov
     :target: https://codecov.io/gh/terrencetec/kontrol
