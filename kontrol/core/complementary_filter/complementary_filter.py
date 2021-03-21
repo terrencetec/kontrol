@@ -4,9 +4,9 @@ import control
 import numpy as np
 import scipy.optimize
 
-import kontrol.core.complementary_filter.conversion as conversion
-import kontrol.core.complementary_filter.math as math
-import kontrol.core.complementary_filter.synthesis as synthesis
+from . import conversion
+from . import math
+from . import synthesis
 import kontrol.utils
 
 
