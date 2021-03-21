@@ -1,5 +1,5 @@
-Kontrol
-=======
+Kontrol API
+===========
 
 Subpackages
 -----------
@@ -7,10 +7,11 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   kontrol.core
    kontrol.filter
    kontrol.model
    kontrol.sensact
-   kontrol.systemid
+
 
 Submodules
 ----------

@@ -98,6 +98,8 @@ def lmse(array1, array2, weight=None):
     return _lmse
 
 
+## Functions below are deprecated. Use kontrol.controlutils module instead.
+
 def tfmatrix2tf(sys):
     """Convert a matrix of transfer functions to a MIMO transfer function.
 
@@ -123,7 +125,7 @@ def tfmatrix2tf(sys):
     generalized_plant = control.tf(nums, dens)
     return generalized_plant
 
-
+#Deprecated, see kontrol.controlutils.convert_unstable_tf().
 def remove_unstable(unstable_tf, remove_unstable_zeros=True):
     """Negate the positive real parts of the poles and zeros of a transfer function.
 

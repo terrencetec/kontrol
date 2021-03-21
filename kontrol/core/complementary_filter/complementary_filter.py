@@ -6,7 +6,7 @@ import scipy.optimize
 
 import kontrol.core.complementary_filter.conversion as conversion
 import kontrol.core.complementary_filter.math as math
-import kontrol.filter.optimize
+import kontrol.core.complementary_filter.synthesis as synthesis
 import kontrol.utils
 
 
@@ -273,7 +273,7 @@ class ComplementaryFilter:
         """
         w1 = self.noise1_tf/self.noise2_tf
         w2 = self.noise2_tf/self.noise1_tf
-        self.filter1, self.filter2 = kontrol.filter.optimize.hinfcomplementary(
+        self.filter1, self.filter2 = synthesis.hinfcomplementary(
             n1=w1, n2=w2)
 
         s = 1j*2*np.pi*self.f_tf_fit

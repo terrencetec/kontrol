@@ -2,7 +2,6 @@
 Wrapper around control.TransferFunction
 to provide custom functionality related to KAGRA.
 """
-
 import control
 import numpy as np
 

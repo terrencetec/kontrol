@@ -1,3 +1,2 @@
-from .noise import *
-from .synthesize import *
 from .transfer_function import *
+from .complementary_filter import *
