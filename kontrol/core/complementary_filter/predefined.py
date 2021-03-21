@@ -1,6 +1,6 @@
 """Some predefined complementary filters
 """
-from control import control.tf
+import control
 
 
 def sekiguchi(coefs):
