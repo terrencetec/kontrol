@@ -5,4 +5,4 @@ Coming soon.
 
 .. toctree::
 
-   ../../examples/BS_IP_noise.ipynb
+   ../../examples/BS_IP_noise

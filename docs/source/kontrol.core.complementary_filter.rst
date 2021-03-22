@@ -20,10 +20,10 @@ kontrol.core.complementary_filter.conversion module
    :undoc-members:
    :show-inheritance:
 
-kontrol.core.complementary_filter.math module
----------------------------------------------
+kontrol.core.complementary_filter.costs module
+----------------------------------------------
 
-.. automodule:: kontrol.core.complementary_filter.math
+.. automodule:: kontrol.core.complementary_filter.costs
    :members:
    :undoc-members:
    :show-inheritance:
