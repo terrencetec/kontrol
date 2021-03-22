@@ -125,7 +125,7 @@ Pending
 - Diaggui support.
 - **Issues**: https://github.com/terrencetec/kontrol/issues
 
-.. |logo| image:: /images/kontrol_logo_256x128.svg
+.. |logo| image:: /docs/source/_static/kontrol_logo_256x128.svg
     :alt: Logo
     :target: https://github.com/terrencetec/kontrol
 
