@@ -11,12 +11,3 @@ kontrol.sensact.diagonalization module
    :members:
    :undoc-members:
    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: kontrol.sensact
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -19,11 +19,3 @@ kontrol.model.noise module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: kontrol.model
-   :members:
-   :undoc-members:
-   :show-inheritance:

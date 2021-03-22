@@ -8,6 +8,7 @@ Subpackages
    :maxdepth: 4
 
    kontrol.core
+   kontrol.common
    kontrol.filter
    kontrol.model
    kontrol.sensact

@@ -43,11 +43,3 @@ kontrol.core.complementary_filter.synthesis module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: kontrol.core
-   :members:
-   :undoc-members:
-   :show-inheritance:

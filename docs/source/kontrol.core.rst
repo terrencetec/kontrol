@@ -19,11 +19,3 @@ kontrol.core.transfer_function module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: kontrol.core
-   :members:
-   :undoc-members:
-   :show-inheritance:

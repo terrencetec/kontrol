@@ -14,6 +14,9 @@ control filter design.
 
 Major Features
 --------------
+
+**Core**
+
 * Complementary filter synthesis using :math:`\mathcal{H}_\infty`.
 
   * Synthesize optimal complementary filters in a 2-sensor configuration.
@@ -43,7 +46,7 @@ Other Features
    getting_started
    tutorial
    core_functions
-   modules
+   kontrol
    contact
    developers
 
