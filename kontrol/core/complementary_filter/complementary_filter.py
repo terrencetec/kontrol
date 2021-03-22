@@ -5,9 +5,9 @@ import numpy as np
 import scipy.optimize
 
 from . import conversion
-from . import math
+from . import costs
 from . import synthesis
-import kontrol.utils
+import kontrol.common.math
 
 
 class ComplementaryFilter:
@@ -179,7 +179,7 @@ class ComplementaryFilter:
         gain_bound = [(min(noise_asd)*1e-1, max(noise_asd)*1e1)]
         bounds = frequency_bounds + gain_bound
         res = scipy.optimize.differential_evolution(
-            func=math.zpk_fit_cost, args=(f, noise_asd), bounds=bounds,
+            func=costs.zpk_fit_cost, args=(f, noise_asd), bounds=bounds,
             **differential_evolution_kwargs)
         return res
 
@@ -264,7 +264,7 @@ class ComplementaryFilter:
             The result of the optimization.
         """
         res = scipy.optimize.minimize(
-            fun=math.tf_fit_cost, args=(f, noise_asd), x0=x0,
+            fun=costs.tf_fit_cost, args=(f, noise_asd), x0=x0,
             **minimize_kwargs)
         return res
 
@@ -281,5 +281,5 @@ class ComplementaryFilter:
                            * abs(self.noise1_tf.horner(s)[0][0]))
         noise2_filtered = (abs(self.filter2.horner(s)[0][0])
                            * abs(self.noise2_tf.horner(s)[0][0]))
-        self.noise_super = kontrol.utils.quad_sum(
+        self.noise_super = kontrol.common.math.quad_sum(
             noise1_filtered, noise2_filtered)

@@ -3,27 +3,10 @@
 import numpy as np
 
 from . import conversion
+import kontrol.common.math
 
 
-def log_mse(x1, x2):
-    """Returns the logarithmic mean square error between x1 and x2.
-
-    Parameters
-    ----------
-    x1: array
-        Array 1
-    x2: array
-        Array 2
-
-    Returns
-    -------
-    float
-        The logarithmic mean square error between x1 and x2.
-    """
-    return np.mean((np.log(x1)-np.log(x2))**2)
-
-
-def zpk_fit_cost(zpk_args, f, noise_asd):
+def zpk_fit_cost(zpk_args, f, noise_asd, weight=None):
     """The cost function for fitting a noise ASD with zpk.
 
     Parameters
@@ -35,6 +18,9 @@ def zpk_fit_cost(zpk_args, f, noise_asd):
         The frequency axis.
     noise_asd: array
         The noise ASD.
+    weight: array or None, optional
+        weighting function.
+        If None, defaults to np.ones_like(noise_asd)
 
     Returns
     -------
@@ -42,10 +28,11 @@ def zpk_fit_cost(zpk_args, f, noise_asd):
     of ZPK model.
     """
     zpk = conversion.args2zpk(f=f, zpk_args=zpk_args)
-    return log_mse(x1=noise_asd, x2=abs(zpk))
+    return kontrol.common.math.log_mse(
+        x1=noise_asd, x2=abs(zpk), weight=weight)
 
 
-def tf_fit_cost(log_tf_args, f, noise_asd):
+def tf_fit_cost(log_tf_args, f, noise_asd, weight=None):
     """Cost for fitting transfer function to the noise ASD
 
     Parameters
@@ -56,6 +43,9 @@ def tf_fit_cost(log_tf_args, f, noise_asd):
         The frequency axis.
     noise_asd: array
         The noise ASD.
+    weight: array or None, optional
+        weighting function.
+        If None, defaults to np.ones_like(noise_asd)
 
     Returns
     -------
@@ -64,4 +54,4 @@ def tf_fit_cost(log_tf_args, f, noise_asd):
     """
     tf_args = np.exp(log_tf_args)
     tf = conversion.args2tf(f=f, tf_args=tf_args)
-    return log_mse(x1=noise_asd, x2=abs(tf))
+    return kontrol.common.math.log_mse(x1=noise_asd, x2=abs(tf))

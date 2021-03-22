@@ -1,5 +1,6 @@
-"""Utility functions.
-Functions: quad_sum, norm2, rms, tfmatrix2tf.
+"""[Deprecated] Use kontrol.common.math instead.
+Utility functions.
+Functions: quad_sum, norm2, rms
 """
 
 import numpy as np
