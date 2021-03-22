@@ -5,7 +5,7 @@ Core Functions
 
 Complementary filter sysnthesis
 -------------------------------
-.. autoclass:: kontrol.complementary_filter.ComplementaryFilter
+.. autoclass:: kontrol.ComplementaryFilter
    :members:
    :undoc-members:
    :show-inheritance:

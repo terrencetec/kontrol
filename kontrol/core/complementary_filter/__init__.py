@@ -1,1 +1,1 @@
-from . import complementary_filter
+from .complementary_filter import ComplementaryFilter
