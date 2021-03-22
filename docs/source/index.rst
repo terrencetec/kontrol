@@ -17,7 +17,7 @@ Major Features
 
 **Core**
 
-* Complementary filter synthesis using :math:`\mathcal{H}_\infty`.
+* Complementary filter synthesis using :math:`\mathcal{H}_\infty` method.
 
   * Synthesize optimal complementary filters in a 2-sensor configuration.
   * Only depends on sensor noises.
