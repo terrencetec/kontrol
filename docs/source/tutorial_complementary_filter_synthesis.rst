@@ -3,4 +3,6 @@ Complementary Filter Synthesis (Tutorial)
 
 Coming soon.
 
-../../examples/BS_IP_noise.ipynb
+.. toctree::
+
+   ../../examples/BS_IP_noise.ipynb
