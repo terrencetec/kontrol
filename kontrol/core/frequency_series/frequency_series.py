@@ -2,6 +2,7 @@
 """
 import inspect
 
+import numpy as np
 import scipy.optimize
 
 from . import costs
@@ -55,15 +56,15 @@ class FrequencySeries:
             The result of the fitting (optimization)
         """
         self.model_empirical = model
-        if "method" not in minimize_kwargs.keys:
+        if "method" not in minimize_kwargs.keys():
             minimize_kwargs["method"] = "Powell"
         if x0 is None:
-            str_sig_model = str(inspec.signature(model))
+            str_sig_model = str(inspect.signature(model))
             nargs = len(str_sig_model.split(",")) - 1
             x0 = np.ones(nargs)
         res = scipy.optimize.minimize(
             fun=costs.empirical_fit_cost, x0=x0,
             args=(self.f, self.x, model, error_func, error_func_kwargs),
             **minimize_kwargs)
-        self.x_empirical = model(f, *res.x)
+        self.x_empirical = model(self.f, *res.x)
         return res

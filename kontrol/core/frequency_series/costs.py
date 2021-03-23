@@ -32,5 +32,5 @@ def empirical_fit_cost(args, f, x, model,
         The cost.
     """
     x_model = model(f, *args)
-    cost = error_func(x, x_model, error_func_kwargs)
+    cost = error_func(x, x_model, **error_func_kwargs)
     return cost

@@ -1,7 +1,7 @@
 """Noise models for empirical fitting.
 """
 import numpy as np
-
+import math
 
 def piecewise_noise(f, n0, exp=[0], fc=[0]):
     """Piecewise noise specified corner frequencies and exponents
@@ -24,23 +24,27 @@ def piecewise_noise(f, n0, exp=[0], fc=[0]):
         noise: numpy.ndarray
             The piecewise noise array.
     """
-
+    if n0<0:
+        n0 = -n0
     list(fc)
     if fc[-1] < np.inf:
         fc.append(np.inf)
-
+    for i in range(len(fc)):
+        if fc[i]<0:
+            fc[i] = -fc[i]
     noise = np.zeros_like(f)
     fc_index = 0
     for i in range(len(f)):
         if f[i] >= fc[fc_index]:
             fc_index += 1
             n0 = n0 * fc[fc_index-1]**(exp[fc_index-1]-exp[fc_index])
+
         noise[i] = n0 * f[i]**exp[fc_index]
         # print(fc_index)
     return np.array(noise)
 
 
-def lvdt_noise(f, n0=8e-3, fc=4.5, exp1=-0.5, exp2=0):
+def lvdt_noise(f, n0=8e-3, fc=4.5, exp1=-0.5, exp2=0.):
     """LVDT noise model.
 
     Parameters
@@ -73,7 +77,7 @@ def lvdt_noise(f, n0=8e-3, fc=4.5, exp1=-0.5, exp2=0):
     return piecewise_noise(f, n0, exp=[exp1, exp2], fc=[fc])
 
 
-def geophone_noise(f, n0=2e-6, fc=0.9, exp1=-3.5, exp2=-1):
+def geophone_noise(f, n0=2e-6, fc=0.9, exp1=-3.5, exp2=-1.):
     """Geophone noise model.
 
     Parameters

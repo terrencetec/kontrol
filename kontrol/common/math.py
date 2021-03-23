@@ -27,7 +27,7 @@ def mse(x1, x2, weight=None):
 
 
 def log_mse(x1, x2, weight=None):
-    """Logarithmic mean square error/Mean square error of the log-values
+    """Logarithmic mean square error/Mean square log error
 
     Parameters
     ----------
