@@ -6,3 +6,4 @@ Tutorials
 
    tutorial_complementary_filter_synthesis
    tutorials/frequency_series_fitting_with_empirical_model
+   tutorials/frequency_series_fitting_with_transfer_function
