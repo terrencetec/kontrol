@@ -42,8 +42,8 @@ For local usage, type
 For k1ctr workstations, make sure a virtual environment is enabled before
 installing any packages.
 
-Tutorial
---------
+Tutorials
+---------
 
-Do check out :ref:`Tutorial` for some example usages inlcuding how to
+Do check out :ref:`Tutorials` for some example usages inlcuding how to
 make very good complementary filters.
