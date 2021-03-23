@@ -24,7 +24,7 @@ class FrequencySeries:
         self.f = f
         self.x = x
 
-    def empirical_fit(self, model, x0=None,
+    def fit_empirical(self, model, x0=None,
                       error_func=kontrol.common.math.log_mse,
                       error_func_kwargs={},
                       minimize_kwargs={"method":"Powell"}):
