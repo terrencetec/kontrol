@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 # -- Project information -----------------------------------------------------
 
 project = 'Python Kontrol Library'
-copyright = '2020, TSANG Terrence Tak Lun'
+copyright = '2020-2021, TSANG Terrence Tak Lun'
 author = 'TSANG Terrence Tak Lun'
 
 # The full version, including alpha/beta/rc tags
