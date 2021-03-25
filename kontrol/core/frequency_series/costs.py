@@ -1,5 +1,7 @@
 """Cost functions for fitting
 """
+import numpy as np
+
 from . import conversion
 import kontrol.common.math
 
@@ -55,8 +57,9 @@ def cost_zpk_fit(zpk_args, f, x,
         The function that evaluate the error between arrays x1 and x2.
         Defaults to kontrol.common.math.log_mse, which evaluates the
         logarithmic mean square error.
-    error_func_kwargs: dict
+    error_func_kwargs: dict, optional
         Keyword arguments passed to the error function.
+        Defaults {}.
 
     Returns
     -------
@@ -65,4 +68,43 @@ def cost_zpk_fit(zpk_args, f, x,
     """
     x_zpk = abs(conversion.args2zpk(f=f, zpk_args=zpk_args))
     cost = error_func(x, x_zpk, **error_func_kwargs)
+    return cost
+
+
+def cost_tf_fit(tf_args, f, x,
+                error_func=kontrol.common.math.log_mse,
+                error_func_kwargs={},
+                log_var=True):
+    """The cost funcion for gitting a frequency series with transfer function.
+
+    Parameters
+    ----------
+    tf_args: array
+        A 1-D list of numerator and denominator coefficients,
+        from higher order to lower order.
+    f: array
+        The frequency axis.
+    x: array
+        The frequecy series data.
+    error_func: func(x1: array, x2: array) -> float, optional
+        The function that evaluate the error between arrays x1 and x2.
+        Defaults to kontrol.common.math.log_mse, which evaluates the
+        logarithmic mean square error.
+    error_func_kwargs: dict, optional
+        Keyword arguments passed to the error function.
+        Defaults {}.
+    log_var: boolean, optional
+        Optimize the log of variables instead.
+        Useful for variables that have very large dynamic range
+        Defaults True.
+
+    Returns
+    -------
+    cost: float
+        The cost.
+    """
+    if log_var:
+        tf_args = np.exp(tf_args)
+    x_tf = abs(conversion.args2tf(f=f, tf_args=tf_args))
+    cost = error_func(x, x_tf, **error_func_kwargs)
     return cost

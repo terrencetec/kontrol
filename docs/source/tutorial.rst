@@ -1,9 +1,11 @@
 Tutorials
 =========
 
+Noise Spectrum Modeling
+-----------------------
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   tutorial_complementary_filter_synthesis
    tutorials/frequency_series_fitting_with_empirical_model
    tutorials/frequency_series_fitting_with_transfer_functions
+   tutorials/frequency_series_fitting_with_trasnfer_functions_part2
