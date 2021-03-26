@@ -172,7 +172,7 @@ def check_tf_equal(tf1, tf2, allclose_kwargs={}):
     -------
     boolean
     """
-    zeros_close = np.allclose(tf1.zero(), tf2.zero())
-    poles_close = np.allclose(tf1.pole(), tf2.pole())
-    gain_close = np.allclose(tf1.dcgain(), tf2.dcgain())
+    zeros_close = np.allclose(tf1.zero(), tf2.zero(), **allclose_kwargs)
+    poles_close = np.allclose(tf1.pole(), tf2.pole(), **allclose_kwargs)
+    gain_close = np.allclose(tf1.dcgain(), tf2.dcgain(), **allclose_kwargs)
     return all([zeros_close, poles_close, gain_close])

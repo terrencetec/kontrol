@@ -27,7 +27,7 @@ def test_frequency_series():
 
     fs.fit_empirical(
         model=model, optimizer_kwargs={"options":{"maxfev":100000}})
-    fs.fit_zpk(order=1)
+    fs.fit_zpk(order=1, padding=True)
     fs.fit_tf()
 
     tf_correct = control.tf([1/(2*np.pi*10), 1], [1/(2*np.pi*1), 1])

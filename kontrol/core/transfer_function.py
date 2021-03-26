@@ -31,6 +31,55 @@ class TransferFunction(control.TransferFunction):
         super().__init__(*args)
         self.expression = expression
 
+    def lstrip(self, element, fc=None):
+        """Remove zero or pole from the left.
+
+        Parameters
+        ----------
+        element: str
+            Element to be removed.
+            Choose from ["any", "zero", "pole", "pair", "all"].
+        fc: float or None, optional
+            Cutoff frequency.
+            If element is in ["any", "all"], remove any or all elements
+            on the left of the cutoff.
+            Defaults None.
+        """
+        pass
+
+    def rstrip(self, element, fc=None):
+        """Remove zero or pole from the right.
+
+        Parameters
+        ----------
+        element: str
+            Element to be removed.
+            Choose from ["any", "zero", "pole", "pair", "all"].
+        fc: float or None, optional
+            Cutoff frequency.
+            If element is in ["any", "all"], remove any or all elements
+            on the left of the cutoff.
+            Defaults None.
+        """
+        pass
+
+    def foton(self, expression="n"):
+        """Foton expression
+
+        Parameters
+        ----------
+        expression: string, optional
+            The foton expression type: 'n', 'f', or 's'.
+            Defaults "n".
+
+        Returns
+        -------
+        string
+            The foton zpk expression.
+        """
+        self.expression = expression
+        return self.foton
+
     @property
     def foton(self):
         """Foton expression
@@ -39,11 +88,12 @@ class TransferFunction(control.TransferFunction):
         ----------
         expression: string, optional
             The foton expression type: 'n', 'f', or 's'.
+            Defaults "n".
 
         Returns
         -------
         string
-            The foton zpk expression
+            The foton zpk expression.
         """
         if self.expression == 'n':
             zeros = -1*self.zero().real + 1j*self.zero().imag
