@@ -45,7 +45,7 @@ Other Features
    self
    getting_started
    tutorial
-   core_functions
+   main_utilities
    kontrol
    contact
    developers
