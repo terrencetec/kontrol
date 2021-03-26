@@ -42,6 +42,14 @@ def test_convert_unstable_tf():
     assert check_tf_equal(converted_tf, stable_tf)
 
 
+def test_check_tf_equal():
+    tf1 = kontrol.controlutils.zpk(
+        zeros=[1, 2, 3], poles=[4, 5, 6], gain=7, unit="omega")
+    tf2 = kontrol.controlutils.zpk(
+        zeros=[1, 2, 3], poles=[4, 5, 6], gain=7, unit="omega")
+    assert kontrol.controlutils.check_tf_equal(tf1, tf2)
+
+
 def check_tf_equal(tf1, tf2):
     zeros_close = np.allclose(tf1.zero(), tf2.zero())
     poles_close = np.allclose(tf1.pole(), tf2.pole())

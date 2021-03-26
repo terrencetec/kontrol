@@ -152,3 +152,27 @@ def convert_unstable_tf(control_tf):
     tf_new *= float(control_tf.dcgain())/float(tf_new.dcgain())
 
     return tf_new
+
+
+def check_tf_equal(tf1, tf2, allclose_kwargs={}):
+    """Check if two transfer functions are approximatedly equal by np.allclose.
+
+    Parameters
+    ----------
+    tf1: control.xferfcn.TransferFunction
+        Transfer function 1.
+    tf2: control.xferfcn.TrasnferFunction
+        Transfer function 2.
+    allclose_kwargs: dict, optional
+        Keyword arguments passed to np.allclose(), which is used to compare
+        the list of poles and zeros and dcgain.
+        Defaults {}.
+
+    Returns
+    -------
+    boolean
+    """
+    zeros_close = np.allclose(tf1.zero(), tf2.zero())
+    poles_close = np.allclose(tf1.pole(), tf2.pole())
+    gain_close = np.allclose(tf1.dcgain(), tf2.dcgain())
+    return all([zeros_close, poles_close, gain_close])
