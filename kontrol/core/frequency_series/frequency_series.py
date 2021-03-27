@@ -43,18 +43,6 @@ class FrequencySeries:
     args_zpk_model: array or None
         A 1-D list of zeros, poles, and gain.
         Zeros and poles are in unit of Hz.
-
-    Methods
-    -------
-    fit_empirical(model, x0=None, error_func=kontrol.common.math.log_mse,
-    error_func_kwargs={}, minimize_kwargs={"method": "Powell"})
-
-    fit_zpk(self, order, fit="x_empirical",
-    padding=False, padding_order=1.,
-    error_func=kontrol.common.math.log_mse,
-    error_func_kwargs={},
-    optimizer=scipy.optimize.differential_evolution,
-    optimizer_kwargs={})
     """
     def __init__(self, f, x):
         """Constructor
