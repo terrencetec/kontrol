@@ -43,6 +43,16 @@ class FrequencySeries:
     args_zpk_model: array or None
         A 1-D list of zeros, poles, and gain.
         Zeros and poles are in unit of Hz.
+    f_tf: array or None
+        The frequency series data used during transfer function fitting.
+    x_tf: array or None
+        The frequency series data used during transfer function fitting.
+        Note: this is a complex array.
+    tf: control.xferfcn.TransferFunction or None
+        The modeled transfer function.
+    args_tf_model: array or None
+        A 1-D list of numerator and denominator coefficients,
+        from higher order to lower order.
     """
     def __init__(self, f, x):
         """Constructor
