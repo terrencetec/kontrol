@@ -82,7 +82,7 @@ class FrequencySeries:
         model: func(f, a, b, c, ...) -> array
             The model function whose first argument is the frequency axis and
             the rest being an arbitrary number of model parameters to be fit.
-        x0: array, optional.
+        x0: array, optional
             The initial parameters for fitting.
             Defaults None. If None, defaults to np.ones()
         error_func: func(x1: array, x2: array) -> float
