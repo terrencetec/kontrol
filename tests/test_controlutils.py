@@ -50,6 +50,28 @@ def test_check_tf_equal():
     assert kontrol.controlutils.check_tf_equal(tf1, tf2)
 
 
+def test_generic_tf():
+    f = np.logspace(-2, 3, 1000)
+    s = 1j*2*np.pi*f
+    x_correct = 2 * ((s/0.1+1)
+                /(s/1+1)
+                *(s**2+10/100*s+10**2) / 10**2
+                /(s**2+100/1000*s+100**2) * 100**2
+                /(s/5+1))
+    zeros = [0.1]
+    poles = [1, 5]
+    zeros_wn = [10]
+    zeros_q = [100]
+    poles_wn = [100]
+    poles_q = [1000]
+    dc_gain = 2
+    unit = "s"
+    sos = kontrol.controlutils.generic_tf(
+        zeros, poles, zeros_wn, zeros_q, poles_wn, poles_q, dc_gain, unit)
+    assert np.allclose(sos(s), x_correct)
+
+
+
 def check_tf_equal(tf1, tf2):
     zeros_close = np.allclose(tf1.zero(), tf2.zero())
     poles_close = np.allclose(tf1.pole(), tf2.pole())

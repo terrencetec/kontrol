@@ -30,7 +30,7 @@ def tfmatrix2tf(sys):
     return generalized_plant
 
 
-def zpk(zeros, poles, gain, unit='Hz', negate=True):
+def zpk(zeros, poles, gain, unit='f', negate=True):
     """Zero-pole-gain definition of transfer function.
 
     Parameters
@@ -41,12 +41,10 @@ def zpk(zeros, poles, gain, unit='Hz', negate=True):
         A list of the location of the poles
     gain: float
         The static gain of the transfer function
-    unit: string, optional
-        The unit of the zeros and poles.
-        Specify 'Hz' if zeros and poles are in Hz.
-        Specify anything else if zeros and poles
-        are in radian per second.
-        Default by 'Hz'.
+    unit: str, optional
+        The unit of the zeros, poles and the natural frequencies.
+        Choose from ["f", "s", "Hz", "omega"].
+        Defaults "f".
     negate: boolean, optional
         Negate zeros and poles in specification
         so negative sign is not needed for stable
@@ -71,7 +69,7 @@ def zpk(zeros, poles, gain, unit='Hz', negate=True):
     zeros = np.array(zeros)
     poles = np.array(poles)
 
-    if unit == 'Hz':
+    if unit in ["f", "Hz"]:
         for i in range(len(zeros)):
             zeros[i] = 2*np.pi*zeros[i]
         for i in range(len(poles)):
@@ -90,6 +88,50 @@ def zpk(zeros, poles, gain, unit='Hz', negate=True):
         zpk_tf *= control.tf([1], [1/p, 1])
 
     return zpk_tf
+
+
+def sos(natural_frequencies=[], quality_factors=[], gain=1., unit="f"):
+    r"""Second-order sections transfer fucntion.
+
+    Parameters
+    ----------
+    natural_freuqnecies: array, optional
+        List of natural frequencies.
+        Defaults [].
+    quality_factors: list, optional
+        List of quality factors.
+        Defaults [].
+    gain: float, optional
+        The gain of the transfer function.
+        Defaults 1.
+    unit: str, optional
+        The unit of the zeros, poles and the natural frequencies.
+        Choose from ["f", "s", "Hz", "omega"].
+        Defaults "f".
+
+    Returns
+    -------
+    sos: control.xferfcn.TransferFunction
+        The product of all second-order sections.
+
+    Note
+    ----
+    :math:`K\prod\left(s^2+\omega_n/Q\,s+\omega_n^2\right)`.
+    """
+    if len(natural_frequencies) != len(quality_factors):
+        raise ValueError("Lenght of natural frequencies must match length of "
+                         "quality factors.")
+
+    natural_frequencies = np.array(natural_frequencies)
+    quality_factors = np.array(quality_factors)
+    if unit in ["f", "Hz"]:
+        natural_frequencies = 2*np.pi*natural_frequencies
+
+    s = control.tf("s")
+    sos = control.tf([gain], [1])
+    for wn, q in zip(natural_frequencies, quality_factors):
+        sos *= (s**2 + wn/q*s + wn**2)/wn**2
+    return sos
 
 
 def convert_unstable_tf(control_tf):
@@ -176,3 +218,57 @@ def check_tf_equal(tf1, tf2, allclose_kwargs={}):
     poles_close = np.allclose(tf1.pole(), tf2.pole(), **allclose_kwargs)
     gain_close = np.allclose(tf1.dcgain(), tf2.dcgain(), **allclose_kwargs)
     return all([zeros_close, poles_close, gain_close])
+
+
+def generic_tf(zeros=[], poles=[],
+               zeros_wn=[], zeros_q=[],
+               poles_wn=[], poles_q=[],
+               dc_gain=1., unit="f"):
+    r"""Construct a generic transfer function object.
+
+    Parameters
+    ----------
+    zeros: array, optional
+        List of zeros in frequencies.
+        Defaults [].
+    poles: array, optional
+        List of poles.
+        Defaults [].
+    zeros_wn: array, optional
+        List of natural frequencies of numerator second-order sections.
+    zeros_q: array, optional.
+        List of Q-value of numerator second-order sections.
+    poles_wn: array, optional
+        List of natural frequencies of denominator second-order sections.
+    poles_q: array, optional.
+        List of Q-value of denominator second-order sections.
+    dc_gain: float, optional
+        The DC gain of the transfer function.
+        Defaults 1.
+    unit: str, optional
+        The unit of the zeros, poles and the natural frequencies.
+        Choose from ["f", "s", "Hz", "omega"].
+        Defaults "f".
+
+    Returns
+    -------
+    tf: control.xferfcn.TransferFunction
+        The transfer function.
+
+    Note
+    ----
+    No negative sign is needed for negative zeros and poles.
+    For instance, `generic_tf(poles=[1], unit="s")` means
+    :math:`\frac{1}{s+1}`.
+    """
+    zeros = np.array(zeros)
+    poles = np.array(poles)
+    zeros_wn = np.array(zeros_wn)
+    zeros_q = np.array(zeros_q)
+    poles_wn = np.array(poles_wn)
+    poles_q = np.array(poles_q)
+
+    tf = zpk(zeros=zeros, poles=poles, gain=dc_gain, unit=unit)
+    tf *= sos(natural_frequencies=zeros_wn, quality_factors=zeros_q, unit=unit)
+    tf /= sos(natural_frequencies=poles_wn, quality_factors=poles_q, unit=unit)
+    return tf

@@ -5,6 +5,8 @@ to provide custom functionality related to KAGRA.
 import control
 import numpy as np
 
+import kontrol.controlutils
+
 
 class TransferFunction(control.TransferFunction):
     """Transfer function class
@@ -30,6 +32,14 @@ class TransferFunction(control.TransferFunction):
         """
         super().__init__(*args)
         self.expression = expression
+
+    # def __call__(self, *args):
+    #     """Call
+    #
+    #     *args:
+    #         Arguments passed to control.TransferFunction class.
+    #     """
+    #     super().__init__(*args)
 
     def lstrip(self, element, fc=None):
         """Remove zero or pole from the left.
@@ -62,6 +72,12 @@ class TransferFunction(control.TransferFunction):
             Defaults None.
         """
         pass
+
+    def stablize(self):
+        """Convert unstable zeros and poles to stable ones.
+        """
+        stable_tf = kontrol.controlutils.convert_unstable_tf(self)
+        super().__init__(stable_tf)
 
     def foton(self, expression="n"):
         """Foton expression
