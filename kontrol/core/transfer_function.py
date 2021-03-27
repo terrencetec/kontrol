@@ -33,14 +33,6 @@ class TransferFunction(control.TransferFunction):
         super().__init__(*args)
         self.expression = expression
 
-    # def __call__(self, *args):
-    #     """Call
-    #
-    #     *args:
-    #         Arguments passed to control.TransferFunction class.
-    #     """
-    #     super().__init__(*args)
-
     def lstrip(self, element, fc=None):
         """Remove zero or pole from the left.
 

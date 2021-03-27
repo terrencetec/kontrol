@@ -64,12 +64,11 @@ def test_generic_tf():
     zeros_q = [100]
     poles_wn = [100]
     poles_q = [1000]
-    dc_gain = 2
+    dcgain = 2
     unit = "s"
     sos = kontrol.controlutils.generic_tf(
-        zeros, poles, zeros_wn, zeros_q, poles_wn, poles_q, dc_gain, unit)
+        zeros, poles, zeros_wn, zeros_q, poles_wn, poles_q, dcgain, unit)
     assert np.allclose(sos(s), x_correct)
-
 
 
 def check_tf_equal(tf1, tf2):

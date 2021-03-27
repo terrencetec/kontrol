@@ -223,7 +223,7 @@ def check_tf_equal(tf1, tf2, allclose_kwargs={}):
 def generic_tf(zeros=[], poles=[],
                zeros_wn=[], zeros_q=[],
                poles_wn=[], poles_q=[],
-               dc_gain=1., unit="f"):
+               dcgain=1., unit="f"):
     r"""Construct a generic transfer function object.
 
     Parameters
@@ -242,7 +242,7 @@ def generic_tf(zeros=[], poles=[],
         List of natural frequencies of denominator second-order sections.
     poles_q: array, optional.
         List of Q-value of denominator second-order sections.
-    dc_gain: float, optional
+    dcgain: float, optional
         The DC gain of the transfer function.
         Defaults 1.
     unit: str, optional
@@ -268,7 +268,7 @@ def generic_tf(zeros=[], poles=[],
     poles_wn = np.array(poles_wn)
     poles_q = np.array(poles_q)
 
-    tf = zpk(zeros=zeros, poles=poles, gain=dc_gain, unit=unit)
+    tf = zpk(zeros=zeros, poles=poles, gain=dcgain, unit=unit)
     tf *= sos(natural_frequencies=zeros_wn, quality_factors=zeros_q, unit=unit)
     tf /= sos(natural_frequencies=poles_wn, quality_factors=poles_q, unit=unit)
     return tf
