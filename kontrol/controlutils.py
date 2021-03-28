@@ -324,6 +324,27 @@ def outliers(tf, f, unit="f"):
     return outlier_zeros, outlier_poles
 
 
-def outlier_exists(self, tf, f, unit="f"):
-    """Checks for zeros and poles outside the
+def outlier_exists(tf, f, unit="f"):
+    """Checks for zeros and poles outside the frequency range.
+
+    Parameters
+    ----------
+    tf: control.xferfcn.TransferFunction
+        The transfer function.
+    f: array
+        The frequency axis of interest.
+    unit: str, optional
+        The unit of the zeros, poles and the natural frequencies.
+        Choose from ["f", "s", "Hz", "omega"].
+        Defaults "f".
+
+    Returns
+    -------
+    boolean
+        If there's any zero or pole outside the frequency range.
     """
+    outlier_zeros, outlier_poles = outliers(tf=tf, f=f, unit=unit)
+    if len(outlier_zeros) + len(outlier_poles) > 0:
+        return True
+    else:
+        return False

@@ -88,6 +88,22 @@ def test_outliers():
          np.allclose(outlier_poles, outlier_poles_correct)])
 
 
+def test_outlier_exists():
+    omega=np.logspace(-1, 1)
+    s = control.tf("s")
+    tf = 2 * ((s/0.1+1)
+                /(s/1+1)
+                *(s**2+10/100*s+10**2) / 10**2
+                /(s**2+100/1000*s+100**2) * 100**2
+                /(s/5+1))
+    first_test = kontrol.controlutils.outlier_exists(
+        tf=tf, f=omega, unit="omega")
+    omega = np.logspace(-2, 3)
+    second_test = kontrol.controlutils.outlier_exists(
+        tf=tf, f=omega, unit="omega")
+    assert np.all([first_test, not second_test])
+
+
 def check_tf_equal(tf1, tf2):
     zeros_close = np.allclose(tf1.zero(), tf2.zero())
     poles_close = np.allclose(tf1.pole(), tf2.pole())
