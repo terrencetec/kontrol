@@ -196,7 +196,7 @@ def convert_unstable_tf(control_tf):
     return tf_new
 
 
-def check_tf_equal(tf1, tf2, allclose_kwargs={}):
+def check_tf_equal(tf1, tf2, allclose_kwargs={}, minreal=True):
     """Check if two transfer functions are approximatedly equal by np.allclose.
 
     Parameters
@@ -209,11 +209,17 @@ def check_tf_equal(tf1, tf2, allclose_kwargs={}):
         Keyword arguments passed to np.allclose(), which is used to compare
         the list of poles and zeros and dcgain.
         Defaults {}.
+    minreal: boolean
+        Use control.minreal to remove canceling zeros and poles before
+        comparison.
 
     Returns
     -------
     boolean
     """
+    if minreal:
+        tf1 = control.minreal(tf1, verbose=False)
+        tf2 = control.minreal(tf2, verbose=False)
     zeros_close = np.allclose(tf1.zero(), tf2.zero(), **allclose_kwargs)
     poles_close = np.allclose(tf1.pole(), tf2.pole(), **allclose_kwargs)
     gain_close = np.allclose(tf1.dcgain(), tf2.dcgain(), **allclose_kwargs)
