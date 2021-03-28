@@ -71,6 +71,23 @@ def test_generic_tf():
     assert np.allclose(sos(s), x_correct)
 
 
+def test_outliers():
+    omega = np.logspace(-1, 1)
+    s = control.tf("s")
+    tf = 2 * ((s/0.1+1)
+                /(s/1+1)
+                *(s**2+10/100*s+10**2) / 10**2
+                /(s**2+100/1000*s+100**2) * 100**2
+                /(s/5+1))
+    outlier_zeros, outlier_poles = kontrol.controlutils.outliers(
+        tf=tf, f=omega, unit="omega")
+    outlier_zeros_correct = [-0.05+9.999875j, -0.05-9.999875j]
+    outlier_poles_correct = [-0.05+99.9999875j, -0.05-99.9999875j]
+    assert np.all(
+        [np.allclose(outlier_zeros, outlier_zeros_correct),
+         np.allclose(outlier_poles, outlier_poles_correct)])
+
+
 def check_tf_equal(tf1, tf2):
     zeros_close = np.allclose(tf1.zero(), tf2.zero())
     poles_close = np.allclose(tf1.pole(), tf2.pole())

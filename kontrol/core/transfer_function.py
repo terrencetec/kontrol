@@ -47,6 +47,7 @@ class TransferFunction(control.TransferFunction):
             on the left of the cutoff.
             Defaults None.
         """
+        # Work in progress
         pass
 
     def rstrip(self, element, fc=None):
@@ -63,6 +64,7 @@ class TransferFunction(control.TransferFunction):
             on the left of the cutoff.
             Defaults None.
         """
+        # Work in progress
         pass
 
     def stablize(self):

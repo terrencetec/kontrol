@@ -272,3 +272,58 @@ def generic_tf(zeros=[], poles=[],
     tf *= sos(natural_frequencies=zeros_wn, quality_factors=zeros_q, unit=unit)
     tf /= sos(natural_frequencies=poles_wn, quality_factors=poles_q, unit=unit)
     return tf
+
+
+def outliers(tf, f, unit="f"):
+    """Returns a list of zeros and poles outside the frequency range.
+
+    Parameters
+    ----------
+    tf: control.xferfcn.TransferFunction
+        The transfer function.
+    f: array
+        The frequency axis of interest.
+    unit: str, optional
+        The unit of the zeros, poles and the natural frequencies.
+        Choose from ["f", "s", "Hz", "omega"].
+        Defaults "f".
+
+    Returns
+    -------
+    outlier_zeros: array
+        Zeros outside the frequency range.
+    outlier_poles: array
+        Poles outside the frequency range.
+
+    Note
+    ----
+    We use the python-control package convention for
+    the returned zeros and poles, so to preserve the type and format
+    as much as possible for further processes.
+    """
+    outlier_zeros = []
+    outlier_poles = []
+    zeros = tf.zero()
+    poles = tf.pole()
+    f = np.array(f)
+    if unit in ["f", "Hz"]:
+        f = f*2*np.pi
+    f_min = min(f)
+    f_max = max(f)
+
+    for zero in zeros:
+        fn = np.sqrt(zero.real**2 + zero.imag**2)
+        if fn < f_min or fn > f_max:
+            outlier_zeros.append(zero)
+    for pole in poles:
+        fn = np.sqrt(pole.real**2 + pole.imag**2)
+        if fn < f_min or fn > f_max:
+            outlier_poles.append(pole)
+    outlier_zeros = np.array(outlier_zeros)
+    outlier_poles = np.array(outlier_poles)
+    return outlier_zeros, outlier_poles
+
+
+def outlier_exists(self, tf, f, unit="f"):
+    """Checks for zeros and poles outside the
+    """
