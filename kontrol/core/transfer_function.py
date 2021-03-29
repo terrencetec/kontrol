@@ -19,19 +19,20 @@ class TransferFunction(control.TransferFunction):
         Foton zpk expression type: Hz/norm 'n', Hz 'f', or rad/s 's'.
         Defaults to 'n'.
     """
-    def __init__(self, *args, expression='n'):
+    def __init__(self, *args, expression="n"):
         """Initialize with a transfer function object
 
         Parameters
         ----------
         expression: string, optional
             Foton zpk expression type: Hz/norm 'n', Hz 'f', or rad/s 's'.
+            Choose from ["n", "f", "s"].
             Defaults to 'n'.
         *args:
             Arguments passed to control.TransferFunction class.
         """
         super().__init__(*args)
-        self.expression = expression
+        self.foton = expression
 
     def lstrip(self, element, fc=None):
         """Remove zero or pole from the left.
@@ -73,23 +74,6 @@ class TransferFunction(control.TransferFunction):
         stable_tf = kontrol.controlutils.convert_unstable_tf(self)
         super().__init__(stable_tf)
 
-    def foton(self, expression="n"):
-        """Foton expression
-
-        Parameters
-        ----------
-        expression: string, optional
-            The foton expression type: 'n', 'f', or 's'.
-            Defaults "n".
-
-        Returns
-        -------
-        string
-            The foton zpk expression.
-        """
-        self.expression = expression
-        return self.foton
-
     @property
     def foton(self):
         """Foton expression
@@ -105,14 +89,31 @@ class TransferFunction(control.TransferFunction):
         string
             The foton zpk expression.
         """
-        if self.expression == 'n':
+        return self._foton
+
+    @foton.setter
+    def foton(self, expression="n"):
+        """Foton expression
+
+        Parameters
+        ----------
+        expression: string, optional
+            The foton expression type: 'n', 'f', or 's'.
+            Defaults "n".
+
+        Returns
+        -------
+        string
+            The foton zpk expression.
+        """
+        if expression == 'n':
             zeros = -1*self.zero().real + 1j*self.zero().imag
             poles = -1*self.pole().real + 1j*self.pole().imag
             gain = float(self.dcgain())
             gain = gain.real
             zeros /= 2*np.pi
             poles /= 2*np.pi
-        elif self.expression == 'f':
+        elif expression == 'f':
             zeros = 1*self.zero().real + 1j*self.zero().imag
             poles = 1*self.pole().real + 1j*self.pole().imag
             gain = float(self.dcgain())
@@ -123,7 +124,7 @@ class TransferFunction(control.TransferFunction):
             gain = gain.real
             zeros /= 2*np.pi
             poles /= 2*np.pi
-        elif self.expression == 's':
+        elif expression == 's':
             zeros = self.zero()
             poles = self.pole()
             gain = float(self.dcgain())
@@ -135,7 +136,7 @@ class TransferFunction(control.TransferFunction):
         else:
             raise ValueError("expression: {} not valid."
                              "expression can only be 'n', 'f' or 's'."
-                             "".format(self.expression))
+                             "".format(expression))
 
         self._foton = 'zpk(['
         for zero in zeros:
@@ -156,5 +157,4 @@ class TransferFunction(control.TransferFunction):
             self._foton += ';'
         self._foton = self._foton.rstrip(';')
         self._foton += ('],{gain},"{expression}")'
-                        ''.format(gain=gain, expression=self.expression))
-        return self._foton
+                        ''.format(gain=gain, expression=expression))
