@@ -1,22 +1,18 @@
 kontrol.core package
 ====================
 
-Subpackages
------------
+kontrol.core.controlutils module
+--------------------------------
 
-.. toctree::
-   :maxdepth: 4
+.. automodule:: kontrol.core.controlutils
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-   kontrol.core.complementary_filter
-   kontrol.core.frequency_series
+kontrol.core.math module
+------------------------
 
-Submodules
-----------
-
-kontrol.core.transfer_function module
--------------------------------------
-
-.. automodule:: kontrol.core.transfer_function
+.. automodule:: kontrol.core.math
    :members:
    :undoc-members:
    :show-inheritance:

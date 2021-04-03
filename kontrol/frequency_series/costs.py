@@ -2,12 +2,13 @@
 """
 import numpy as np
 
-from . import conversion
-import kontrol.common.math
+import kontrol.core.math
+import kontrol.frequency_series.conversion
+
 
 
 def cost_empirical_fit(args, f, x, model,
-                       error_func=kontrol.common.math.log_mse,
+                       error_func=kontrol.core.math.log_mse,
                        error_func_kwargs={}):
     """Cost function for frequency series empirical fitting.
 
@@ -24,7 +25,7 @@ def cost_empirical_fit(args, f, x, model,
         the rest being an arbitrary number of model parameters to be fit.
     error_func: func(x1: array, x2: array) -> float
         The function that evaluate the error between arrays x1 and x2.
-        Defaults to kontrol.common.math.log_mse, which evaluates the
+        Defaults to kontrol.core.math.log_mse, which evaluates the
         logarithmic mean square error.
     error_func_kwargs: dict
         Keyword arguments passed to the error function.
@@ -40,7 +41,7 @@ def cost_empirical_fit(args, f, x, model,
 
 
 def cost_zpk_fit(zpk_args, f, x,
-                 error_func=kontrol.common.math.log_mse,
+                 error_func=kontrol.core.math.log_mse,
                  error_func_kwargs={}):
     """The cost function for fitting a frequency series with zero-pole-gain.
 
@@ -55,7 +56,7 @@ def cost_zpk_fit(zpk_args, f, x,
         The frequecy series data.
     error_func: func(x1: array, x2: array) -> float
         The function that evaluate the error between arrays x1 and x2.
-        Defaults to kontrol.common.math.log_mse, which evaluates the
+        Defaults to kontrol.core.math.log_mse, which evaluates the
         logarithmic mean square error.
     error_func_kwargs: dict, optional
         Keyword arguments passed to the error function.
@@ -66,13 +67,14 @@ def cost_zpk_fit(zpk_args, f, x,
     cost: float
         The cost.
     """
-    x_zpk = abs(conversion.args2zpk(f=f, zpk_args=zpk_args))
+    x_zpk = abs(
+        kontrol.frequency_series.conversion.args2zpk(f=f, zpk_args=zpk_args))
     cost = error_func(x, x_zpk, **error_func_kwargs)
     return cost
 
 
 def cost_tf_fit(tf_args, f, x,
-                error_func=kontrol.common.math.log_mse,
+                error_func=kontrol.core.math.log_mse,
                 error_func_kwargs={},
                 log_var=True):
     """The cost funcion for gitting a frequency series with transfer function.
@@ -88,7 +90,7 @@ def cost_tf_fit(tf_args, f, x,
         The frequecy series data.
     error_func: func(x1: array, x2: array) -> float, optional
         The function that evaluate the error between arrays x1 and x2.
-        Defaults to kontrol.common.math.log_mse, which evaluates the
+        Defaults to kontrol.core.math.log_mse, which evaluates the
         logarithmic mean square error.
     error_func_kwargs: dict, optional
         Keyword arguments passed to the error function.
@@ -105,6 +107,7 @@ def cost_tf_fit(tf_args, f, x,
     """
     if log_var:
         tf_args = np.exp(tf_args)
-    x_tf = abs(conversion.args2tf(f=f, tf_args=tf_args))
+    x_tf = abs(
+        kontrol.frequency_series.conversion.args2tf(f=f, tf_args=tf_args))
     cost = error_func(x, x_tf, **error_func_kwargs)
     return cost

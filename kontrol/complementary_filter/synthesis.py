@@ -2,7 +2,7 @@
 """
 import control
 
-import kontrol.controlutils
+import kontrol.core.controlutils
 
 
 def h2complementary(n1, n2):
@@ -50,7 +50,7 @@ def h2complementary(n1, n2):
 #     p = [[n1, -n1],
 #          [tf([0],[1]), n2],
 #          [tf([1],[1]), tf([0],[1])]]
-    p = kontrol.controlutils.tfmatrix2tf(p)
+    p = kontrol.core.controlutils.tfmatrix2tf(p)
     h1 = control.tf(control.h2syn(control.ss(p), 1, 1))
     h2 = 1 - h1
     return h1, h2
@@ -101,7 +101,7 @@ def hinfcomplementary(n1, n2):
 #     p = [[n1, -n1],
 #          [tf([0],[1]), n2],
 #          [tf([1],[1]), tf([0],[1])]]
-    p = kontrol.controlutils.tfmatrix2tf(p)
+    p = kontrol.core.controlutils.tfmatrix2tf(p)
     K, _, _, _ = control.hinfsyn(control.ss(p), 1, 1)
     h1 = control.tf(K)
     h2 = 1 - h1

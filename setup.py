@@ -12,9 +12,9 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/x-rst",
     url="https://github.com/terrencetec/kontrol",
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(include=["kontrol", "kontrol.*"]),
     # packages=[
-    #
+    #     "kontrol",
     # ],
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -26,6 +26,6 @@ setuptools.setup(
         'numpy',
         'scipy',
         'matplotlib',
-        'control'
+        'control>=0.9'
     ]
 )

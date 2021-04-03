@@ -5,9 +5,9 @@ import inspect
 import numpy as np
 import scipy.optimize
 
-from . import costs
-from . import conversion
-import kontrol.common.math
+import kontrol.core.math
+import kontrol.frequency_series.costs
+import kontrol.frequency_series.conversion
 
 
 class FrequencySeries:
@@ -81,7 +81,7 @@ class FrequencySeries:
         self.args_tf_model = None
 
     def fit_empirical(self, model, x0=None,
-                      error_func=kontrol.common.math.log_mse,
+                      error_func=kontrol.core.math.log_mse,
                       error_func_kwargs={},
                       optimizer=scipy.optimize.minimize,
                       optimizer_kwargs={}):
@@ -97,7 +97,7 @@ class FrequencySeries:
             Defaults None. If None, defaults to np.ones()
         error_func: func(x1: array, x2: array) -> float
             The function that evaluate the error between arrays x1 and x2.
-            Defaults to kontrol.common.math.log_mse, which evaluates the
+            Defaults to kontrol.core.math.log_mse, which evaluates the
             logarithmic mean square error.
         error_func_kwargs: dict, optional
             Keyword arguments passed to the error function.
@@ -131,7 +131,7 @@ class FrequencySeries:
                 optimizer_kwargs["x0"] = x0
 
         res = optimizer(
-            costs.cost_empirical_fit,
+            kontrol.frequency_series.costs.cost_empirical_fit,
             args=(self.f, self.x, model, error_func, error_func_kwargs),
             **optimizer_kwargs)
         self.args_empirical_model = res.x
@@ -140,7 +140,7 @@ class FrequencySeries:
 
     def fit_zpk(self, order, fit="x_empirical",
                 padding=False, padding_order=1.,
-                error_func=kontrol.common.math.log_mse,
+                error_func=kontrol.core.math.log_mse,
                 error_func_kwargs={},
                 optimizer=scipy.optimize.differential_evolution,
                 optimizer_kwargs={}):
@@ -161,7 +161,7 @@ class FrequencySeries:
             Defaults to 1.
         error_func: func(x1: array, x2: array) -> float
             The function that evaluate the error between arrays x1 and x2.
-            Defaults to kontrol.common.math.log_mse, which evaluates the
+            Defaults to kontrol.core.math.log_mse, which evaluates the
             logarithmic mean square error.
         error_func_kwargs: dict, optional
             Keyword arguments passed to the error function.
@@ -225,17 +225,17 @@ class FrequencySeries:
                 optimizer_kwargs["bounds"] = bounds
 
         res = optimizer(
-            costs.cost_zpk_fit,
+            kontrol.frequency_series.costs.cost_zpk_fit,
             args=(f, x, error_func, error_func_kwargs),
             **optimizer_kwargs)
         self.f_zpk = f
-        self.x_zpk = conversion.args2zpk(f=f, zpk_args=res.x)
-        self.tf_zpk = conversion.args2controltf(zpk_args=res.x)
+        self.x_zpk = kontrol.frequency_series.conversion.args2zpk(f=f, zpk_args=res.x)
+        self.tf_zpk = kontrol.frequency_series.conversion.args2controltf(zpk_args=res.x)
         self.args_zpk_model = res.x
         return res
 
     def fit_tf(self, x0=None, log_var=True,
-               error_func=kontrol.common.math.log_mse,
+               error_func=kontrol.core.math.log_mse,
                error_func_kwargs={},
                optimizer=scipy.optimize.minimize,
                optimizer_kwargs={}):
@@ -255,7 +255,7 @@ class FrequencySeries:
             Defaults True.
         error_func: func(x1: array, x2: array) -> float, optional
             The function that evaluate the error between arrays x1 and x2.
-            Defaults to kontrol.common.math.log_mse, which evaluates the
+            Defaults to kontrol.core.math.log_mse, which evaluates the
             logarithmic mean square error.
         error_func_kwargs: dict, optional
             Keyword arguments passed to the error function.
@@ -280,7 +280,7 @@ class FrequencySeries:
         Only use this after using `fit_zpk()`.
         """
         if x0 is None:
-            x0 = conversion.tf2tf_args(tf=self.tf_zpk)
+            x0 = kontrol.frequency_series.conversion.tf2tf_args(tf=self.tf_zpk)
         if log_var:
             x0 = np.log(x0)
 
@@ -295,7 +295,7 @@ class FrequencySeries:
         x = self._x_processed
 
         res = optimizer(
-            costs.cost_tf_fit,
+            kontrol.frequency_series.costs.cost_tf_fit,
             args=(f, x, error_func, error_func_kwargs, log_var),
             **optimizer_kwargs)
 
@@ -303,8 +303,8 @@ class FrequencySeries:
         args_opt = res.x
         if log_var:
             args_opt = np.exp(args_opt)
-        self.x_tf = conversion.args2tf(f, args_opt)  # Frequency series
-        self.tf = conversion.tf_args2tf(args_opt)  # Transfer function
+        self.x_tf = kontrol.frequency_series.conversion.args2tf(f, args_opt)  # Frequency series
+        self.tf = kontrol.frequency_series.conversion.tf_args2tf(args_opt)  # Transfer function
         self.args_tf_model = args_opt
 
         return res

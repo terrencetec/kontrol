@@ -2,18 +2,15 @@
 """
 import control
 import numpy as np
-# import scipy.optimize
-
-# from . import conversion
-# from . import costs
-from . import synthesis
-import kontrol.common.math
-import kontrol.controlutils
-import kontrol.core.transfer_function
-import kontrol.core.complementary_filter.synthesis
 
 
-class ComplementaryFilter(kontrol.core.transfer_function.TransferFunction):
+import kontrol.core.math
+import kontrol.core.controlutils
+import kontrol.transfer_function
+import kontrol.complementary_filter.synthesis
+
+
+class ComplementaryFilter(kontrol.transfer_function.TransferFunction):
     """A set of complementary filters.
 
     Attributes
@@ -95,7 +92,7 @@ class ComplementaryFilter(kontrol.core.transfer_function.TransferFunction):
         self.filter2 = filter2
         if filter1 is not None and filter2 is not None:
             tf_1 = control.tf([1], [1])
-            if not kontrol.controlutils.check_tf_equal(tf_1, filter1+filter2):
+            if not kontrol.core.controlutils.check_tf_equal(tf_1, filter1+filter2):
                 raise ValueError("filter1 is not complementary to filter2.")
         elif filter1 is not None and filter2 is None:
             filter2 = control.tf([1], [1]) - filter1
@@ -106,7 +103,7 @@ class ComplementaryFilter(kontrol.core.transfer_function.TransferFunction):
 
         if filter1 is not None and filter2 is not None:
             tf_complementary_matrix = [[filter1], [filter2]]
-            tf_complementary = kontrol.controlutils.tfmatrix2tf(
+            tf_complementary = kontrol.core.controlutils.tfmatrix2tf(
                 tf_complementary_matrix)
             super().__init__(tf_complementary)
 
@@ -200,7 +197,7 @@ class ComplementaryFilter(kontrol.core.transfer_function.TransferFunction):
             raise ValueError("self.noise2 is not specified.")
         noise1_filtered = abs(self.filter1(1j*self.omega)) * self.noise1
         noise2_filtered = abs(self.filter2(1j*self.omega)) * self.noise2
-        return kontrol.common.math.quad_sum(noise1_filtered, noise2_filtered)
+        return kontrol.core.math.quad_sum(noise1_filtered, noise2_filtered)
 
     @property
     def filter1(self):
@@ -219,7 +216,7 @@ class ComplementaryFilter(kontrol.core.transfer_function.TransferFunction):
         self._filter1 = tf
         if self.filter1 is not None and self.filter2 is not None:
             tf_complementary_matrix = [[self.filter1], [self.filter2]]
-            tf_complementary = kontrol.controlutils.tfmatrix2tf(
+            tf_complementary = kontrol.core.controlutils.tfmatrix2tf(
                 tf_complementary_matrix)
             super().__init__(tf_complementary)
 
@@ -240,7 +237,7 @@ class ComplementaryFilter(kontrol.core.transfer_function.TransferFunction):
         self._filter2 = tf
         if self.filter1 is not None and self.filter2 is not None:
             tf_complementary_matrix = [[self.filter1], [self.filter2]]
-            tf_complementary = kontrol.controlutils.tfmatrix2tf(
+            tf_complementary = kontrol.core.controlutils.tfmatrix2tf(
                 tf_complementary_matrix)
             super().__init__(tf_complementary)
 
@@ -304,7 +301,7 @@ class ComplementaryFilter(kontrol.core.transfer_function.TransferFunction):
             Additional weighting function on filter 2.
             Default None.
         """
-        func = kontrol.core.complementary_filter.synthesis.h2complementary
+        func = kontrol.complementary_filter.synthesis.h2complementary
         self._synthesis(func=func, w1=w1, w2=w2)
 
     def hinfsynthesis(self, w1=None, w2=None):
@@ -319,14 +316,14 @@ class ComplementaryFilter(kontrol.core.transfer_function.TransferFunction):
             Additional weighting function on filter 2.
             Default None.
         """
-        func = kontrol.core.complementary_filter.synthesis.hinfcomplementary
+        func = kontrol.complementary_filter.synthesis.hinfcomplementary
         self._synthesis(func=func, w1=w1, w2=w2)
 
     def _synthesis(self, func, w1=None, w2=None):
         """Generic complementary filter synthesis function.
 
         Synthesize the complementary filter using the function and
-        re-initialize kontrol.core.transfer_function.TransferFunction
+        re-initialize kontrol.transfer_function.TransferFunction
         with a 2-input-1-output control.xferfcn.TransferFunction.
 
         Parameters
@@ -624,5 +621,5 @@ class ComplementaryFilter(kontrol.core.transfer_function.TransferFunction):
     #                        * abs(self.noise1_tf.horner(s)[0][0]))
     #     noise2_filtered = (abs(self.filter2.horner(s)[0][0])
     #                        * abs(self.noise2_tf.horner(s)[0][0]))
-    #     self.noise_super = kontrol.common.math.quad_sum(
+    #     self.noise_super = kontrol.core.math.quad_sum(
     #         noise1_filtered, noise2_filtered)

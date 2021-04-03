@@ -2,12 +2,12 @@
 """
 import control
 
-import kontrol.core.transfer_function
+import kontrol
 
 
 def test_transfer_function_foton():
     tf = control.tf([1], [2, 3])
-    kontrol_tf = kontrol.core.transfer_function.TransferFunction(tf)
+    kontrol_tf = kontrol.TransferFunction(tf)
     n_correct = "zpk([],[0.238732414637843],0.3333333333333333,\"n\")"
     kontrol_tf_foton_n = kontrol_tf.foton
     kontrol_tf.foton = "f"

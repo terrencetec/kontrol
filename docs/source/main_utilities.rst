@@ -7,16 +7,16 @@ Complementary filter synthesis
 ------------------------------
 Optimal complementary filter synthesis using :math:`\mathcal{H}_\infty` methods.
 
-.. autoclass:: kontrol.core.complementary_filter.complementary_filter.ComplementaryFilter
+.. autoclass:: kontrol.ComplementaryFilter
    :members:
    :undoc-members:
    :show-inheritance:
 
 Frequency Series Class
 ----------------------
-Frequency domain and transfer function data modelling
+Frequency domain and transfer function data modeling
 
-.. autoclass:: kontrol.core.frequency_series.frequency_series.FrequencySeries
+.. autoclass:: kontrol.FrequencySeries
    :members:
    :undoc-members:
    :show-inheritance:

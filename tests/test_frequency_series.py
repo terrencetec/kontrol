@@ -1,11 +1,10 @@
-"""Tests for kontrol.core.frequency_series.frequency_series
+"""Tests for kontrol.frequency_series.frequency_series
 """
 import numpy as np
 import control
 
-import kontrol.core.frequency_series.frequency_series
-import kontrol.core.frequency_series.noise_models
-import kontrol.controlutils
+import kontrol
+import kontrol.core.controlutils
 
 
 def test_frequency_series():
@@ -23,7 +22,7 @@ def test_frequency_series():
 
     x = model(f, 1, 10)
 
-    fs = kontrol.core.frequency_series.frequency_series.FrequencySeries(f, x)
+    fs = kontrol.FrequencySeries(f=f, x=x)
 
     fs.fit_empirical(
         model=model, optimizer_kwargs={"options":{"maxfev":100000}})
@@ -31,5 +30,5 @@ def test_frequency_series():
     fs.fit_tf()
 
     tf_correct = control.tf([1/(2*np.pi*10), 1], [1/(2*np.pi*1), 1])
-    assert kontrol.controlutils.check_tf_equal(
+    assert kontrol.core.controlutils.check_tf_equal(
         tf_correct, fs.tf, allclose_kwargs={"rtol":1e-2})

@@ -13,7 +13,7 @@ Required
 * numpy
 * scipy
 * matplotlib
-* control
+* control>=0.9
 
 Optional
 ^^^^^^^^

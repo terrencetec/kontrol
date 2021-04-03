@@ -1,28 +1,28 @@
 """Noise models for empirical fitting.
 """
 import numpy as np
-import math
+
 
 def piecewise_noise(f, n0, exp=[0], fc=[0]):
     """Piecewise noise specified corner frequencies and exponents
 
     Parameters
     ----------
-        f: list of int/float or numpy.ndarray
-            The frequency axis of the noise.
-        n0: int/float
-            The noise level at 1 Hz with the first exponent.
-        exp: list of int/float
-            The list of exponents of each section of noise separated by the \
-            corner frequencies.
-        fc: list of int/float
-            The list of corner frequencies in increaing order. The length of \
-            fc must be 1 less then the length of exp
+    f: list of int/float or numpy.ndarray
+        The frequency axis of the noise.
+    n0: int/float
+        The noise level at 1 Hz with the first exponent.
+    exp: list of int/float
+        The list of exponents of each section of noise separated by the
+        corner frequencies.
+    fc: list of int/float
+        The list of corner frequencies in increaing order. The length of
+        fc must be 1 less then the length of exp
 
     Returns
     -------
-        noise: numpy.ndarray
-            The piecewise noise array.
+    noise: numpy.ndarray
+        The piecewise noise array.
     """
     if n0<0:
         n0 = -n0
@@ -71,8 +71,8 @@ def lvdt_noise(f, n0=8e-3, fc=4.5, exp1=-0.5, exp2=0.):
 
     Notes
     -----
-        The LVDT noise noise typically has a :math:`f^{-0.5}` dependency \
-        before the corner frequency and is flat after that.
+    The LVDT noise noise typically has a :math:`f^{-0.5}` dependency
+    before the corner frequency and is flat after that.
     """
     return piecewise_noise(f, n0, exp=[exp1, exp2], fc=[fc])
 
@@ -104,7 +104,7 @@ def geophone_noise(f, n0=2e-6, fc=0.9, exp1=-3.5, exp2=-1.):
 
     Notes
     -----
-    The geophone noise noise typically has a :math:`f^{-3.5}` dependency \
+    The geophone noise noise typically has a :math:`f^{-3.5}` dependency
     before the corner frequency and has a :math:`f^{-1}` dependency after that.
     """
     return piecewise_noise(f, n0, exp=[exp1, exp2], fc=[fc])

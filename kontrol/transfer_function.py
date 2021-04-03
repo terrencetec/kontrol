@@ -5,7 +5,7 @@ to provide custom functionality related to KAGRA.
 import control
 import numpy as np
 
-import kontrol.controlutils
+import kontrol.core.controlutils
 
 
 class TransferFunction(control.TransferFunction):
@@ -72,7 +72,7 @@ class TransferFunction(control.TransferFunction):
     def stablize(self):
         """Convert unstable zeros and poles to stable ones.
         """
-        stable_tf = kontrol.controlutils.convert_unstable_tf(self)
+        stable_tf = kontrol.core.controlutils.convert_unstable_tf(self)
         super().__init__(stable_tf)
 
     @property
