@@ -8,11 +8,10 @@ before_install:
   - sudo apt-get -y install gfortran cmake --fix-missing;
   - sudo apt-get -y install liblapack-dev libblas-dev;
   - sudo apt-get -y install gfortran;
-  - pip install scikit-build numpy
-  - pip install slycot
-
 
 install:
+  - pip install scikit-build numpy
+  - pip install slycot
   - pip install -r requirements.txt
   - pip install pytest-cov pytest
   - pip install codecov
