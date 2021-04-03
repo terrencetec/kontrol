@@ -15,4 +15,5 @@ omit =
     archive/*
     dev/*
     kontrol/unused/*
+    kontrol/logger.py
     setup.py
