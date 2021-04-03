@@ -10,7 +10,7 @@ before_install:
   - sudo apt-get -y install gfortran;
 
 install:
-  - pip install scikit-build numpy
+  - pip install -U scikit-build numpy
   - pip install slycot
   - pip install -r requirements.txt
   - pip install pytest-cov pytest
