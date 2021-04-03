@@ -10,10 +10,12 @@ control filter design.
 Features
 --------
 * Complementary filter synthesis using :math:`\mathcal{H}_\infty`.
+
   * Synthesize optimal complementary filters in a 2-sensor configuration.
   * Only depends on sensor noises.
   * No specifications required.
 
-* Frequency series modeling
+* Frequency series modeling.
+
   * Model-based empirical fitting.
   * Model frequency series as zero-pole-gain and transfer function models.
