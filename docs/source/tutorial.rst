@@ -1,6 +1,14 @@
 Tutorials
 =========
 
+Complementary Filter
+--------------------
+
+.. toctree::
+   :maxdepth: 1
+   
+   tutorials/complementary_filter_synthesis_using_h-infinity_methods
+
 Noise Spectrum Modeling
 -----------------------
 

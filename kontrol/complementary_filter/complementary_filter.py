@@ -101,7 +101,7 @@ class ComplementaryFilter(kontrol.transfer_function.TransferFunction):
         if isinstance(noise1, control.xferfcn.TransferFunction):
             self.tf_noise1 = noise1
             if self.omega is not None:
-                self.noise1 = abs(noise1(1j*omega))
+                self.noise1 = abs(noise1(1j*self.omega))
             else:
                 self.noise1 = noise1
         else:
@@ -111,7 +111,7 @@ class ComplementaryFilter(kontrol.transfer_function.TransferFunction):
         if isinstance(noise2, control.xferfcn.TransferFunction):
             self.tf_noise2 = noise2
             if self.omega is not None:
-                self.noise2 = abs(noise2(1j*omega))
+                self.noise2 = abs(noise2(1j*self.omega))
             else:
                 self.noise2 = noise2
         else:
