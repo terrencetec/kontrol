@@ -11,7 +11,7 @@ import kontrol.complementary_filter.synthesis
 
 
 class ComplementaryFilter(kontrol.transfer_function.TransferFunction):
-    """A set of complementary filters.
+    r"""A set of complementary filters.
 
     This instances will return a TransferFunction object that
     has two inputs and one output, i.e. 2 transfer functions, which
