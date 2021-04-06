@@ -5,6 +5,7 @@ import control
 
 import kontrol
 import kontrol.core.controlutils
+import kontrol.frequency_series.noise_models
 
 
 def test_frequency_series():
@@ -32,3 +33,16 @@ def test_frequency_series():
     tf_correct = control.tf([1/(2*np.pi*10), 1], [1/(2*np.pi*1), 1])
     assert kontrol.core.controlutils.check_tf_equal(
         tf_correct, fs.tf, allclose_kwargs={"rtol":1e-2})
+
+
+def test_noise_models():
+    f = np.logspace(-2, 2, 1000)
+    lvdt_noise = kontrol.frequency_series.noise_models.lvdt_noise(f=f)
+    geophone_noise = kontrol.frequency_series.noise_models.geophone_noise(f=f)
+    lvdt_noise_ = kontrol.frequency_series.noise_models.piecewise_noise(
+        f=f, n0=8e-3, exp=[-0.5, 0], fc=[4.5])
+    geophone_noise_ = kontrol.frequency_series.noise_models.piecewise_noise(
+        f=f, n0=2e-6, exp=[-3.5, -1], fc=[0.9])
+    assert all([
+        np.allclose(lvdt_noise, lvdt_noise_),
+        np.allclose(geophone_noise, geophone_noise_)])

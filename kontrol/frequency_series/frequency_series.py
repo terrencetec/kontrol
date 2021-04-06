@@ -13,13 +13,6 @@ import kontrol.frequency_series.conversion
 class FrequencySeries:
     """ Frequency series class
 
-    Parameters
-    ----------
-    f: array
-        Frequency axis
-    x: array
-        Frequency series data.
-
     Attributes
     ----------
     f: array

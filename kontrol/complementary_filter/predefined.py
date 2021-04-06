@@ -124,14 +124,3 @@ def lucia(coefs):
     hpf *= hpf.den[0][0][0]/hpf.num[0][0][0]
     lpf = 1 - hpf
     return (lpf, hpf)
-
-# def your_custom_filter(coefs,):
-#     """Define any filter using this suggested format.
-#     """
-#
-#     # Polynomials. Use _aN for the coefficient of
-#     # the Nth-order Laplace variable of the denominator.
-#     a0, a1, a2, a3, b0, b1, b2 = coefs
-#     A = [a3, a2, a1, a0]
-#     B = [b0, b1, b2]
-#     return(control.tf(B, A),)  # Return H(s) = B(s)/A(s).
