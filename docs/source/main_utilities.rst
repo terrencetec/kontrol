@@ -20,3 +20,12 @@ Frequency domain and transfer function data modeling
    :members:
    :undoc-members:
    :show-inheritance:
+
+Sensing Matrix Class
+--------------------
+Sensing matrix and diagonalization
+
+.. autoclass:: kontrol.SensingMatrix
+   :members:
+   :undoc-members:
+   :show-inheritance:
