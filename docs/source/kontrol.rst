@@ -10,7 +10,7 @@ Subpackages
    kontrol.core
    kontrol.complementary_filter
    kontrol.frequency_series
-
+   kontrol.sensact
 
 
 Submodules
