@@ -28,6 +28,7 @@ class Matrix(np.ndarray):
             "strides": array.strides,
             "order": None,
         }
+        #print(type(matrix))
         obj = super(Matrix, cls).__new__(cls, **ndarray_kwargs)
         return obj
 
@@ -63,7 +64,7 @@ class SensingMatrix(Matrix):
             -0.2 & 1
             \end{bmatrix}.
         """
-        super().__new__(SensingMatrix, matrix)
+        super().__new__(type(self), matrix)
         if coupling_matrix is not None:
             self.coupling_matrix = np.array(coupling_matrix)
         else:
