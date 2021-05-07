@@ -29,3 +29,12 @@ Sensing matrix and diagonalization
    :members:
    :undoc-members:
    :show-inheritance:
+
+Optical Lever Sensing Matrices
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Sensing matrices for optical levers in KAGRA.
+
+.. autoclass:: kontrol.OpticalLeverSensingMatrix
+   :members:
+   :undoc-members:
+   :show-inheritance:
