@@ -16,7 +16,7 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
     -----
     We're using equation (29) from [1]_.
 
-    .. math:
+    .. math::
         \begin{pmatrix}
             x_L\\
             \theta_P\\
@@ -45,7 +45,7 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
     :math:`y_\mathrm{len}` is the vertical displacement of the beam spot
     at the length-sensing QPD plane,
 
-    .. math:
+    .. math::
         \mathbf{C}_\mathrm{rotation}
         =
         \begin{bmatrix}
@@ -55,7 +55,7 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
             0 & 0 & -\sin\phi_\mathrm{len} & \cos\phi_\mathrm{len}
         \end{bmatrix},
 
-    .. math:
+    .. math::
         \mathbf{C}_\mathrm{align}
         =
         \begin{bmatrix}
@@ -68,7 +68,7 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
             & 0\\
         \end{bmatrix}^{+},
 
-    .. math:
+    .. math::
         \mathbf{C}_\mathrm{miscenter}
         =
         \begin{bmatrix}
@@ -76,7 +76,7 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
             0 & 1 & 0\\
             0 & 0 & 1
         \end{bmatrix}^{+},
-        
+
     :math:`\phi_\mathrm{tilt}` is the angle between the tilt-sensing QPD
     and the yaw-pitch frame, :math:`\phi_\mathrm{len}` is the angle between
     the length-sensing QPD and the yaw-pitch frame,
