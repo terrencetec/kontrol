@@ -19,24 +19,21 @@ class Matrix(np.ndarray):
         obj: Matrix(numpy.ndarray)
             The matrix/array.
         """
-        array = np.array(matrix)
-        ndarray_kwargs = {
-            "shape": array.shape,
-            "buffer": array,
-            "dtype": array.dtype,
-            "offset": 0,
-            "strides": array.strides,
-            "order": None,
-        }
-        #print(type(matrix))
-        obj = super(Matrix, cls).__new__(cls, **ndarray_kwargs)
-        return obj
+        # print("Matrix __new__")
+        self = np.asarray(matrix).view(cls)
+        return self
+
+    def __init__(self, *args, **kwargs):
+        """Constructor
+        """
+        # print("Matrix __init__")
+        pass
 
 
 class SensingMatrix(Matrix):
     """Base class for sensing matrices
     """
-    def __init__(self, matrix, coupling_matrix=None):
+    def __init__(self, matrix, coupling_matrix=None, *args, **kwargs):
         r"""Constructor
 
         Parameters
@@ -64,7 +61,8 @@ class SensingMatrix(Matrix):
             -0.2 & 1
             \end{bmatrix}.
         """
-        super().__new__(type(self), matrix)
+        # print("SensingMatrix __init__")
+        # super().__init__(matrix)
         if coupling_matrix is not None:
             self.coupling_matrix = np.array(coupling_matrix)
         else:
