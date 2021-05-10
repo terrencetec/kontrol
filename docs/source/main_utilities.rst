@@ -1,9 +1,13 @@
 Main Utilities
 ==============
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
-Complementary filter synthesis
+   Complementary Filter Synthesis
+   Frequency Series Class
+   Sensing Matrix Class
+
+Complementary Filter Synthesis
 ------------------------------
 Optimal complementary filter synthesis using :math:`\mathcal{H}_\infty` methods.
 
@@ -35,6 +39,24 @@ Optical Lever Sensing Matrices
 Sensing matrices for optical levers in KAGRA.
 
 .. autoclass:: kontrol.OpticalLeverSensingMatrix
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Horizontal Optical Lever Sensing Matrices
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Sensing matrices for horizontal optical levers (Type-A, Type-Bp) in KAGRA.
+
+.. autoclass:: kontrol.HorizontalOpticalLeverSensingMatrix
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Vertical Optical Lever Sensing Matrices
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Sensing matrices for vertical optical levers (Type-B) in KAGRA.
+
+.. autoclass:: kontrol.VerticalOpticalLeverSensingMatrix
    :members:
    :undoc-members:
    :show-inheritance:

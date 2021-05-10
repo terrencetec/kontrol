@@ -7,4 +7,6 @@ from .frequency_series.frequency_series import FrequencySeries
 from .complementary_filter.complementary_filter import ComplementaryFilter
 from .transfer_function import TransferFunction
 from .sensact.matrix  import Matrix, SensingMatrix
-from .sensact.optical_lever import OpticalLeverSensingMatrix
+from .sensact.optical_lever import (
+    OpticalLeverSensingMatrix, HorizontalOpticalLeverSensingMatrix,
+    VerticalOpticalLeverSensingMatrix)

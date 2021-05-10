@@ -151,12 +151,12 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
         https://github.com/terrencetec/kagra-optical-lever.
     """
     def __new__(cls, r_h, r_v, alpha_h, alpha_v,
-                 r_lens_h=0, r_lens_v=0, d_h=0, d_v=0,
-                 delta_x=0, delta_y=0,
-                 phi_tilt=0, phi_len=0, f=np.inf,
-                 format="OPLEV2EUL",
-                 coupling_matrix=None, *args, **kwargs):
-        """Constructor
+                r_lens_h=0, r_lens_v=0, d_h=0, d_v=0,
+                delta_x=0, delta_y=0,
+                phi_tilt=0, phi_len=0, f=np.inf,
+                format="OPLEV2EUL",
+                coupling_matrix=None, *args, **kwargs):
+        r"""Constructor
 
         Parameters
         ----------
@@ -244,7 +244,7 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
 
         self = super(OpticalLeverSensingMatrix, cls).__new__(
             cls, matrix=c_sensing)  # __new__ in kontrol.sensact.matrix.Matrix
-
+        super().__init__(self, matrix=None, coupling_matrix=coupling_matrix)
         self.c_align = _c_align
         self.c_rotation = _c_rotation
         self.c_miscenter = _c_miscenter
@@ -265,18 +265,13 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
         self.format = format
         return self
 
-    def __init__(self, r_h, r_v, alpha_h, alpha_v,
-                 r_lens_h=0, r_lens_v=0, d_h=0, d_v=0,
-                 delta_x=0, delta_y=0,
-                 phi_tilt=0, phi_len=0, f=np.inf,
-                 format="OPLEV2EUL",
-                 coupling_matrix=None,
-                 *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """Constructor
         """
         # print("OpticalLeverSensingMatrix __init__")
         # __init__ in kontrol.sensact.matrix.SensingMatrix
-        super().__init__(matrix=None, coupling_matrix=coupling_matrix)
+        # super().__init__(matrix=None, coupling_matrix=coupling_matrix)
+        pass
 
     def update_matrices_decorator(func):
         """Update matrices and self upon setting new parameters.
@@ -284,6 +279,7 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
         def update_matrices(self, *args, **kwargs):
             func(self, *args, **kwargs)
             try:
+                # print("In decorator")
                 _c_align = c_align(
                     r_h=self.r_h, r_v=self.r_v,
                     alpha_h=self.alpha_h, alpha_v=self.alpha_v,
@@ -512,6 +508,337 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
             raise ValueError("Choose from [\"OPLEV2EUL\", \"OL2EUL\", \"xy\"]")
         self._format = _format
 
+
+class HorizontalOpticalLeverSensingMatrix(OpticalLeverSensingMatrix):
+    """Horizontal optical lever sensing matrix.
+
+    Parameters
+    ----------
+    r: float
+        Lever arm.
+    alpha_h: float
+        Angle of incidence on the horizontal plane.
+    r_lens: float, optional
+        Lever arm from the optics to the convex lens.
+        Default 0.
+    f: float, optional
+        Focal length of the convex lens.
+        Default np.inf.
+    alpha_v: float, optional
+        Angle of incidence on the vertical plane.
+        Default 0.
+    phi_tilt: float, optional
+        Angle from the tilt-sensing QPD frame to the yaw-pitch frame.
+        Default 0.
+    phi_len: float, optional
+        Angle from the length-sensing QPD frame to the yaw-pitch frame.
+        Default 0.
+    delta_x: float, optional
+        Horizontal miscentering of the beam spot at the optics plane.
+        Default 0.
+    delta_y: float, optional
+        Vertical miscentering of the beam spot at the optics plane.
+        Default 0.
+    delta_d: float, optional
+        Misplacement of the length-sensing QPD.
+        Default 0.
+    format: str, optional
+        Format of the sensing matrix.
+        Choose from
+            "OPLEV2EUL": Default sensing matrix from KAGRA MEDM screen
+                with input (TILT_PIT, TILT_YAW, LEN_PIT, LEN_YAW),
+                and output (longitudinal, pitch and yaw).
+            "xy": Matrix as shown in [1]_.
+    coupling_matrix: array, optional
+        The coupling matrix.
+        Default None.
+    *args:
+        Variable length arguments passed to OpticalLeverSensingMatrix.
+    **kwargs:
+        Keyword arguments passed to OpticalLeverSensingMatrix.
+    """
+    def __new__(cls, r, alpha_h, r_lens=0, f=np.inf,
+                alpha_v=0, phi_tilt=0, phi_len=0,
+                delta_x=0, delta_y=0, delta_d=0,
+                format="OPLEV2EUL", coupling_matrix=None, *args, **kwargs):
+        """Constructor
+
+        Parameters
+        ----------
+        r: float
+            Lever arm.
+        alpha_h: float
+            Angle of incidence on the horizontal plane.
+        r_lens: float, optional
+            Lever arm from the optics to the convex lens.
+            Default 0.
+        f: float, optional
+            Focal length of the convex lens.
+            Default np.inf.
+        alpha_v: float, optional
+            Angle of incidence on the vertical plane.
+            Default 0.
+        phi_tilt: float, optional
+            Angle from the tilt-sensing QPD frame to the yaw-pitch frame.
+            Default 0.
+        phi_len: float, optional
+            Angle from the length-sensing QPD frame to the yaw-pitch frame.
+            Default 0.
+        delta_x: float, optional
+            Horizontal miscentering of the beam spot at the optics plane.
+            Default 0.
+        delta_y: float, optional
+            Vertical miscentering of the beam spot at the optics plane.
+            Default 0.
+        delta_d: float, optional
+            Misplacement of the length-sensing QPD.
+            Default 0.
+        format: str, optional
+            Format of the sensing matrix.
+            Choose from
+                "OPLEV2EUL": Default sensing matrix from KAGRA MEDM screen
+                    with input (TILT_PIT, TILT_YAW, LEN_PIT, LEN_YAW),
+                    and output (longitudinal, pitch and yaw).
+                "xy": Matrix as shown in [1]_.
+        coupling_matrix: array, optional
+            The coupling matrix.
+            Default None.
+        *args:
+            Variable length arguments passed to OpticalLeverSensingMatrix.
+        **kwargs:
+            Keyword arguments passed to OpticalLeverSensingMatrix.
+        """
+        r_h = r
+        r_v = r*np.cos(alpha_h)
+        r_lens_h = r_lens
+        if f is not np.inf:
+            d_h = r_lens*f / (r_lens-f) + delta_d
+        else:
+            d_h = 0
+        self = super(HorizontalOpticalLeverSensingMatrix, cls).__new__(
+            cls,
+            r_h=r_h, r_v=r_v, alpha_h=alpha_h, alpha_v=alpha_v,
+            r_lens_h=r_lens_h, f=f, d_h=d_h,
+            phi_tilt=phi_tilt, phi_len=phi_len,
+            delta_x=delta_x, delta_y=delta_y,
+            format=format, coupling_matrix=coupling_matrix, *args, **kwargs
+        )
+        self.r = r
+        self.r_lens = r_lens
+        self.delta_d = delta_d
+        return self
+
+    def __init__(self, *args, **kwargs):
+        """Constructor
+        """
+        pass
+
+    @property
+    def r(self):
+        """Lever arm.
+        """
+        return self._r
+
+    @r.setter
+    # @OpticalLeverSensingMatrix.update_matrices_decorator
+    def r(self, _r):
+        """r setter
+        """
+        self._r = _r
+        self.r_h = self.r
+        self.r_v = self.r * np.cos(self.alpha_h)
+
+    @property
+    def r_lens(self):
+        """Lever arm from the optics to the convex lens.
+        """
+        return self._r_lens
+
+    @r_lens.setter
+    def r_lens(self, _r_lens):
+        """r_lens setter
+        """
+        self._r_lens = _r_lens
+        self.r_lens_h = self.r_lens
+
+    @property
+    def delta_d(self):
+        """Misplacement of the length-sensing QPD.
+        """
+        return self._delta_d
+
+    @delta_d.setter
+    def delta_d(self, _delta_d):
+        """delta_d setter
+        """
+        self._delta_d = _delta_d
+        self.d_h = self.r_lens*self.f / (self.r_lens-self.f) + self._delta_d
+
+
+class VerticalOpticalLeverSensingMatrix(OpticalLeverSensingMatrix):
+    """Vertical optical lever sensing matrix.
+
+    Parameters
+    ----------
+    r: float
+        Lever arm.
+    alpha_v: float
+        Angle of incidence on the vertical plane.
+    r_lens: float, optional
+        Lever arm from the optics to the convex lens.
+        Default 0.
+    f: float, optional
+        Focal length of the convex lens.
+        Default np.inf.
+    alpha_h: float, optional
+        Angle of incidence on the horizontal plane.
+        Default 0.
+    phi_tilt: float, optional
+        Angle from the tilt-sensing QPD frame to the yaw-pitch frame.
+        Default 0.
+    phi_len: float, optional
+        Angle from the length-sensing QPD frame to the yaw-pitch frame.
+        Default 0.
+    delta_x: float, optional
+        Horizontal miscentering of the beam spot at the optics plane.
+        Default 0.
+    delta_y: float, optional
+        Vertical miscentering of the beam spot at the optics plane.
+        Default 0.
+    delta_d: float, optional
+        Misplacement of the length-sensing QPD.
+        Default 0.
+    format: str, optional
+        Format of the sensing matrix.
+        Choose from
+            "OPLEV2EUL": Default sensing matrix from KAGRA MEDM screen
+                with input (TILT_PIT, TILT_YAW, LEN_PIT, LEN_YAW),
+                and output (longitudinal, pitch and yaw).
+            "xy": Matrix as shown in [1]_.
+    coupling_matrix: array, optional
+        The coupling matrix.
+        Default None.
+    *args:
+        Variable length arguments passed to OpticalLeverSensingMatrix.
+    **kwargs:
+        Keyword arguments passed to OpticalLeverSensingMatrix.
+    """
+    def __new__(cls, r, alpha_v, r_lens=0, f=np.inf,
+                alpha_h=0, phi_tilt=0, phi_len=0,
+                delta_x=0, delta_y=0, delta_d=0,
+                format="OPLEV2EUL", coupling_matrix=None, *args, **kwargs):
+        """Constructor
+
+        Parameters
+        ----------
+        r: float
+            Lever arm.
+        alpha_v: float
+            Angle of incidence on the vertical plane.
+        r_lens: float, optional
+            Lever arm from the optics to the convex lens.
+            Default 0.
+        f: float, optional
+            Focal length of the convex lens.
+            Default np.inf.
+        alpha_h: float, optional
+            Angle of incidence on the horizontal plane.
+            Default 0.
+        phi_tilt: float, optional
+            Angle from the tilt-sensing QPD frame to the yaw-pitch frame.
+            Default 0.
+        phi_len: float, optional
+            Angle from the length-sensing QPD frame to the yaw-pitch frame.
+            Default 0.
+        delta_x: float, optional
+            Horizontal miscentering of the beam spot at the optics plane.
+            Default 0.
+        delta_y: float, optional
+            Vertical miscentering of the beam spot at the optics plane.
+            Default 0.
+        delta_d: float, optional
+            Misplacement of the length-sensing QPD.
+            Default 0.
+        format: str, optional
+            Format of the sensing matrix.
+            Choose from
+                "OPLEV2EUL": Default sensing matrix from KAGRA MEDM screen
+                    with input (TILT_PIT, TILT_YAW, LEN_PIT, LEN_YAW),
+                    and output (longitudinal, pitch and yaw).
+                "xy": Matrix as shown in [1]_.
+        coupling_matrix: array, optional
+            The coupling matrix.
+            Default None.
+        *args:
+            Variable length arguments passed to OpticalLeverSensingMatrix.
+        **kwargs:
+            Keyword arguments passed to OpticalLeverSensingMatrix.
+        """
+        r_h = r*np.cos(alpha_h)
+        r_v = r
+        r_lens_v = r_lens
+        if f is not np.inf:
+            d_v = r_lens*f / (r_lens-f) + delta_d
+        else:
+            d_v = 0
+        self = super(VerticalOpticalLeverSensingMatrix, cls).__new__(
+            cls,
+            r_h=r_h, r_v=r_v, alpha_h=alpha_h, alpha_v=alpha_v,
+            r_lens_v=r_lens_v, f=f, d_v=d_v,
+            phi_tilt=phi_tilt, phi_len=phi_len,
+            delta_x=delta_x, delta_y=delta_y,
+            format=format, coupling_matrix=coupling_matrix, *args, **kwargs
+        )
+        self.r = r
+        self.r_lens = r_lens
+        self.delta_d = delta_d
+        return self
+
+    def __init__(self, *args, **kwargs):
+        """Constructor
+        """
+        pass
+
+    @property
+    def r(self):
+        """Lever arm.
+        """
+        return self._r
+
+    @r.setter
+    # @OpticalLeverSensingMatrix.update_matrices_decorator
+    def r(self, _r):
+        """r setter
+        """
+        self._r = _r
+        self.r_h = self.r * np.cos(self.alpha_v)
+        self.r_v = self.r
+
+    @property
+    def r_lens(self):
+        """Lever arm from the optics to the convex lens.
+        """
+        return self._r_lens
+
+    @r_lens.setter
+    def r_lens(self, _r_lens):
+        """r_lens setter
+        """
+        self._r_lens = _r_lens
+        self.r_lens_v = self.r_lens
+
+    @property
+    def delta_d(self):
+        """Misplacement of the length-sensing QPD.
+        """
+        return self._delta_d
+
+    @delta_d.setter
+    def delta_d(self, _delta_d):
+        """delta_d setter
+        """
+        self._delta_d = _delta_d
+        self.d_v = self.r_lens*self.f / (self.r_lens-self.f) + self._delta_d
 
 
 def c_align(r_h, r_v, alpha_h, alpha_v,
