@@ -1,5 +1,7 @@
 Main Utilities
 ==============
+Be sure to check out :ref:`Tutorials` for example usages of these utilities!
+
 .. toctree::
    :maxdepth: 2
 

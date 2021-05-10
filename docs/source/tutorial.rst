@@ -1,5 +1,7 @@
 Tutorials
 =========
+Be sure to check out the :ref:`Main Utilities` and :ref:`Kontrol API` sections
+for detailed documentation.
 
 Complementary Filter
 --------------------
