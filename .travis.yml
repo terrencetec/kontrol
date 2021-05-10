@@ -21,5 +21,5 @@ script:
   py.test  --cov-report term --cov=kontrol
 
 after_success:
-  env
-  bash <(curl -s https://codecov.io/bash)
+  - env
+  - bash <(curl -s https://codecov.io/bash)
