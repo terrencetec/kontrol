@@ -25,6 +25,12 @@ Features
   * Model-based empirical fitting.
   * Model frequency series as zero-pole-gain and transfer function models.
 
+* Sensing/Actuation Matrices.
+
+  * Sensing/Actuation Matrices diagonalization with given coupling matrix.
+  * General optical lever, horizontal and vertical optical lever sensing matrices,
+    using parameters defined in "kagra-optical-lever<https://www.github.com/terrencetec/kagra-optical-lever>"_
+    
 - **Documentation:** https://kontrol.readthedocs.io/
 - **Repository:** https://github.com/terrencetec/kontrol.git
 

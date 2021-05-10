@@ -1,11 +1,8 @@
 Main Utilities
 ==============
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
-   Complementary Filter Synthesis
-   Frequency Series Class
-   Sensing Matrix Class
 
 Complementary Filter Synthesis
 ------------------------------

@@ -15,7 +15,7 @@ kontrol.frequency_series.frequency_series module
 Secondary modules
 -----------------
 
-kontrol.frequency_series.frequency_series.conversion module
+kontrol.frequency_series.conversion module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.frequency_series.frequency_series.conversion
@@ -23,7 +23,7 @@ kontrol.frequency_series.frequency_series.conversion module
    :undoc-members:
    :show-inheritance:
 
-kontrol.frequency_series.frequency_series.costs module
+kontrol.frequency_series.costs module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.frequency_series.frequency_series.costs
@@ -31,7 +31,7 @@ kontrol.frequency_series.frequency_series.costs module
    :undoc-members:
    :show-inheritance:
 
-kontrol.frequency_series.frequency_series.noise_models module
+kontrol.frequency_series.noise_models module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.frequency_series.frequency_series.noise_models
