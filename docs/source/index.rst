@@ -31,6 +31,8 @@ Features
   * General optical lever, horizontal and vertical optical lever sensing matrices,
     using parameters defined in `kagra-optical-lever <https://www.github.com/terrencetec/kagra-optical-lever>`_.
 
+Don't hesitate to check out the `tutorials <https://kontrol.readthedocs.io/en/latest/tutorial.html>`_!
+
 - **Documentation:** https://kontrol.readthedocs.io/
 - **Repository:** https://github.com/terrencetec/kontrol.git
 
