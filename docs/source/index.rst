@@ -29,7 +29,7 @@ Features
 
   * Sensing/Actuation Matrices diagonalization with given coupling matrix.
   * General optical lever, horizontal and vertical optical lever sensing matrices,
-    using parameters defined in `kagra-optical-lever <https://www.github.com/terrencetec/kagra-optical-lever>`_
+    using parameters defined in `kagra-optical-lever <https://www.github.com/terrencetec/kagra-optical-lever>`_.
 
 - **Documentation:** https://kontrol.readthedocs.io/
 - **Repository:** https://github.com/terrencetec/kontrol.git

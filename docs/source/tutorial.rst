@@ -25,7 +25,7 @@ Sensing Matrices
 ----------------
 
 .. toctree::
-   :maxdept: 1
+   :maxdepth: 1
 
    tutorials/sensing_matrix_diagonalization
    tutorials/optical_lever_sensing_matrices
