@@ -8,8 +8,8 @@ def two_channel_correlation(x1, x2, fs=1, cpsd=None, coherence=None,
                             **welch_kwargs):
     r"""Noise estimation from two identical sensors' readout.
 
-    Parameter
-    ---------
+    Parameters
+    ----------
     x1: array
         Sensor readout 1. Time series or Power spectral density.
         The signal should contain a superposition of a
@@ -63,8 +63,9 @@ def two_channel_correlation(x1, x2, fs=1, cpsd=None, coherence=None,
     The PSD of the noise is computed as
     .. math::
         P_{nn}(f) = P_{x_1x_1}(f)\left(1-C_{x_1x_2}(f)^{\frac{1}{2}}\right)\,,
-    where $P_{x_1x_1}(f)$ is the power spectral density of the readout $x_1$
-    and $C_{x_1x_2}(f)$ is the coherence betwwen the readout $x_1$ and $x_2$
+    where :math:`P_{x_1x_1}(f)` is the power spectral density of the readout
+    :math:`x_1` and :math:`C_{x_1x_2}(f)` is the coherence
+    betwwen the readout :math:`x_1` and :math:`x_2`
 
     References
     ----------
