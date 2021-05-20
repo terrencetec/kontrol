@@ -6,7 +6,7 @@ import scipy.signal
 
 def two_channel_correlation(x1, x2, fs=1, cpsd=None, coherence=None,
                             **welch_kwargs):
-    """Noise estimation from two identical sensors' readout.
+    r"""Noise estimation from two identical sensors' readout.
 
     Parameter
     ---------
