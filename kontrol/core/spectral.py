@@ -61,8 +61,10 @@ def two_channel_correlation(x1, x2, fs=1, cpsd=None, coherence=None,
     Notes
     -----
     The PSD of the noise is computed as
+
     .. math::
         P_{nn}(f) = P_{x_1x_1}(f)\left(1-C_{x_1x_2}(f)^{\frac{1}{2}}\right)\,,
+    
     where :math:`P_{x_1x_1}(f)` is the power spectral density of the readout
     :math:`x_1` and :math:`C_{x_1x_2}(f)` is the coherence
     betwwen the readout :math:`x_1` and :math:`x_2`

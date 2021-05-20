@@ -64,7 +64,7 @@ Spectral Analysis Functions
 ---------------------------
 Spectral analysis related functions library.
 
-.. automodule:: kontrol.spectral
+.. automodule:: kontrol.core.spectral
    :members:
    :undoc-members:
    :show-inheritance:
