@@ -10,3 +10,4 @@ from .sensact.matrix  import Matrix, SensingMatrix
 from .sensact.optical_lever import (
     OpticalLeverSensingMatrix, HorizontalOpticalLeverSensingMatrix,
     VerticalOpticalLeverSensingMatrix)
+from .core import spectral

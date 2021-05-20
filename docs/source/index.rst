@@ -31,6 +31,11 @@ Features
   * General optical lever, horizontal and vertical optical lever sensing matrices,
     using parameters defined in `kagra-optical-lever <https://www.github.com/terrencetec/kagra-optical-lever>`_.
 
+* Noise spectral density estimation using correlation methods.
+
+  * 2-channel method [1]_
+  * 3-channel method [2]_
+
 Don't hesitate to check out the `tutorials <https://kontrol.readthedocs.io/en/latest/tutorial.html>`_!
 
 - **Documentation:** https://kontrol.readthedocs.io/
@@ -54,3 +59,16 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+.. [1]
+    Aaron Barzilai, Tom VanZandt, and Tom Kenny.
+    Technique for measurement of the noise of a sensor in the
+    presence of large background signals. Review of Scientific Instruments,
+    69:2767–2772, 07 1998.
+
+.. [2]
+    R. Sleeman, A. Wettum, and J. Trampert.
+    Three-channel correlation analysis: A new technique to measure
+    instrumental noise of digitizers and seismic sensors.
+    Bulletin of the Seismological Society of America, 96:258–271, 2006.

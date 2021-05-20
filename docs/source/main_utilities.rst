@@ -24,9 +24,9 @@ Frequency domain and transfer function data modeling
    :undoc-members:
    :show-inheritance:
 
-Sensing Matrix Class
---------------------
-Sensing matrix and diagonalization
+Sensing Matrix Classes
+----------------------
+Sensing matrix and diagonalization.
 
 .. autoclass:: kontrol.SensingMatrix
    :members:
@@ -56,6 +56,15 @@ Vertical Optical Lever Sensing Matrices
 Sensing matrices for vertical optical levers (Type-B) in KAGRA.
 
 .. autoclass:: kontrol.VerticalOpticalLeverSensingMatrix
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Spectral Analysis Functions
+---------------------------
+Spectral analysis related functions library.
+
+.. automodule:: kontrol.spectral
    :members:
    :undoc-members:
    :show-inheritance:

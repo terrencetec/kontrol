@@ -16,3 +16,11 @@ kontrol.core.math module
    :members:
    :undoc-members:
    :show-inheritance:
+
+kontrol.core.spectral module
+------------------------
+
+.. automodule:: kontrol.core.spectral
+   :members:
+   :undoc-members:
+   :show-inheritance:
