@@ -20,6 +20,7 @@ Noise Spectrum Modeling
    tutorials/frequency_series_fitting_with_empirical_model
    tutorials/frequency_series_fitting_with_transfer_function
    tutorials/frequency_series_fitting_with_transfer_function_part2
+   tutorials/noise_spectrum_modeling_with_optimization
 
 Noise Spectral Density Estimation using Correlation Methods
 -----------------------------------------------------------
