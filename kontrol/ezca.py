@@ -46,38 +46,20 @@ class Ezca(ezca.Ezca):
         numpy.array
             The accessed matrix.
         """
-        if isinstance(row_slicers, int):
-            nrow = row_slicers
-            i0 = 1  # Initial index to be read.
-        elif isinstance(row_slicers, tuple) or isinstance(row_slicers, list):
-            nrow = row_slicers[1] - row_slicers[0] + 1
-            i0 = row_slicers[0]  # Initial index to be read.
-        if isinstance(column_slicers, int):
-            ncol = column_slicers
-            j0 = 1
-        elif (isinstance(column_slicers, tuple)
-              or isinstance(column_slicers, list)):
-            ncol = column_slicers[1] - column_slicers[0] + 1
-            j0 = column_slicers[0]
-        if row_slicers is None or column_slicers is None:
-            nrow, ncol = self._get_row_column(matrix)
-            if row_slicers is None:
-                row_slicers = (1, nrow)
-                i0 = 1
-            if column_slicers is None:
-                column_slicers = (1, ncol)
-                j0 = 1
-        # ^^ Bad code ^^ If row_slicers/column_slicers not int, tuple or None
-        # It nrow and ncol are never set, which might raise error
-        # that is hard to debug.
+        nrow, ncol = self._get_row_column(matrix)
+        if row_slicers is None:
+            row_slicers = (1, nrow)
+        if column_slicers is None:
+            column_slicers = (1, ncol)
 
         ezca_matrix = np.zeros((nrow, ncol))  # Initialize matrix placeholder
         for i in range(len(ezca_matrix)):
             for j in range(len(ezca_matrix)):
                 ezca_matrix[i, j] = self.read(
-                    "{}_{}_{}".format(matrix, i+i0, j+j0))
+                    "{}_{}_{}".format(matrix, i+1, j+1))
 
-        return ezca_matrix
+        return ezca_matrix[row_slicers[0]-1: row_slicers[1],
+                           column_slicers[0]-1: column_slicers[1]]
 
     def _get_row_column(self, matrix):
         """Get the number of rows and columns of a matrix.
