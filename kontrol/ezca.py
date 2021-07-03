@@ -55,7 +55,7 @@ class Ezca(ezca.Ezca):
         elif (isinstance(column_slicers, tuple)
               or isinstance(column_slicers, list)):
             ncol = column_slicers[1] - column_slicers[0]
-        if row_slicers is None or column_silcers is None:
+        if row_slicers is None or column_slicers is None:
             nrow, ncol = self._get_row_column(matrix)
             row_slicers = (1, nrow)
             column_slicers = (1, ncol)
