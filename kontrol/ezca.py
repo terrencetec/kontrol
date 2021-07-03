@@ -50,15 +50,15 @@ class Ezca(ezca.Ezca):
             nrow = row_slicers
             i0 = 1  # Initial index to be read.
         elif isinstance(row_slicers, tuple) or isinstance(row_slicers, list):
-            nrow = row_slicers[1] - row_slicers[0]
-            i0 = row_slicers[0] + 1  # Initial index to be read.
+            nrow = row_slicers[1] - row_slicers[0] + 1
+            i0 = row_slicers[0]  # Initial index to be read.
         if isinstance(column_slicers, int):
             ncol = column_slicers
             j0 = 1
         elif (isinstance(column_slicers, tuple)
               or isinstance(column_slicers, list)):
-            ncol = column_slicers[1] - column_slicers[0]
-            j0 = column_slicers[0] + 1
+            ncol = column_slicers[1] - column_slicers[0] + 1
+            j0 = column_slicers[0]
         if row_slicers is None or column_slicers is None:
             nrow, ncol = self._get_row_column(matrix)
             if row_slicers is None:
