@@ -98,15 +98,13 @@ class Ezca(ezca.Ezca):
         while 1:
             try:
                 self.read("{}_{}_1".format(matrix, i))
-                i += 1
             except ezca.errors.EzcaConnectError:
-                i -= 1
                 break
+            i += 1
         while 1:
             try:
                 self.read("{}_1_{}".format(matrix, j))
-                j += 1
             except ezca.errors.EzcaConnectError:
-                j -= 1
                 break
+            j += 1
         return i, j
