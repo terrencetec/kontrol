@@ -202,25 +202,28 @@ class FrequencySeries:
             self._f_processed = f
             self._x_processed = x
 
+        _optimizer_kwargs = dict(optimizer_kwargs)
+
         # Set defaults for the default optimizer
-        if "workers" not in optimizer_kwargs.keys():
+        if "workers" not in _optimizer_kwargs.keys():
             if "workers" in inspect.signature(optimizer).parameters:
-                optimizer_kwargs["workers"] = -1
-        if "updating" not in optimizer_kwargs.keys():
+                _optimizer_kwargs["workers"] = -1
+        if "updating" not in _optimizer_kwargs.keys():
             if "updating" in inspect.signature(optimizer).parameters:
-                optimizer_kwargs["updating"] = "deferred"
+                _optimizer_kwargs["updating"] = "deferred"
 
         frequency_bounds = [(min(f), max(f))]*2*order  # FIXME
         gain_bound = [(min(x)*1e-1, max(x)*1e1)]    # FIXME
         bounds = frequency_bounds + gain_bound
-        if "bounds" not in optimizer_kwargs.keys():
+
+        if "bounds" not in _optimizer_kwargs.keys():
             if "bounds" in inspect.signature(optimizer).parameters:
-                optimizer_kwargs["bounds"] = bounds
+                _optimizer_kwargs["bounds"] = bounds
 
         res = optimizer(
             kontrol.frequency_series.costs.cost_zpk_fit,
             args=(f, x, error_func, error_func_kwargs),
-            **optimizer_kwargs)
+            **_optimizer_kwargs)
         self.f_zpk = f
         self.x_zpk = kontrol.frequency_series.conversion.args2zpk(f=f, zpk_args=res.x)
         self.tf_zpk = kontrol.frequency_series.conversion.args2controltf(zpk_args=res.x)
@@ -277,12 +280,13 @@ class FrequencySeries:
         if log_var:
             x0 = np.log(x0)
 
-        if "method" not in optimizer_kwargs.keys():
+        _optimizer_kwargs = dict(optimizer_kwargs)
+        if "method" not in _optimizer_kwargs.keys():
             if "method" in inspect.signature(optimizer).parameters:
-                optimizer_kwargs["method"] = "Powell"
-        if "x0" not in optimizer_kwargs.keys():
+                _optimizer_kwargs["method"] = "Powell"
+        if "x0" not in _optimizer_kwargs.keys():
             if "method" in inspect.signature(optimizer).parameters:
-                optimizer_kwargs["x0"] = x0
+                _optimizer_kwargs["x0"] = x0
 
         f = self._f_processed
         x = self._x_processed
@@ -290,7 +294,7 @@ class FrequencySeries:
         res = optimizer(
             kontrol.frequency_series.costs.cost_tf_fit,
             args=(f, x, error_func, error_func_kwargs, log_var),
-            **optimizer_kwargs)
+            **_optimizer_kwargs)
 
         self.f_tf = f
         args_opt = res.x

@@ -159,3 +159,4 @@ class TransferFunction(control.TransferFunction):
         self._foton = self._foton.rstrip(';')
         self._foton += ('],{gain},"{expression}")'
                         ''.format(gain=gain, expression=expression))
+        self._foton = self._foton.replace("j", "i")
