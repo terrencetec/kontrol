@@ -55,16 +55,15 @@ class Ezca(ezca.Ezca):
             column_slicers = (1, column_slicers)
         elif column_slicers is None:
             column_slicers = (1, ncol)
-        print(row_slicers)
-        print(column_slicers)
+            
         ezca_matrix = np.zeros((nrow, ncol))  # Initialize matrix placeholder
         for i in range(len(ezca_matrix)):
             for j in range(len(ezca_matrix)):
                 ezca_matrix[i, j] = self.read(
                     "{}_{}_{}".format(matrix, i+1, j+1))
 
-        return ezca_matrix[row_slicers[0]-1: row_slicers[1],
-                           column_slicers[0]-1: column_slicers[1]]
+        return ezca_matrix[row_slicers[0]-1:row_slicers[1],
+                           column_slicers[0]-1:column_slicers[1]]
 
     def _get_row_column(self, matrix):
         """Get the number of rows and columns of a matrix.
