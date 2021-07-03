@@ -93,18 +93,22 @@ class Ezca(ezca.Ezca):
             The number of rows and columns of the matrix.
         """
         # Try increasing the number of row and columns numbers.
-        i = 0
-        j = 0
+        i = 1
+        j = 1
         while 1:
             try:
                 self.read("{}_{}_1".format(matrix, i))
+                i += 1
             except ezca.errors.EzcaConnectError:
+                if i > 0:
+                    i -= 1
                 break
-            i += 1
         while 1:
             try:
                 self.read("{}_1_{}".format(matrix, j))
+                j += 1
             except ezca.errors.EzcaConnectError:
+                if j > 0:
+                    j -= 1
                 break
-            j += 1
         return i, j
