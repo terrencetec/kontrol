@@ -27,8 +27,8 @@ setuptools.setup(
         'scipy',
         'matplotlib',
         'control>=0.9'
-    ]
+    ],
     extra_requires={
         "ezca":["ezca"]
-    }
+    },
 )
