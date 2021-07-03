@@ -4,7 +4,7 @@ import ezca
 import numpy as np
 
 
-Class Ezca(ezca.Ezca):
+class Ezca(ezca.Ezca):
     """Ezca class for access channel variables
     """
     def __init__(prefix, timeout=0.1):
