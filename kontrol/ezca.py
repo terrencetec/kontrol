@@ -74,7 +74,6 @@ Class Ezca(ezca.Ezca):
 
         return ezca_matrix
 
-
     def _get_row_column(matrix):
         """Get the number of rows and columns of a matrix.
 
