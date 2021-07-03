@@ -7,7 +7,7 @@ import numpy as np
 class Ezca(ezca.Ezca):
     """Ezca class for access channel variables
     """
-    def __init__(prefix, timeout=0.1):
+    def __init__(self, prefix, timeout=0.1):
         """Constructor
 
         Parameters
@@ -21,7 +21,7 @@ class Ezca(ezca.Ezca):
         """
         super().__init__(prefix, timeout=timeout)
 
-    def get_matrix(matrix, row_slicers=None, column_slicers=None):
+    def get_matrix(self, matrix, row_slicers=None, column_slicers=None):
         """Returns a matrix from the EZCA record.
 
         Parameters
@@ -74,7 +74,7 @@ class Ezca(ezca.Ezca):
 
         return ezca_matrix
 
-    def _get_row_column(matrix):
+    def _get_row_column(self, matrix):
         """Get the number of rows and columns of a matrix.
 
         Parameters
