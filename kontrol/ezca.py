@@ -47,9 +47,13 @@ class Ezca(ezca.Ezca):
             The accessed matrix.
         """
         nrow, ncol = self._get_row_column(matrix)
-        if row_slicers is None:
+        if isinstance(row_slicers, int):
+            row_slicers = (1, int)
+        elif row_slicers is None:
             row_slicers = (1, nrow)
-        if column_slicers is None:
+        if isinstance(column_slicers, int):
+            column_slicers = (1, int)
+        elif column_slicers is None:
             column_slicers = (1, ncol)
 
         ezca_matrix = np.zeros((nrow, ncol))  # Initialize matrix placeholder
