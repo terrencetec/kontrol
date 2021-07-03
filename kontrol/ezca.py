@@ -48,11 +48,11 @@ class Ezca(ezca.Ezca):
         """
         nrow, ncol = self._get_row_column(matrix)
         if isinstance(row_slicers, int):
-            row_slicers = (1, int)
+            row_slicers = (1, row_slicers)
         elif row_slicers is None:
             row_slicers = (1, nrow)
         if isinstance(column_slicers, int):
-            column_slicers = (1, int)
+            column_slicers = (1, row_slicers)
         elif column_slicers is None:
             column_slicers = (1, ncol)
 
