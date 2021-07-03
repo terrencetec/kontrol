@@ -52,10 +52,11 @@ class Ezca(ezca.Ezca):
         elif row_slicers is None:
             row_slicers = (1, nrow)
         if isinstance(column_slicers, int):
-            column_slicers = (1, row_slicers)
+            column_slicers = (1, column_slicers)
         elif column_slicers is None:
             column_slicers = (1, ncol)
-
+        print(row_slicers)
+        print(column_slicers)
         ezca_matrix = np.zeros((nrow, ncol))  # Initialize matrix placeholder
         for i in range(len(ezca_matrix)):
             for j in range(len(ezca_matrix)):
