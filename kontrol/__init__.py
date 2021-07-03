@@ -11,3 +11,4 @@ from .sensact.optical_lever import (
     OpticalLeverSensingMatrix, HorizontalOpticalLeverSensingMatrix,
     VerticalOpticalLeverSensingMatrix)
 from .core import spectral
+from .ezca import Ezca

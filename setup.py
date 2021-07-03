@@ -28,4 +28,7 @@ setuptools.setup(
         'matplotlib',
         'control>=0.9'
     ]
+    extra_requires={
+        "ezca":["ezca"]
+    }
 )
