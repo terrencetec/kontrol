@@ -54,7 +54,7 @@ class Ezca(ezca.Ezca):
             i0 = row_slicers[0] + 1  # Initial index to be read.
         if isinstance(column_slicers, int):
             ncol = column_slicers
-            j0 = column_slicers[0] + 1
+            j0 = column_slicers + 1
         elif (isinstance(column_slicers, tuple)
               or isinstance(column_slicers, list)):
             ncol = column_slicers[1] - column_slicers[0]
