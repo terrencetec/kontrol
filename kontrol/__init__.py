@@ -11,4 +11,10 @@ from .sensact.optical_lever import (
     OpticalLeverSensingMatrix, HorizontalOpticalLeverSensingMatrix,
     VerticalOpticalLeverSensingMatrix)
 from .core import spectral
-from .ezca import Ezca
+
+## for ad hoc/optional packages
+import importlib
+ezca_spec = importlib.util.find_spec("ezca")
+ezca_exist = ezca_spec is not None
+if ezca_exist:
+    from .ezca import Ezca
