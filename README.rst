@@ -36,6 +36,10 @@ Features
   * 2-channel method [1]_
   * 3-channel method [2]_
 
+* Foton utilities.
+
+  * Convert Python transfer function objects to Foton expressions
+
 Don't hesitate to check out the `tutorials <https://kontrol.readthedocs.io/en/latest/tutorial.html>`_!
 
 - **Documentation:** https://kontrol.readthedocs.io/

@@ -38,3 +38,11 @@ Sensing Matrices
 
    tutorials/sensing_matrix_diagonalization
    tutorials/optical_lever_sensing_matrices
+
+Foton Utilities
+---------------
+
+.. toctree::
+   :maxdepth: 1
+
+   tutorials/tf2foton

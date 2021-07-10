@@ -68,3 +68,12 @@ Spectral analysis related functions library.
    :members:
    :undoc-members:
    :show-inheritance:
+
+Foton Utilities
+---------------
+KAGRA/LIGO Foton related utilities.
+
+.. automodule:: kontrol.core.foton
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -18,9 +18,17 @@ kontrol.core.math module
    :show-inheritance:
 
 kontrol.core.spectral module
-------------------------
+----------------------------
 
 .. automodule:: kontrol.core.spectral
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+kontrol.core.foton module
+-------------------------
+
+.. automodule:: kontrol.core.foton
    :members:
    :undoc-members:
    :show-inheritance:
