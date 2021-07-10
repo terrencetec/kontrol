@@ -221,7 +221,7 @@ def three_channel_correlation(x1, x2=None, x3=None, fs=None,
 
     .. math::
        P_{n_1n_1}(f) = P_{x_1x_1}(f) -
-       \leftlvert\frac{P_{x_1x_3}(f)}{P_{x_2x_3}(f)}P_{x_2x_1}\right\rvert\,,
+       \left\vert\frac{P_{x_1x_3}(f)}{P_{x_2x_3}(f)}P_{x_2x_1}\right\vert\,,
 
     If none of the above is specified, then `x1`, `x2`, and `x3` will be
     treated as time series and their coherence will be computed and
