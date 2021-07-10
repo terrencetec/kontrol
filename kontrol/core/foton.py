@@ -9,31 +9,31 @@ def tf2foton(
 
     Parameters
     ==========
-    tf: TransferFunction
+    tf : TransferFunction
         The transfer function object.
     expression: str, optional
         Format of the foton expression.
         Choose from ["zpk", "rpoly"].
         Defaults to "zpk".
-    root_location: str, optional
+    root_location : str, optional
         Root location of the zeros and poles for format=="zpk".
         Choose from ["s", "f", "n"].
         "s": roots in s-plane, i.e. zpk([...], [...], ...,  "s").
         "f": roots in frequency plane, i.e. zpk([...], [,,,], ..., "f").
         "n": roots in frequency plane but negated and gains are normalized,
-            i.e. real parts are positive zpk([...], [...], ..., "n").
+        i.e. real parts are positive zpk([...], [...], ..., "n").
         Defaults to "s".
-    itol: float, optional
+    itol : float, optional
         Treating complex roots as real roots if the ratio of
         the imaginary part and the real part is smaller than this tolerance
         Defaults to 1e-25.
-    epsilon: float, optional
+    epsilon : float, optional
         Small number to add to denominator to prevent division error.
         Defaults to 1e-25.
 
     Returns
     =======
-    foton_expression: str
+    foton_expression : str
         The foton expression in selected format.
 
     Note
@@ -61,21 +61,21 @@ def tf2zpk(tf, root_location="s", itol=1e-25, epsilon=1e-25):
 
     Parameters
     ==========
-    tf: TransferFunction
+    tf : TransferFunction
         The transfer function object.
-    root_location: str, optional
+    root_location : str, optional
         Root location of the zeros and poles.
         Choose from ["s", "f", "n"].
         "s": roots in s-plane, i.e. zpk([...], [...], ...,  "s").
         "f": roots in frequency plane, i.e. zpk([...], [,,,], ..., "f").
         "n": roots in frequency plane but negated and gains are normalized,
-            i.e. real parts are positive zpk([...], [...], ..., "n").
+        i.e. real parts are positive zpk([...], [...], ..., "n").
         Defaults to "s".
-    itol: float, optional
+    itol : float, optional
         Treating complex roots as real roots if the ratio of
         the imaginary part and the real part is smaller than this tolerance
         Defaults to 1e-25.
-    epsilon: float, optional
+    epsilon : float, optional
         Small number to add to denominator to prevent division error.
         Defaults to 1e-25.
 
@@ -154,13 +154,17 @@ def tf2rpoly(tf):
 
     Parameters
     ==========
-    tf: TransferFunction
+    tf : TransferFunction
         The transfer function object
 
     Returns
     =======
-    str:
+    str :
         Foton express in foton rpoly expression.
+
+    Note
+    ====
+    Only works for transfer functions with less than 20 orders.
     """
     if _order_gt(tf, 20):
         raise ValueError("Order of transfer function is not less than 20")
@@ -190,14 +194,14 @@ def _order(tf):
 
     Parameters
     ==========
-    tf: TransferFunction
+    tf : TransferFunction
         The transfer function object
 
     Returns
     =======
-    nnum: int
+    nnum : int
         Number of coefficients in numerator.
-    nden: int
+    nden : int
         Number of coefficients in denominator.
     """
     nnum = len(tf.minreal().num[0][0])
@@ -210,9 +214,9 @@ def _order_gt(tf, order):
 
     Parameters
     ==========
-    tf: TransferFunction
+    tf : TransferFunction
         The transfer function object.
-    order: int
+    order : int
         Order threshold.
 
     Returns
