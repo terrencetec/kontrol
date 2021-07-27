@@ -110,8 +110,8 @@ class Ezca(ezca.Ezca):
             raise ValueError("slicers must match the size of numpy_array.")
 
         epics_matrix = self.get_matrix(matrix)
-        epics_matrix[row_slicers[0]-1:row_slicers[1]-1,
-                     column_slicers[0]-1: column_slicers[1]-1] = numpy_array
+        epics_matrix[row_slicers[0]-1:row_slicers[1],
+                     column_slicers[0]-1: column_slicers[1]] = numpy_array
 
         self._put_matrix(numpy_array=epics_matrix, matrix=matrix)
 
