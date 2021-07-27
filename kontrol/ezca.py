@@ -127,7 +127,7 @@ class Ezca(ezca.Ezca):
             The matrix in EPICS record.
         """
         nrow, ncol = self._get_row_column(matrix)
-        if len(numpy_array) != nrow or len(numpy_array[0] != ncol):
+        if len(numpy_array) != nrow or len(numpy_array[0]) != ncol:
             raise ValueError("Size of numpy_array not equal to that in the"
                              " EPICS record.")
 
