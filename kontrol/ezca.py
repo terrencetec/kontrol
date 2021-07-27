@@ -76,38 +76,28 @@ class Ezca(ezca.Ezca):
             The matrix values to be put.
         matrix : str
             The matrix in EPICS record.
-        row_slicers : int, (int, int) or None, optional
+        row_slicers : (int, int) or None, optional
             Row slicers, the rows to be accessed. Counting from 1.
-            If an int is specified, then the number of rows to be accessed
-            will be this number, starting from the [1, 1] element.
-            If a submatrix is to be accessed, then specify as a tuple.
             The size determined by the tuple must match the size of
             `numpy_array`
             Defaults None. If None, sets to full matrix.
-        column_slicers : int, (int, int) or None, optional
+        column_slicers : (int, int) or None, optional
             Column slicers, the columns to be accessed. Counting from 1.
-            If an int is specified, then the number of columns to be accessed
-            will be this number, starting from the [1, 1] element.
-            If a submatrix is to be accessed, then specify as a tuple.
             The size determined by the tuple must match the size of
             `numpy_array`
             Defaults None. If None, sets to full matrix.
         """
         # Read the matrix until error to get the number of rows and columns.
         nrow, ncol = self._get_row_column(matrix)
-        if isinstance(row_slicers, int):
-            row_slicers = (1, row_slicers)
-        elif row_slicers is None:
+        if row_slicers is None:
             row_slicers = (1, nrow)
-        if isinstance(column_slicers, int):
-            column_slicers = (1, column_slicers)
-        elif column_slicers is None:
+        if column_slicers is None:
             column_slicers = (1, ncol)
 
         if row_slicers[1] - row_slicers[0] + 1 != len(numpy_array):
-            raise ValueError("slicers must match the size of numpy_array.")
+            raise ValueError("Slicers must match the size of numpy_array.")
         elif column_slicers[1] - column_slicers[0] + 1 != len(numpy_array[0]):
-            raise ValueError("slicers must match the size of numpy_array.")
+            raise ValueError("Slicers must match the size of numpy_array.")
 
         epics_matrix = self.get_matrix(matrix)
         epics_matrix[row_slicers[0]-1:row_slicers[1],
