@@ -46,3 +46,11 @@ Foton Utilities
    :maxdepth: 1
 
    tutorials/tf2foton
+
+Ezca Utilities
+--------------
+
+.. toctree::
+   :maxdepth: 1
+
+   tutorials/ezca_get_put_matrices

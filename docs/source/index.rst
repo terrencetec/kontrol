@@ -40,6 +40,10 @@ Features
 
   * Convert Python transfer function objects to Foton expressions
 
+* Easy Channel Access (EZCA) utilities (wrapper)
+
+  * Read and write matrices to EPICS record.
+
 Don't hesitate to check out the `tutorials <https://kontrol.readthedocs.io/en/latest/tutorial.html>`_!
 
 - **Documentation:** https://kontrol.readthedocs.io/
