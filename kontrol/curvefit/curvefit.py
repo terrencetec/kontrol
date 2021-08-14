@@ -5,11 +5,47 @@ import numpy as np
 
 class CurveFit:
     """Base class for curve fitting
+
+    Parameters
+    ----------
+    xdata : array or None, optional
+        The independent variable data / data on the x axis.
+        Defaults to None.
+    ydata : array or None, optional
+        The dependent variable data / data on the y axis.
+        Defaults to None.
+    model : func(x: array, args: array, **kwargs) -> array,
+    or None, optional
+        The model used to fit the data.
+        ``args`` in model are an array of parameters that
+        define the model.
+        Defaults to None
+    model_kwargs : dict or None, optional
+        Keyword arguments passed to the model.
+        Defaults to None.
+    cost : kontrol.curvefit.Cost
+    or func(args, model, xdata, ydata) -> array
+        Cost function.
+    xdata: array, ydata: array) -> float
+        The cost function to be used to fit the data.
+        First argument is a list of parameters that will be passed to
+        the model.
+        This must be pickleable if multiprocessing is to be used.
+        Defaults to None.
+    cost_kwargs : dict or None, optional
+        Keyword arguments passed to the cost function.
+        Defaults to None.
+    optimizer : func(func, **kwargs) -> scipy.optimize.OptimizeResult,
+    or None optional
+        The optimization algorithm use for minimizing the cost function.
+    optimizer_kwargs : dict or None, optional
+        Keyword arguments passed to the optimizer function.
+        Defaults to None.
     """
     def __init__(self, xdata=None, ydata=None,
                  model=None, model_kwargs=None,
                  cost=None, cost_kwargs=None,
-                 optimizer=None, ):
+                 optimizer=None, optimizer_kwargs=None):
         """Constructor
 
         Parameters
@@ -99,10 +135,14 @@ class CurveFit:
         model = self.model
         xdata = self.xdata
         ydata = self.ydata
-        kwargs = optimizer_kwargs
-        res = self.optimizer(
-            cost, args=(model, model_kwargs, xdata, ydata), **optimizer_kwargs)
+        optimizer = self.optimizer
+        if (cost is None or model is None or xdata is None or ydata is None or
+                optimizer is None):
+            raise TypeError("Cost, model, xdata, ydata, and optimizer must"
+                            "be specified before fitting.")
 
+        res = optimizer(
+            cost, args=(model, model_kwargs, xdata, ydata), **optimizer_kwargs)
         self.optimize_result = res
         self.optimized_args = res.x
         return res

@@ -12,5 +12,7 @@ def test_cost():
     ydata = model(xdata, args)
     error_func = mse
     cost = kontrol.curvefit.Cost(error_func=error_func)
+    kwargs = {"weight": np.ones_like(ydata)}
+    cost.error_func_kwargs = kwargs
     _cost = cost(args, model=model, xdata=xdata, ydata=ydata)
     assert not _cost
