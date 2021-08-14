@@ -77,3 +77,12 @@ KAGRA/LIGO Foton related utilities.
    :members:
    :undoc-members:
    :show-inheritance:
+
+Curve Fitting
+-------------
+Curve fitting
+
+.. autoclass:: kontrol.curvefit.CurveFit
+   :members:
+   :undoc-members:
+   :show-inheritance:
