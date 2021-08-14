@@ -54,3 +54,11 @@ Ezca Utilities
    :maxdepth: 1
 
    tutorials/ezca_get_put_matrices
+
+Curve Fitting
+-------------
+
+.. toctree::
+   :maxdepth: 1
+
+   tutorials/curve_fitting

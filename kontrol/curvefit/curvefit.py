@@ -142,7 +142,7 @@ class CurveFit:
                             "be specified before fitting.")
 
         res = optimizer(
-            cost, args=(model, model_kwargs, xdata, ydata), **optimizer_kwargs)
+            cost, args=(model, xdata, ydata, model_kwargs), **optimizer_kwargs)
         self.optimize_result = res
         self.optimized_args = res.x
         return res
@@ -175,7 +175,7 @@ class CurveFit:
     @model.setter
     def model(self, _model):
         """model setter"""
-        self._model = model
+        self._model = _model
 
     @property
     def model_kwargs(self):

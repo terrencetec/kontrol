@@ -9,8 +9,10 @@ Subpackages
 
    kontrol.core
    kontrol.complementary_filter
+   kontrol.curvefit
    kontrol.frequency_series
    kontrol.sensact
+
 
 
 Submodules
