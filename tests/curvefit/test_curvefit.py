@@ -33,7 +33,7 @@ def test_curvefit():
     ## Catch exception
     try:
         a.fit()
-    except TypeError():
+    except TypeError:
         pass
 
     a.xdata = xdata
