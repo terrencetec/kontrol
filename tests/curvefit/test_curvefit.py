@@ -29,9 +29,17 @@ def test_curvefit():
     ydata = polynomial(xdata, random)
 
     a = kontrol.curvefit.CurveFit()
+
+    ## Catch exception
+    try:
+        a.fit()
+    except TypeError():
+        pass
+
     a.xdata = xdata
     a.ydata = ydata
     a.model = polynomial
+    a.model_kwargs = {}
     a.cost = kontrol.curvefit.Cost(error_func=kontrol.curvefit.error_func.mse)
     a.optimizer = scipy.optimize.differential_evolution
     a.optimizer_kwargs = {
