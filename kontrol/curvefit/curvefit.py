@@ -59,7 +59,6 @@ class CurveFit:
             Defaults to None.
         cost : kontrol.curvefit.Cost or func(args, model, xdata, ydata) -> array
             Cost function.
-        xdata: array, ydata: array) -> float
             The cost function to be used to fit the data.
             First argument is a list of parameters that will be passed to
             the model.
