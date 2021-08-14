@@ -77,6 +77,8 @@ class CurveFit:
         self._cost = None
         self._optimizer = None
         self._optimizer_kwargs = None
+        self._optimized_args = None
+        self._optimize_result = None
         self.xdata = xdata
         self.ydata = ydata
         self.model = model
@@ -204,3 +206,32 @@ class CurveFit:
             self._optimizer_kwargs = {}
         else:
             self._optimizer_kwargs = _optimizer_kwargs
+
+    @property
+    def optimized_args(self):
+        """The optimized arguments"""
+        return self._optimized_args
+
+    @optimized_args.setter
+    def optimized_args(self, _optimized_args):
+        """optimized_args setter"""
+        self._optimized_args = _optimized_args
+
+    @property
+    def optimize_result(self):
+        """Optimization Result"""
+        return self._optimize_result
+
+    @optimize_result.setter
+    def optimize_result(self, _optimize_result):
+        """optimize_result setter"""
+        self._optimize_result = _optimize_result
+
+    @property
+    def yfit(self):
+        """The fitted y values"""
+        if self.optimized_args is None:
+            return None
+        else:
+            return self.model(
+                self.xdata, self.optimized_args, **self.model_kwargs)

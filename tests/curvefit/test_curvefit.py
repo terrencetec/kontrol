@@ -36,6 +36,7 @@ def test_curvefit():
     except TypeError:
         pass
 
+    a.yfit  ## Call to make it None
     a.xdata = xdata
     a.ydata = ydata
     a.model = polynomial
@@ -48,4 +49,5 @@ def test_curvefit():
         "maxiter": 10000,
         "updating": "deferred",}
     a.fit()
-    assert np.allclose(a.optimized_args, random)
+    assert all([np.allclose(a.optimized_args, random),
+                np.allclose(a.yfit, ydata)])
