@@ -4,6 +4,7 @@ import numpy as np
 import kontrol.curvefit
 from kontrol.core.math import mse
 
+
 def test_cost():
     def model(x, args):
         return args[0]*x**2

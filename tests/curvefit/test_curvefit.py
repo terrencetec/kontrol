@@ -4,6 +4,7 @@ import numpy as np
 import kontrol.curvefit
 import scipy.optimize
 
+
 def polynomial(x, args, **kwargs):
     """
     Parameters
@@ -20,6 +21,7 @@ def polynomial(x, args, **kwargs):
     """
     poly = np.sum([args[i]*x**i for i in range(len(args))], axis=0)
     return poly
+
 
 def test_curvefit():
     xdata = np.linspace(-1, 1, 1024)
