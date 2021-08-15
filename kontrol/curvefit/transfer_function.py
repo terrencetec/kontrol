@@ -1,9 +1,9 @@
 """Transfer function fitting class
 """
-import kontrol.curvefit.CurveFit
+from .curvefit import CurveFit
 
 
-class TransferFunctionFit(kontrol.curvefit.CurveFit):
+class TransferFunctionFit(CurveFit):
     """Transfer function fitting class
     """
     def __init__(self, xdata=None, ydata=None,
@@ -45,4 +45,21 @@ class TransferFunctionFit(kontrol.curvefit.CurveFit):
             Choose from ["Hz", "rad/s", "s"].
             Defaults to "Hz".
         """
-        pass
+        super().__init__(
+            xdata, ydata, model, model_kwargs,
+            cost, optimizer, optimizer_kwargs)
+        self._xunit = None
+        self.xunit = xunit
+
+    @property
+    def xunit(self):
+        """The unit of the xdata."""
+        return self._xunit
+
+    @xunit.setter
+    def xunit(self, _xunit):
+        """xunit setter"""
+        if _xunit not in ["Hz", "rad/s", "s"]:
+            raise ValueError("Invalid specification for xunit. "
+                             "Please choose xunit from 'Hz', 'rad/s', or 's'.")
+        self._xunit = _xunit
