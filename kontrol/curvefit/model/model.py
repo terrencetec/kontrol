@@ -15,7 +15,7 @@ class Model:
         self.args = args
 
     def __call__(self, x, args=None, **kwargs):
-        """Use self._x2y(x, args, **kwargs) to give y values from x.
+        """Use self._x2y(x, **kwargs) to give y values from x.
 
         This is a low level function that shouldn't be used by users.
 
@@ -27,6 +27,7 @@ class Model:
             Model parameters.
             Defaults to None.
             If not specified, use self.args.
+            If specified, set self.args to args.
         **kwargs
             Keyword arguments passed to self._x2y().
 
@@ -35,9 +36,16 @@ class Model:
         y : array
             f(x) = y values.
         """
-        return self._x2y(x, args, **kwargs)
+        if args is None:
+            args = self.args
+        else:
+            self.args = args
+        if self.args is None:
+            raise ValueError("Please specify model parameters by the "
+                             "arg argument or by setting self.arg.")
+        return self._x2y(x, **kwargs)
 
-    def _x2y(self, x, args=None, **kwargs):
+    def _x2y(self, x, **kwargs):
         """Convert independent variables to dependent variables.
 
         This should be defined independent in child classes.
@@ -47,10 +55,6 @@ class Model:
         ----------
         x : array
             The independent variables.
-        args : array or None, optional
-            Model parameters.
-            Defaults to None.
-            If not specified, use self.args.
         **kwargs
             Keyword arguments.
 

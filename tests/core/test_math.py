@@ -40,3 +40,11 @@ def test_quad_sum():
     b = np.array([0, 4, 4]).astype(float)
     test = kontrol.core.math.quad_sum(a, b)
     assert np.allclose(correct, test)
+
+
+def test_polyval():
+    x = np.linspace(0, 1)*1j
+    correct = 1*x**2 + 2*x + 3
+    p = [1, 2, 3]
+    test = kontrol.core.math.polyval(p, x)
+    assert np.allclose(correct, test)

@@ -79,3 +79,11 @@ def quad_sum(*spectra):
         for j in range(len(i)):
             qs[j] = np.sqrt(qs[j]**2 + i[j]**2)
     return qs
+
+
+def polyval(p, x):
+    y = np.zeros(x.shape, dtype=x.dtype)
+    for i, v in enumerate(p):
+        y *= x
+        y += v
+    return y

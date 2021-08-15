@@ -86,3 +86,16 @@ Curve fitting
    :members:
    :undoc-members:
    :show-inheritance:
+
+Models for Curve Fitting
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: kontrol.curvefit.model.Model
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. autoclass:: kontrol.curvefit.model.TransferFunctionModel
+   :members:
+   :undoc-members:
+   :show-inheritance:
