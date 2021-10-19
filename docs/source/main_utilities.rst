@@ -3,7 +3,7 @@ Main Utilities
 Be sure to check out :ref:`Tutorials` for example usages of these utilities!
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
 
 Complementary Filter Synthesis
@@ -82,6 +82,8 @@ Curve Fitting
 -------------
 Curve fitting
 
+Curve fitting class
+^^^^^^^^^^^^^^^^^^^
 .. autoclass:: kontrol.curvefit.CurveFit
    :members:
    :undoc-members:
@@ -102,6 +104,11 @@ These classes are designed to use with ``kontrol.curvefit``
    :show-inheritance:
 
 .. autoclass:: kontrol.curvefit.model.DampedOscillator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. autoclass:: kontrol.curvefit.model.SimpleZPK
    :members:
    :undoc-members:
    :show-inheritance:
