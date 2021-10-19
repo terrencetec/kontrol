@@ -401,6 +401,14 @@ class ComplexZPK(Model):
 
     Attributes
     ----------
+    fn_zero : array
+        List of resonance frequencies of the complex zeros.
+    fn_pole : array
+        List of resonance frequencies of the complex poles.
+    q_zero : array
+        List of Q-factors of the complex zeros.
+    q_pole : array
+        List of Q-factors of the complex poles.
 
     Notes
     -----
@@ -408,8 +416,8 @@ class ComplexZPK(Model):
 
     .. math::
 
-       G(s; f_1, q_1, f_2, q_2,..., f_i, q_i,..., f_n, q_n, k]
-       =k\frac{\prod_i(\frac{s^2}{(2\pi f_i)^2} + \frac{1}{2\pi fi q_i}s + 1)}
+       G(s; f_i, q_i,k)
+       =k\frac{\prod_i(\frac{s^2}{(2\pi f_i)^2} + \frac{1}{2\pi f_i q_i}s + 1)}
        {\prod_j(\frac{s^2}{(2\pi f_j)^2} + \frac{1}{2\pi f_j q_j}s + 1)}
 
     """
