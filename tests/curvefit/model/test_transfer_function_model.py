@@ -40,6 +40,33 @@ def test_transfer_function_model():
     assert all([f_test, w_test, s_test, tf_test, tf_num_test, tf_den_test])
 
 
+def test_simple_zpk_model():
+    """Tests for kontrol.curvefit.model.transfer_function_model.SimpleZPK"""
+    s = control.tf("s")
+    tf = 6 * ((s/(1*2*np.pi) + 1)*(s/(2*2*np.pi) + 1)
+          / ((s/(3*2*np.pi) + 1) * (s/(4*2*np.pi) + 1) * (s/(5*2*np.pi)+1)))
+
+    args = [1, 2, 3, 4, 5, 6]
+    f = np.linspace(0.1, 10, 1000)
+    tf_val = tf(2*np.pi*1j*f)
+
+    kontrol_zpk = kontrol.curvefit.model.SimpleZPK(nzero=2, npole=3)
+
+    # Catch exception
+    args_wrong = [1, 2, 3, 4]
+    try:
+        kontrol_zpk(f, args_wrong)
+        raise
+    except ValueError:
+        pass
+
+    kontrol_zpk_val = kontrol_zpk(f, args)
+    kontrol_zpk_tf_val = kontrol_zpk.tf(1j*2*np.pi*f)
+    test1 = np.allclose(tf_val, kontrol_zpk_val)
+    test2 = np.allclose(tf_val, kontrol_zpk_tf_val)
+    assert all([test1, test2])
+
+
 def test_complex_zpk_model():
     """Tests for kontrol.curvefit.model.transfer_function_model.ComplexZPK"""
     s = control.tf("s")
