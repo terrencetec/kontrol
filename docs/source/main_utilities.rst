@@ -89,6 +89,7 @@ Curve fitting
 
 Models for Curve Fitting
 ^^^^^^^^^^^^^^^^^^^^^^^^
+These classes are designed to use with ``kontrol.curvefit``
 
 .. autoclass:: kontrol.curvefit.model.Model
    :members:
@@ -99,3 +100,14 @@ Models for Curve Fitting
    :members:
    :undoc-members:
    :show-inheritance:
+
+.. autoclass:: kontrol.curvefit.model.DampedOscillator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. autoclass:: kontrol.curvefit.model.ComplexZPK
+   :members:
+   :undoc-members:
+   :show-inheritance:
+

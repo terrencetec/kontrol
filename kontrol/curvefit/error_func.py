@@ -57,3 +57,30 @@ def log_mse(x1, x2, weight=None, small_multiplier=1e-6):
     elif 0 in x2:
         x2 += small_multiplier * np.min(x1)
     return mse(x1=np.log10(x1), x2=np.log10(x2), weight=weight)
+
+
+def tf_error(tf1, tf2, weight=None, small_number=1e-6):
+    """Mean log error between two transfer functions frequency response
+
+    Parameters
+    ----------
+    tf1 : array
+        Frequency response of transfer function 1, in complex values.
+    tf2 : array
+        Frequency response of transfer function 2, in complex values.
+    weight : array or None, optional
+        Weighting function.
+        Defaults None.
+    small_number : float, optional
+        A small number to be added in before evaluating np.log10 to
+        prevent error.
+        Defaults to 1e-6.
+
+    Returns
+    -------
+    float
+        Mean log error between two transfer function.
+    """
+    if weight is None:
+        weight = np.ones_like(tf1, dtype=float)
+    return np.mean(np.log10(abs(tf1-tf2) + small_number) * weight)

@@ -10,6 +10,7 @@ def test_model():
     ## Catch no model parameters error.
     try:
         y = model(x)
+        raise
     except ValueError:
         pass
     model.args = [1]

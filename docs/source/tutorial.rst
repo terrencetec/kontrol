@@ -62,3 +62,4 @@ Curve Fitting
    :maxdepth: 1
 
    tutorials/curve_fitting
+   tutorials/curve_fitting_transfer_function

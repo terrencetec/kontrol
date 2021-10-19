@@ -38,3 +38,31 @@ def test_transfer_function_model():
     tf_num_test = np.allclose(tf.tf.num[0][0], control_tf.num[0][0])
     tf_den_test = np.allclose(tf.tf.den[0][0], control_tf.den[0][0])
     assert all([f_test, w_test, s_test, tf_test, tf_num_test, tf_den_test])
+
+
+def test_complex_zpk_model():
+    """Tests for kontrol.curvefit.model.transfer_function_model.ComplexZPK"""
+    s = control.tf("s")
+    tf = (7 * (s**2/(1*2*np.pi)**2 + 1/(1*2*np.pi*2)*s + 1)
+          / (s**2/(3*2*np.pi)**2 + 1/(3*2*np.pi*4)*s + 1)
+          / (s**2/(5*2*np.pi)**2 + 1/(5*2*np.pi*6)*s + 1))
+    args = [1,2,  ## Zero
+            3,4,  ## Poles
+            5,6,
+            7]  ## Gain
+    f = np.linspace(0.1, 10, 1000)
+    tf_val = tf(2*np.pi*1j*f)
+    kontrol_zpk = kontrol.curvefit.model.ComplexZPK(
+        nzero_pairs=1, npole_pairs=2)
+
+    # Catch wrong arugment length
+    args_wrong = [1, 2]
+    try:
+        kontrol_zpk(f, args_wrong)
+        raise
+    except ValueError:
+        pass
+    kontrol_zpk_val = kontrol_zpk(f, args)
+    test1 = np.allclose(tf_val, kontrol_zpk_val)
+    test2 = np.allclose(tf_val, kontrol_zpk.tf(1j*2*np.pi*f))
+    assert all([test1, test2])
