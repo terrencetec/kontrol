@@ -576,6 +576,9 @@ class ComplexZPK(Model):
                     + 1)
         return kontrol.TransferFunction(num/den)
 
+
+#TODO add support for a generic ZPK model
+
         
 def _x2s(x, xunit):
     """Converts the independent variable to the complex variable s.
@@ -603,3 +606,5 @@ def _x2s(x, xunit):
         raise ValueError("Invalid specification for xunit."
                          "Please choose xunit from 'Hz', 'rad/s', or 's'.")
     return s
+
+
