@@ -64,3 +64,4 @@ Curve Fitting
    tutorials/curve_fitting
    tutorials/curve_fitting_transfer_function
    tutorials/curve_fitting_simple_zpk
+   tutorials/curve_fitting_complex_zpk
