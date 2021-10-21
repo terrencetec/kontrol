@@ -90,7 +90,7 @@ def zpk(zeros, poles, gain, unit='f', negate=True):
     return zpk_tf
 
 
-def sos(natural_frequencies=[], quality_factors=[], gain=1., unit="f"):
+def sos(natural_frequencies=None, quality_factors=None, gain=1., unit="f"):
     r"""Second-order sections transfer fucntion.
 
     Parameters
@@ -118,6 +118,10 @@ def sos(natural_frequencies=[], quality_factors=[], gain=1., unit="f"):
     ----
     :math:`K\prod\left(s^2+\omega_n/Q\,s+\omega_n^2\right)`.
     """
+    if natural_frequencies is None:
+        natural_frequencies = []
+    if quality_factors is None:
+        quality_factors = []
     if len(natural_frequencies) != len(quality_factors):
         raise ValueError("Lenght of natural frequencies must match length of "
                          "quality factors.")
@@ -226,9 +230,9 @@ def check_tf_equal(tf1, tf2, allclose_kwargs={}, minreal=True):
     return all([zeros_close, poles_close, gain_close])
 
 
-def generic_tf(zeros=[], poles=[],
-               zeros_wn=[], zeros_q=[],
-               poles_wn=[], poles_q=[],
+def generic_tf(zeros=None, poles=None,
+               zeros_wn=None, zeros_q=None,
+               poles_wn=None, poles_q=None,
                dcgain=1., unit="f"):
     r"""Construct a generic transfer function object.
 
@@ -267,6 +271,19 @@ def generic_tf(zeros=[], poles=[],
     For instance, `generic_tf(poles=[1], unit="s")` means
     :math:`\frac{1}{s+1}`.
     """
+    if zeros is None:
+        zeros = []
+    if poles is None:
+        poles = []
+    if zeros_wn is None:
+        zeros_wn = []
+    if zeros_q is None:
+        zeros_q = []
+    if poles_wn is None:
+        poles_wn = []
+    if poles_q is None:
+        poles_q = []
+    
     zeros = np.array(zeros)
     poles = np.array(poles)
     zeros_wn = np.array(zeros_wn)
@@ -354,3 +371,129 @@ def outlier_exists(tf, f, unit="f"):
         return True
     else:
         return False
+
+
+def tf_order_split(tf, max_order=20):
+    """Split TransferFunction objects into multiple ones with fewer order.
+
+    Parameters
+    ----------
+    tf : TransferFunction
+        The transfer function
+    max_order : int, optional
+        The maxmium order of the split transfer functions.
+        Defaults to 20 (the foton limit).
+
+    Returns
+    -------
+    list of TransferFunction.
+        The list of splitted transfer functions.
+    """
+    zeros = tf.zero()
+    poles = tf.pole()
+    nzero = len(zeros)
+    npole = len(poles)
+    niter_zero = int(np.ceil(nzero/max_order))
+    niter_pole = int(np.ceil(npole/max_order))
+    
+    global order_running
+    global zero_running
+    global tf_zero_list
+    global pole_running
+    global tf_pole_list
+    order_running = 0
+    zero_running = []
+    tf_zero_list = []
+    pole_running = []
+    tf_pole_list = []
+
+    def put_tf_zeros_into_list():
+        global order_running
+        global zero_running
+        global tf_zero_list
+        simple_zeros = []
+        zeros_wn = []
+        zeros_q = []
+        for z in zero_running:
+            if z.imag == 0:
+                simple_zeros += [-z.real]
+            else:
+                wn = abs(z)
+                q = wn / (-2*z.real)
+                zeros_wn += [abs(z)]
+                zeros_q += [q]
+        tf_zero_list += [
+            generic_tf(zeros=simple_zeros,
+                       zeros_wn=zeros_wn, zeros_q=zeros_q, unit="s")]
+        order_running = 0
+        zero_running = []
+
+    def put_tf_poles_into_list():
+        global order_running
+        global pole_running
+        global tf_pole_list
+        simple_poles = []
+        poles_wn = []
+        poles_q = []
+        for p in pole_running:
+            if p.imag == 0:
+                simple_poles += [-p.real]
+            else:
+                wn = abs(p)
+                q = wn / (-2*p.real)
+                poles_wn += [abs(p)]
+                poles_q += [q]
+        tf_pole_list += [
+            generic_tf(poles=simple_poles,
+                       poles_wn=poles_wn, poles_q=poles_q, unit="s")]
+        order_running = 0
+        pole_running = []
+
+    # Put zeros into list until order reaches max_order.
+    # And then make a transfer function out of the list,
+    # and finally resets.
+    for i in range(len(zeros)):
+        if zeros[i].imag == 0:
+            if order_running+1 >= max_order:
+                put_tf_zeros_into_list()
+            order_running += 1
+            zero_running += [zeros[i]]
+        elif zeros[i].imag > 0:
+            if order_running+2 > max_order:
+                put_tf_zeros_into_list()
+            order_running += 2
+            zero_running += [zeros[i]]
+        else:
+            pass  ## Ignore negative part of the complex pair.
+   
+    ## Add the reminders
+    put_tf_zeros_into_list()
+            
+    for i in range(len(poles)):
+        if poles[i].imag == 0:
+            if order_running+1 >= max_order:
+                put_tf_poles_into_list()
+            order_running += 1
+            pole_running += [poles[i]]
+        elif poles[i].imag > 0:
+            if order_running + 2 >= max_order:
+                put_tf_poles_into_list()
+            order_running += 2
+            pole_running += [poles[i]]
+        else:
+            pass  ## Ignore negative part of the complex pair.
+    
+    put_tf_poles_into_list()
+
+    n_tf = max(len(tf_pole_list), len(tf_zero_list))
+    tf_list = []
+    for i in range(n_tf):
+        if i+1 > len(tf_pole_list):
+            tf_list += [tf_zero_list[i]]
+        elif i+1 > len(tf_zero_list):
+            tf_list += [tf_pole_list[i]]
+        else:
+            tf_list += [tf_zero_list[i]*tf_pole_list[i]]
+    tf_list[0] *= tf.dcgain()
+
+    return tf_list

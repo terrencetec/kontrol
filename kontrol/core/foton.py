@@ -44,6 +44,9 @@ def tf2foton(
         raise ValueError("expression {} not available."
                          "Please select expression from [\"zpk\", \"rpoly\"."
                          "".format(expression))
+    ## Divide tf into tfs with less than 20 order.
+    ## Do tf conversion.
+    ## Stack the string
     if expression == "zpk":
         foton_expression = tf2zpk(
             tf, root_location=root_location, itol=itol, epsilon=epsilon)

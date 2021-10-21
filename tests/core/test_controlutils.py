@@ -104,8 +104,28 @@ def test_outlier_exists():
     assert np.all([first_test, not second_test])
 
 
+def test_tf_order_split():
+    """Tests for kontrol.core.controlutils.tf_order_split()"""
+    max_order = 5
+    tf_order = 50
+    tf = control.ss2tf(control.rss(tf_order))
+    tf_split_list = kontrol.core.controlutils.tf_order_split(
+        tf, max_order=max_order)
+    tf_combined = np.prod(tf_split_list)
+    f = np.logspace(-3, 3, 100000)
+     
+    assert np.allclose(tf(1j*2*np.pi*f), tf_combined(1j*2*np.pi*f))
+    
+    for tf_ in tf_split_list:
+        if len(tf_.pole()) > max_order or len(tf_.zero()) > max_order:
+            print(tf_.pole())
+            print(tf_.zero())
+            assert False
+
+
 def check_tf_equal(tf1, tf2):
     zeros_close = np.allclose(tf1.zero(), tf2.zero())
     poles_close = np.allclose(tf1.pole(), tf2.pole())
     gain_close = np.allclose(tf1.dcgain(), tf2.dcgain())
     return all([zeros_close, poles_close, gain_close])
+
