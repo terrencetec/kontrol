@@ -454,7 +454,7 @@ def tf_order_split(tf, max_order=20):
     # and finally resets.
     for i in range(len(zeros)):
         if zeros[i].imag == 0:
-            if order_running+1 >= max_order:
+            if order_running+1 > max_order:
                 put_tf_zeros_into_list()
             order_running += 1
             zero_running += [zeros[i]]
@@ -471,12 +471,12 @@ def tf_order_split(tf, max_order=20):
             
     for i in range(len(poles)):
         if poles[i].imag == 0:
-            if order_running+1 >= max_order:
+            if order_running+1 > max_order:
                 put_tf_poles_into_list()
             order_running += 1
             pole_running += [poles[i]]
         elif poles[i].imag > 0:
-            if order_running + 2 >= max_order:
+            if order_running + 2 > max_order:
                 put_tf_poles_into_list()
             order_running += 2
             pole_running += [poles[i]]
