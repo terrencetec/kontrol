@@ -8,7 +8,7 @@ def tf2foton(
     """Convert a single transfer function to foton expression.
 
     Parameters
-    ==========
+    ----------
     tf : TransferFunction
         The transfer function object.
     expression: str, optional
@@ -16,7 +16,7 @@ def tf2foton(
         Choose from ["zpk", "rpoly"].
         Defaults to "zpk".
     root_location : str, optional
-        Root location of the zeros and poles for format=="zpk".
+        Root location of the zeros and poles for expression=="zpk".
         Choose from ["s", "f", "n"].
         "s": roots in s-plane, i.e. zpk([...], [...], ...,  "s").
         "f": roots in frequency plane, i.e. zpk([...], [,,,], ..., "f").
@@ -32,12 +32,12 @@ def tf2foton(
         Defaults to 1e-25.
 
     Returns
-    =======
+    -------
     foton_expression : str
         The foton expression in selected format.
 
-    Note
-    ====
+    Notes
+    -----
     Only works for transfer functions with less than 20 orders.
     """
     if expression not in ["zpk", "rpoly"]:
@@ -60,7 +60,7 @@ def tf2zpk(tf, root_location="s", itol=1e-25, epsilon=1e-25):
     """Convert a single transfer function to foton zpk expression.
 
     Parameters
-    ==========
+    ----------
     tf : TransferFunction
         The transfer function object.
     root_location : str, optional
@@ -80,12 +80,12 @@ def tf2zpk(tf, root_location="s", itol=1e-25, epsilon=1e-25):
         Defaults to 1e-25.
 
     Returns
-    =======
+    -------
     str
         The foton zpk expression in selected format.
 
-    Note
-    ====
+    Notes
+    -----
     Only works for transfer functions with less than 20 orders.
     """
     if _order_gt(tf, 20):
@@ -153,17 +153,17 @@ def tf2rpoly(tf):
     """Convert a transfer function to foton rpoly expression.
 
     Parameters
-    ==========
+    ----------
     tf : TransferFunction
         The transfer function object
 
     Returns
-    =======
+    -------
     str :
         Foton express in foton rpoly expression.
 
-    Note
-    ====
+    Notes
+    -----
     Only works for transfer functions with less than 20 orders.
     """
     if _order_gt(tf, 20):
@@ -193,12 +193,12 @@ def _order(tf):
     """Returns the number of coefficients in numerator and denominator
 
     Parameters
-    ==========
+    ----------
     tf : TransferFunction
         The transfer function object
 
     Returns
-    =======
+    -------
     nnum : int
         Number of coefficients in numerator.
     nden : int
@@ -213,15 +213,15 @@ def _order_gt(tf, order):
     """Returns true if transfer function order is greater than the specified.
 
     Parameters
-    ==========
+    ----------
     tf : TransferFunction
         The transfer function object.
     order : int
         Order threshold.
 
     Returns
-    =======
-    bool
+    -------
+    boolean
         True if order(tf) > order, False otherwise.
     """
     nnum, nden = _order(tf)

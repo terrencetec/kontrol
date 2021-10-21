@@ -11,29 +11,20 @@ import kontrol.core.controlutils
 class TransferFunction(control.TransferFunction):
     """Transfer function class
 
-    Attributes
+    Parameters
     ----------
-    foton: string
-        The foton zpk expression of this transfer function object.
-    expression: string, optional
-        Foton zpk expression type: Hz/norm 'n', Hz 'f', or rad/s 's'.
-        Defaults to 'n'.
+    *args:
+        Arguments passed to control.TransferFunction class.
     """
-    def __init__(self, *args, expression="n"):
+    def __init__(self, *args):
         """Initialize with a transfer function object
 
         Parameters
         ----------
-        expression: string, optional
-            Foton zpk expression type: Hz/norm 'n', Hz 'f', or rad/s 's'.
-            Choose from ["n", "f", "s"].
-            Defaults to 'n'.
         *args:
             Arguments passed to control.TransferFunction class.
         """
         super().__init__(*args)
-        if self.issiso():
-            self.foton = expression
 
     def lstrip(self, element, fc=None):
         """Remove zero or pole from the left.
@@ -69,94 +60,52 @@ class TransferFunction(control.TransferFunction):
         # Work in progress
         pass
 
-    def stablize(self):
+    def stabilize(self):
         """Convert unstable zeros and poles to stable ones.
         """
         stable_tf = kontrol.core.controlutils.convert_unstable_tf(self)
         super().__init__(stable_tf)
 
-    @property
-    def foton(self):
-        """Foton expression
+    def foton(
+            self, expression="zpk", root_location="s",
+            itol=1e-25, epsilon=1e-25):
+        """Foton expression of this transfer function
+        
+        Calls kontrol.core.foton.tf2foton and returns a foton expression
+        of this transfer function
 
         Parameters
         ----------
-        expression: string, optional
-            The foton expression type: 'n', 'f', or 's'.
-            Defaults "n".
+        expression : str, optional
+            Format of the foton expression.
+            Choose from ["zpk", "rpoly"].
+            Defaults to "zpk".
+        root_location : str, optional
+            Root location of the zeros and poles for expression=="zpk".
+            Choose from ["s", "f", "n"].
+            "s": roots in s-plane, i.e. zpk([...], [...], ...,  "s").
+            "f": roots in frequency plane, i.e. zpk([...], [,,,], ..., "f").
+            "n": roots in frequency plane but negated and gains are normalized,
+            i.e. real parts are positive zpk([...], [...], ..., "n").
+            Defaults to "s".
+        itol : float, optional
+            Treating complex roots as real roots if the ratio of
+            the imaginary part and the real part is smaller than this tolerance
+            Defaults to 1e-25.
+        epsilon : float, optional
+            Small number to add to denominator to prevent division error.
+            Defaults to 1e-25.
 
         Returns
         -------
-        string
-            The foton zpk expression.
+        foton_expression : str
+            The foton expression in selected format.
+
+        Note
+        ----
+        Only works for transfer functions with less than 20 orders.
         """
-        return self._foton
-
-    @foton.setter
-    def foton(self, expression="n"):
-        """Foton expression
-
-        Parameters
-        ----------
-        expression: string, optional
-            The foton expression type: 'n', 'f', or 's'.
-            Defaults "n".
-
-        Returns
-        -------
-        string
-            The foton zpk expression.
-        """
-        if expression == 'n':
-            zeros = -1*self.zero().real + 1j*self.zero().imag
-            poles = -1*self.pole().real + 1j*self.pole().imag
-            gain = float(self.dcgain())
-            gain = gain.real
-            zeros /= 2*np.pi
-            poles /= 2*np.pi
-        elif expression == 'f':
-            zeros = 1*self.zero().real + 1j*self.zero().imag
-            poles = 1*self.pole().real + 1j*self.pole().imag
-            gain = float(self.dcgain())
-            for zero in zeros:
-                gain /= zero
-            for pole in poles:
-                gain *= pole
-            gain = gain.real
-            zeros /= 2*np.pi
-            poles /= 2*np.pi
-        elif expression == 's':
-            zeros = self.zero()
-            poles = self.pole()
-            gain = float(self.dcgain())
-            for zero in zeros:
-                gain /= zero
-            for pole in poles:
-                gain *= pole
-            gain = gain.real
-        else:
-            raise ValueError("expression: {} not valid."
-                             "expression can only be 'n', 'f' or 's'."
-                             "".format(expression))
-
-        self._foton = 'zpk(['
-        for zero in zeros:
-            string = '{}'.format(
-                zero.real if abs(zero.imag/zero.real) < 1e-10 else zero)
-            string = string.lstrip('(')
-            string = string.rstrip(')')
-            self._foton += string
-            self._foton += ';'
-        self._foton = self._foton.rstrip(';')
-        self._foton += '],['
-        for pole in poles:
-            string = '{}'.format(
-                pole.real if abs(pole.imag/pole.real) < 1e-10 else pole)
-            string = string.lstrip('(')
-            string = string.rstrip(')')
-            self._foton += string
-            self._foton += ';'
-        self._foton = self._foton.rstrip(';')
-        self._foton += ('],{gain},"{expression}")'
-                        ''.format(gain=gain, expression=expression))
-        self._foton = self._foton.replace("j", "i")
+        ## TODO add MIMO support
+        return kontrol.core.foton.tf2foton(
+            tf=self, expression=expression, root_location=root_location,
+            itol=itol, epsilon=epsilon)
