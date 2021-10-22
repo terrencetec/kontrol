@@ -2,6 +2,9 @@
 """
 import numpy as np
 
+import kontrol.core.controlutils
+import kontrol.logger
+
 
 def tf2foton(
     tf, expression="zpk", root_location="s", itol=1e-25, epsilon=1e-25):
@@ -35,10 +38,6 @@ def tf2foton(
     -------
     foton_expression : str
         The foton expression in selected format.
-
-    Notes
-    -----
-    Only works for transfer functions with less than 20 orders.
     """
     if expression not in ["zpk", "rpoly"]:
         raise ValueError("expression {} not available."
@@ -47,14 +46,25 @@ def tf2foton(
     ## Divide tf into tfs with less than 20 order.
     ## Do tf conversion.
     ## Stack the string
-    if expression == "zpk":
-        foton_expression = tf2zpk(
-            tf, root_location=root_location, itol=itol, epsilon=epsilon)
-    elif expression == "rpoly":
-        foton_expression = tf2rpoly(tf)
-    else:
-        foton_expression = ""
-        print("If you see this, contact maintainer.")
+    foton_expression = ""
+    tf_list = kontrol.core.controlutils.tf_order_split(tf, max_order=20)
+    if len(tf_list) > 1:
+        kontrol.logger.logger.warning("The transfer function has "
+                                      "order higher than 20. This is not "
+                                      "supported by KAGRA's Foton software. "
+                                      "The Foton expression is splitted into "
+                                      "multiple expressions with less order.")
+    for tf_ in tf_list:
+        if expression == "zpk":
+            foton_expression += tf2zpk(
+                tf_, root_location=root_location, itol=itol, epsilon=epsilon)
+        elif expression == "rpoly":
+            foton_expression += tf2rpoly(tf_)
+        else:
+            foton_expression += ""
+            print("If you see this, contact maintainer.")
+        foton_expression += "\n\n"
+    foton_expression = foton_expression.rstrip("\n\n")
 
     return foton_expression
 
@@ -91,8 +101,8 @@ def tf2zpk(tf, root_location="s", itol=1e-25, epsilon=1e-25):
     -----
     Only works for transfer functions with less than 20 orders.
     """
-    if _order_gt(tf, 20):
-        raise ValueError("Order of transfer function is not less than 20")
+    # if _order_gt(tf, 20):
+    #     raise ValueError("Order of transfer function is not less than 20")
     if root_location not in ["s", "f", "n"]:
         raise ValueError("Select root_location from [\"s\", \"f\", \"n\"]")
 

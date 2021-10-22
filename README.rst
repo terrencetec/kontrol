@@ -14,13 +14,15 @@ control filter design.
 
 Features
 --------
-* Complementary filter synthesis using :math:`\mathcal{H}_\infty`.
+* Complementary filter synthesis using :math:`\mathcal{H}_\infty` methods.
 
   * Synthesize optimal complementary filters in a 2-sensor configuration.
-  * Only depends on sensor noises.
-  * No specifications required.
 
-* Frequency series modeling.
+* Curve fitting
+
+  * Fit transfer functions, spectral densities, etc.
+
+* Frequency series modeling (Soon deprecating. See Curve fitting).
 
   * Model-based empirical fitting.
   * Model frequency series as zero-pole-gain and transfer function models.
@@ -39,6 +41,8 @@ Features
 * Foton utilities.
 
   * Convert Python transfer function objects to Foton expressions
+  * Support for translating transfer functions with higher than 20 order (the
+    Foton limit).
 
 * Easy Channel Access (EZCA) utilities (wrapper)
 
@@ -66,6 +70,7 @@ Required
 Optional
 ^^^^^^^^
 * ezca (Needed for accessing EPICs records/real-time model process variables. Use conda to install it.)
+* `vishack <https://github.com/gw-vis/vishack>`_ or `dttxml <https://github.com/mccullerlp/dttxml>`_ (For extracting data from diaggui xml files.)
 
 If you would like to install Kontrol on your local machine with, then pip
 should install the required dependencies automatically for you. However, if

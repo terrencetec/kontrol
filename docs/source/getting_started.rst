@@ -18,6 +18,7 @@ Required
 Optional
 ^^^^^^^^
 * ezca (Needed for accessing EPICs records/real-time model process variables. Use conda to install it.)
+* `vishack <https://github.com/gw-vis/vishack>`_ or `dttxml <https://github.com/mccullerlp/dttxml>`_ (For extracting data from diaggui xml files.)
 
 If you would like to install Kontrol on your local machine with, then pip
 should install the required dependencies automatically for you. However, if

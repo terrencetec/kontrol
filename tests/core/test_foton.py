@@ -21,6 +21,7 @@ def test_tf2foton():
     ## test raises
     try:
         kontrol.core.foton.tf2foton(tf_test, expression="a")
+        raise
     except ValueError:
         pass
     zpk_str_n_test = kontrol.core.foton.tf2foton(
@@ -32,14 +33,14 @@ def test_tf2foton():
 
 def test_tf2zpk():
     ## test raises
-    try:
-        kontrol.core.foton.tf2zpk(1/s**20)
-    except ValueError:
-        pass
-    try:
-        kontrol.core.foton.tf2zpk(s**20)
-    except ValueError:
-        pass
+    # try:
+    #     kontrol.core.foton.tf2zpk(1/s**20)
+    # except ValueError:
+    #     pass
+    # try:
+    #     kontrol.core.foton.tf2zpk(s**20)
+    # except ValueError:
+    #     pass
     try:
         kontrol.core.foton.tf2zpk(tf_test, root_location="a")
     except ValueError:
@@ -57,14 +58,14 @@ def test_tf2zpk():
 
 def test_tf2rpoly():
     ## test raises
-    try:
-        kontrol.core.foton.tf2rpoly(1/s**20)
-    except ValueError:
-        pass
-    try:
-        kontrol.core.foton.tf2rpoly(s**20)
-    except ValueError:
-        pass
+    # try:
+    #     kontrol.core.foton.tf2rpoly(1/s**20)
+    # except ValueError:
+    #     pass
+    # try:
+    #     kontrol.core.foton.tf2rpoly(s**20)
+    # except ValueError:
+    #     pass
 
     ## These should work
     kontrol.core.foton.tf2rpoly(1/s**19)

@@ -391,6 +391,9 @@ def tf_order_split(tf, max_order=20):
     """
     zeros = tf.zero()
     poles = tf.pole()
+    gain = tf.minreal().num[0][0][0]
+    # for i in range(len(zeros)):
+        # if zeros[i]
     nzero = len(zeros)
     npole = len(poles)
     niter_zero = int(np.ceil(nzero/max_order))
@@ -406,46 +409,76 @@ def tf_order_split(tf, max_order=20):
     tf_zero_list = []
     pole_running = []
     tf_pole_list = []
-
+    
     def put_tf_zeros_into_list():
+        """Use zeros in zero_running to create an all zero transfer function
+        and put store them into tf_zero_list, and reset order_running to 0.
+        """
+        s = control.tf("s")
         global order_running
         global zero_running
         global tf_zero_list
         simple_zeros = []
         zeros_wn = []
         zeros_q = []
+        differentiator = 0
+        gain = 1
         for z in zero_running:
             if z.imag == 0:
-                simple_zeros += [-z.real]
+                if z.real == 0:
+                    differentiator += 1
+                    # gain *= 2*np.pi
+                else:
+                    gain *= -z.real
+                    simple_zeros += [-z.real]
             else:
                 wn = abs(z)
                 q = wn / (-2*z.real)
+                gain *= wn**2
                 zeros_wn += [abs(z)]
                 zeros_q += [q]
-        tf_zero_list += [
-            generic_tf(zeros=simple_zeros,
-                       zeros_wn=zeros_wn, zeros_q=zeros_q, unit="s")]
+        tf = generic_tf(zeros=simple_zeros,
+                        zeros_wn=zeros_wn, zeros_q=zeros_q,
+                        dcgain=gain, unit="s")
+        for i in range(differentiator):
+            tf *= s
+        tf_zero_list += [tf]
         order_running = 0
         zero_running = []
 
     def put_tf_poles_into_list():
+        """Use poles in pole_running to create an all pole transfer function
+        and put store them into tf_pole_list, and reset order_running to 0.
+        """
+        s = control.tf("s")
         global order_running
         global pole_running
         global tf_pole_list
         simple_poles = []
         poles_wn = []
         poles_q = []
+        integrator = 0
+        gain = 1
         for p in pole_running:
             if p.imag == 0:
-                simple_poles += [-p.real]
+                if p.real == 0:
+                    integrator += 1
+                    # gain /= 2*np.pi
+                else:
+                    gain /= -p.real
+                    simple_poles += [-p.real]
             else:
                 wn = abs(p)
                 q = wn / (-2*p.real)
+                gain /= wn**2
                 poles_wn += [abs(p)]
                 poles_q += [q]
-        tf_pole_list += [
-            generic_tf(poles=simple_poles,
-                       poles_wn=poles_wn, poles_q=poles_q, unit="s")]
+        tf = generic_tf(poles=simple_poles,
+                        poles_wn=poles_wn, poles_q=poles_q,
+                        dcgain=gain, unit="s")
+        for _ in range(integrator):
+            tf *= 1/s
+        tf_pole_list += [tf]
         order_running = 0
         pole_running = []
 
@@ -488,12 +521,12 @@ def tf_order_split(tf, max_order=20):
     n_tf = max(len(tf_pole_list), len(tf_zero_list))
     tf_list = []
     for i in range(n_tf):
+        # print(i)
         if i+1 > len(tf_pole_list):
             tf_list += [tf_zero_list[i]]
         elif i+1 > len(tf_zero_list):
             tf_list += [tf_pole_list[i]]
         else:
             tf_list += [tf_zero_list[i]*tf_pole_list[i]]
-    tf_list[0] *= tf.dcgain()
-
+    tf_list[0] *= gain
     return tf_list

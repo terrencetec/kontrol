@@ -14,13 +14,15 @@ control filter design.
 
 Features
 --------
-* Complementary filter synthesis using :math:`\mathcal{H}_\infty`.
+* Complementary filter synthesis using :math:`\mathcal{H}_\infty` methods.
 
   * Synthesize optimal complementary filters in a 2-sensor configuration.
-  * Only depends on sensor noises.
-  * No specifications required.
 
-* Frequency series modeling.
+* Curve fitting
+
+  * Fit transfer functions, spectral densities, etc.
+
+* Frequency series modeling (Soon deprecating. See Curve fitting).
 
   * Model-based empirical fitting.
   * Model frequency series as zero-pole-gain and transfer function models.
@@ -39,6 +41,8 @@ Features
 * Foton utilities.
 
   * Convert Python transfer function objects to Foton expressions
+  * Support for translating transfer functions with higher than 20 order (the
+    Foton limit).
 
 * Easy Channel Access (EZCA) utilities (wrapper)
 
@@ -54,6 +58,7 @@ Don't hesitate to check out the `tutorials <https://kontrol.readthedocs.io/en/la
    :caption: Contents:
 
    self
+   concept
    getting_started
    tutorial
    main_utilities
