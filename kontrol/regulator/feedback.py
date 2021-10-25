@@ -20,6 +20,7 @@ def critical_damping(plant):
     method : str, optional
         The method to be used for setting the gain.
         Choose from ["optimized", "calculated"].
+
         * ``optimized``: the gain is optimized until the dominant complex
             pole pairs become two simple poles.
         * ``calculated`` : the gain is set to 2*:math:`\omega_n/K_{DC}`,

@@ -164,7 +164,7 @@ Pending
 
 .. |travis-ci| image:: https://travis-ci.com/terrencetec/kontrol.svg?branch=master
     :alt: travis-ci
-    :target: https://travis-ci.com/terrencetec/kontrol
+    :target: https://app.travis-ci.com/github/terrencetec/kontrol
 
 .. |codecov| image:: https://codecov.io/gh/terrencetec/kontrol/branch/master/graph/badge.svg?token=CI5TW1L81H
     :alt: codecov
