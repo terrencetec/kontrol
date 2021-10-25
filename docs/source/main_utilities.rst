@@ -118,3 +118,14 @@ These classes are designed to use with ``kontrol.curvefit``
    :undoc-members:
    :show-inheritance:
 
+Control Regulator Design
+------------------------
+Functions for algorithmic design of control regulators
+
+Feedback Control
+^^^^^^^^^^^^^^^^
+
+.. automodule:: kontrol.regulator.feedback
+   :members:
+   :undoc-members:
+   :show-inheritance:

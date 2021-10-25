@@ -12,6 +12,7 @@ Subpackages
    kontrol.curvefit
    kontrol.frequency_series
    kontrol.sensact
+   kontrol.regulator
 
 
 
