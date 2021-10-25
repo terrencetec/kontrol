@@ -21,10 +21,10 @@ def critical_damping(plant):
         The method to be used for setting the gain.
         Choose from ["optimized", "calculated"].
 
-        ``optimized``: the gain is optimized until the dominant complex
+        - 'optimized': the gain is optimized until the dominant complex
         pole pairs become two simple poles.
 
-        ``calculated``: the gain is set to :math:`\omega_n/K_{DC}`,
+        - 'calculated': the gain is set to :math:`\omega_n/K_{DC}`,
         where :math:`\omega_n` is the resonance frequency in rad/s
         of the dominant mode, and :math:`K_{DC}` is the DC gain
         of the plant.
