@@ -42,8 +42,8 @@ def critical_damping(plant, method="optimized", **kwargs):
         Method specific keyword arguments.
         See:
 
-        - 'optimized' :ref:`<kontrol.regulator.feedback.critical_damp_optimized>`
-        - 'calculated' :ref:`<kontrol.regulator.feedback.critical_damp_calculated>``
+        - 'optimized' :ref:`<kontrol.regulator.feedback.critical_damp_optimized>`_
+        - 'calculated' :ref:`<kontrol.regulator.feedback.critical_damp_calculated>`_
 
     Returns
     -------
@@ -156,7 +156,7 @@ def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6):
 
     1. Find the minimum damping gain ``k_min`` such that the open-loop
     transfer function ``k_min*s*plant`` has maxmimum gain
-    at unity gain frequency
+    at unity gain frequency.
 
     2. Iterate ``i``: ``k_i=k_min*i*gain_step`` for i=1,2,3...
     
