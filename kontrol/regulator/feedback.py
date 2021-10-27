@@ -38,12 +38,13 @@ def critical_damping(plant, method="optimized", **kwargs):
         poles.
 
         Defaults to "optimized".
-    **kwargs : keyword arugments
+    **kwargs : dict
         Method specific keyword arguments.
+        
         See:
 
-        - 'optimized' :ref:`<kontrol.regulator.feedback.critical_damp_optimized>`_
-        - 'calculated' :ref:`<kontrol.regulator.feedback.critical_damp_calculated>`_
+        - "optimized": `see here <kontrol.regulator.feedback.critical_damp_optimized>`_
+        - "calculated": `see here <kontrol.regulator.feedback.critical_damp_calculated>`_
 
     Returns
     -------
@@ -170,7 +171,6 @@ def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6):
     Otherwise, set ``k_min=k_mid``.
 
     5. Terminate when ``(k_max - k_min)/k_min < ktol``, i.e. converges.
-    
     """
     if gain_step <= 1:
         raise ValueError("gain_step must be greater than 1")
@@ -220,7 +220,8 @@ def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6):
     regulator = kd_mid * s
 
     return kontrol.TransferFunction(regulator)
-                         
+
+
 def _count_complex_poles(plant):
     """Returns number of complex poles in a transfer function"""
     n_complex_pole = 0
@@ -230,4 +231,82 @@ def _count_complex_poles(plant):
     return n_complex_pole
     
 
+def proportional_derivative(plant, kd=None, dcgain=None, **kwargs):
+    """Returns proportional-derivative control regulator for critical damping.
     
+    Parameters
+    ----------
+    plant : TransferFunction
+        The transfer function representation of the system to be feedback
+        controlled.
+        The plant must contain at least one pair of complex poles.
+    kd : TransferFunction or float, optional
+        The derivative control gain or the TransferFunction representation
+        of the derivative control.
+        If not specified, ``kontrol.regulator.feedback.critical_damping()``
+        will be used to find one.
+        Defaults to None.
+    dcgain : float, optional
+        The desired DC gain.
+        If not specified, the portional gain is tuned
+        such that the portional control's first UGF matches that
+        of the derivative control.
+        Defaults to None.
+    **kwargs : dict
+        Keyword arguments passed to critical_damping().
+
+    Returns
+    -------
+    TransferFunction
+        The proportional-derivative control regulator.
+    """
+    if _count_complex_poles(plant) == 0:
+        raise ValueError("Plant must contain at least one pair of"
+                         "complex poles")
+
+    if kd is None:
+        kd = critical_damping(plant, **kwargs)
+    elif isinstance(kd, float):
+        s = control.tf("s")
+        kd = kd * s
+    elif not isinstance(kd, control.TransferFunction):
+        raise TypeError("The derivative gain kd must be either a "
+                        "TransferFunction object "
+                        "or float.")
+
+    derivative_oltf = kd * plant
+
+    _, _, _, _, ugf, _ = control.stability_margins(
+        derivative_oltf, returnall=True)
+    
+
+    if dcgain is None:
+        kp = 1 / abs(plant(1j*min(ugf)))
+    else:
+        kp = dcgain / plant.dcgain()
+
+    regulator = kp + kd
+    return kontrol.TransferFunction(regulator)
+
+
+def proportional_integral_derivative(plant, ugf=None, **kwargs):
+    """PID control build on proportional_derivative().
+    
+    Parameters
+    ----------
+    plant : TransferFunction
+        The transfer function representation of the system to be feedback
+        controlled.
+        The plant must contain at least one pair of complex poles.
+    ugf : float, optional
+        The UGF of the integral control.
+        Defaults to None.
+    **kwargs : dict
+        Keyword arguments passed to proportional_derivative().
+
+    Returns
+    -------
+    TransferFunction
+        The PID control regulator.
+    """
+    pass

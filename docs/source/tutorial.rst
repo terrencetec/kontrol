@@ -65,3 +65,11 @@ Curve Fitting
    tutorials/curve_fitting_transfer_function
    tutorials/curve_fitting_simple_zpk
    tutorials/curve_fitting_complex_zpk
+
+Control Regulator Design
+------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   tutorials/regulator_feedback_critical_damping
