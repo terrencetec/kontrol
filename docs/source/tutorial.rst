@@ -66,8 +66,8 @@ Curve Fitting
    tutorials/curve_fitting_simple_zpk
    tutorials/curve_fitting_complex_zpk
 
-Control Regulator Design
-------------------------
+Control Regulator Designs
+-------------------------
 
 .. toctree::
    :maxdepth: 1
