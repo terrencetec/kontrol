@@ -43,8 +43,8 @@ def critical_damping(plant, method="optimized", **kwargs):
         
         See:
 
-        - "optimized": `see here <kontrol.regulator.feedback.critical_damp_optimized>`_
-        - "calculated": `see here <kontrol.regulator.feedback.critical_damp_calculated>`_
+        - "optimized": `see here <regulator.feedback.critical_damp_optimized>`_
+        - "calculated": `see here <regulator.feedback.critical_damp_calculated>`_
 
     Returns
     -------
@@ -151,7 +151,7 @@ def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6):
     -----
     Only works with plants that contain at least one complex pole pair.
     Works best with plants that only contain complex zeros/poles.
-    If it returns unreasonable high gain, try lowering ``gain_step``.
+    If it returns unreasonably high gain, try lowering ``gain_step``.
 
     The algorithm goes as follows.
 
