@@ -129,3 +129,13 @@ Feedback Control
    :members:
    :undoc-members:
    :show-inheritance:
+   
+.. automodule:: kontrol.regulator.oscillator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: kontrol.regulator.predefined
+   :members:
+   :undoc-members:
+   :show-inheritance:
