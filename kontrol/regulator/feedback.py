@@ -262,7 +262,7 @@ def add_proportional_control(plant, regulator=None, dcgain=None):
 
 
 def add_integral_control(
-    plant, regulator, integrator_ugf=None, integrator_time_constant=None):
+    plant, regulator=None, integrator_ugf=None, integrator_time_constant=None):
     """Match and returns an integral gain.
 
     This function finds an integral gain such that
@@ -276,7 +276,7 @@ def add_integral_control(
     plant : TransferFunction
         The transfer function representation of the system to be feedback
         controlled.
-    regulator : TransferFunction
+    regulator : TransferFunction, optional
         The pre-regulator
         Use ``kontrol.regulator.feedback.proportional_derivative()`` or
         ``kontrol.regulator.feedback.critical_damping()`` to make one
@@ -306,9 +306,12 @@ def add_integral_control(
         ki = 1 / abs(oltf_int(1j*2*np.pi*integrator_ugf))
     elif integrator_ugf is not None:
         ki = 1 / abs(oltf_int(1j*2*np.pi*integrator_ugf))
-    else:
+    elif regulator is not None:
         oltf = plant * regulator
         _, _, _, _, ugf, _ = control.stability_margins(
                     oltf, returnall=True)
         ki = 1 / abs(oltf_int(1j*ugf[0]))
+    else:
+        raise ValueError("At least one of regulator, integrator_ugf, or "
+                         "integrator_time_constant must be specified.")
     return ki
