@@ -310,7 +310,7 @@ def add_integral_control(
         oltf = plant * regulator
         _, _, _, _, ugf, _ = control.stability_margins(
                     oltf, returnall=True)
-        ki = 1 / abs(oltf_int(1j*ugf[0]))
+        ki = 1 / abs(oltf_int(1j*min(ugf)))
     else:
         raise ValueError("At least one of regulator, integrator_ugf, or "
                          "integrator_time_constant must be specified.")

@@ -83,11 +83,11 @@ def pid(
             plant, dcgain=dcgain, **kwargs)
         ki = kontrol.regulator.feedback.add_integral_control(
             plant, integrator_ugf=integrator_ugf,
-            integrator_time_constant)
+            integrator_time_constant=integrator_time_constant)
     elif regulator_type == "I":
         ki = kontrol.regulator.feedback.add_integral_control(
             plant, integrator_ugf=integrator_ugf,
-            integrator_time_constant)
+            integrator_time_constant=integrator_time_constant)
     elif regulator_type == "D":
         kd = kontrol.regulator.feedback.critical_damping(
             plant, **kwargs)
