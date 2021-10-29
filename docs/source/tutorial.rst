@@ -73,3 +73,4 @@ Control Regulator Design
    :maxdepth: 1
 
    tutorials/regulator_feedback_critical_damping
+   tutorials/regulator_algorithmic_oscillator_control
