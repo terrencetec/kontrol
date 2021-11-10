@@ -46,3 +46,8 @@ kontrol.curve.model subpackage
    :members:
    :undoc-members:
    :show-inheritance:
+   
+.. automodule:: kontrol.curvefit.model.math_model
+   :members:
+   :undoc-members:
+   :show-inheritance:

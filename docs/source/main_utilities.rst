@@ -106,38 +106,46 @@ Models for Curve Fitting
 ^^^^^^^^^^^^^^^^^^^^^^^^
 These classes are designed to use with ``kontrol.curvefit``
 
-.. automodule:: kontrol.curvefit.model
+.. .. automodule:: kontrol.curvefit.model
+..    :members:
+..    :undoc-members:
+..    :show-inheritance:
+
+.. autoclass:: kontrol.curvefit.model.Model
    :members:
    :undoc-members:
    :show-inheritance:
 
-..
-   .. autoclass:: kontrol.curvefit.model.Model
-      :members:
-      :undoc-members:
-      :show-inheritance:
+.. autoclass:: kontrol.curvefit.model.TransferFunctionModel
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-   .. autoclass:: kontrol.curvefit.model.TransferFunctionModel
-      :members:
-      :undoc-members:
-      :show-inheritance:
+.. autoclass:: kontrol.curvefit.model.DampedOscillator
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-   .. autoclass:: kontrol.curvefit.model.DampedOscillator
-      :members:
-      :undoc-members:
-      :show-inheritance:
+.. autoclass:: kontrol.curvefit.model.SimpleZPK
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-   .. autoclass:: kontrol.curvefit.model.SimpleZPK
-      :members:
-      :undoc-members:
-      :show-inheritance:
+.. autoclass:: kontrol.curvefit.model.ComplexZPK
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-   .. autoclass:: kontrol.curvefit.model.ComplexZPK
-      :members:
-      :undoc-members:
-      :show-inheritance:
+.. autoclass:: kontrol.curvefit.model.StraightLine
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-   .. autoclass:: kontrol.curvefit.model.
+.. autoclass:: kontrol.curvefit.model.Erf
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Control Regulator Design
 ------------------------
