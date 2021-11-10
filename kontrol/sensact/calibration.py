@@ -18,8 +18,8 @@ def calibrate(xdata, ydata, method="linear", **kwargs):
         The method of the fit.
         Choose from ["linear", "erf"].
         
-       - "linear": use ``kontrol.sensact.calibrate.calibrate_linear()``
-       - "erf": use ``kontrol.sensact.calibrate.calibrate_erf()``
+       - "linear": use ``kontrol.sensact.calibration.calibrate_linear()``
+       - "erf": use ``kontrol.sensact.calibration.calibrate_erf()``
     **kwargs :
         Keyword arguments passed to the calibration methods.
 

@@ -67,7 +67,7 @@ Sensor Calibration Functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Functions for calibrating sensor readouts.
 
-.. automodule:: kontrol.sensact.calibrate
+.. automodule:: kontrol.sensact.calibration
    :members:
    :undoc-members:
    :show-inheritance:
