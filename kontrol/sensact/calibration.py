@@ -17,7 +17,6 @@ def calibrate(xdata, ydata, method="linear", **kwargs):
     method : str, optional
         The method of the fit.
         Choose from ["linear", "erf"].
-        
        - "linear": use ``kontrol.sensact.calibration.calibrate_linear()``
        - "erf": use ``kontrol.sensact.calibration.calibrate_erf()``
     **kwargs :
@@ -169,7 +168,9 @@ def calibrate_erf(
         Default 5.
     return_linear_range : boolean, optional
         If True, return the linear range of ydata.
-
+    return_model : boolean, optional
+        Return a kontrol.curvefit.model.Model object with the fitted
+        parameters.
     
     Returns
     -------
