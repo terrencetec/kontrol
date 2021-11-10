@@ -41,8 +41,8 @@ def critical_damping(plant, method="optimized", **kwargs):
         
         See:
 
-        - "optimized": kontrol.regulator.feedback.critical_damp_optimized>
-        - "calculated": kontrol.regulator.feedback.critical_damp_calculated>
+        - "optimized": kontrol.regulator.feedback.critical_damp_optimized
+        - "calculated": kontrol.regulator.feedback.critical_damp_calculated
 
     Returns
     -------

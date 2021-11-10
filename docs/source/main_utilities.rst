@@ -24,8 +24,11 @@ Frequency domain and transfer function data modeling
    :undoc-members:
    :show-inheritance:
 
+Sensors and Actuators Utilities
+-------------------------------
+
 Sensing Matrix Classes
-----------------------
+^^^^^^^^^^^^^^^^^^^^^^
 Sensing matrix and diagonalization.
 
 .. autoclass:: kontrol.SensingMatrix
@@ -60,6 +63,16 @@ Sensing matrices for vertical optical levers (Type-B) in KAGRA.
    :undoc-members:
    :show-inheritance:
 
+Sensor Calibration Functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Functions for calibrating sensor readouts.
+
+.. automodule:: kontrol.sensact.calibrate
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
 Spectral Analysis Functions
 ---------------------------
 Spectral analysis related functions library.
@@ -93,30 +106,38 @@ Models for Curve Fitting
 ^^^^^^^^^^^^^^^^^^^^^^^^
 These classes are designed to use with ``kontrol.curvefit``
 
-.. autoclass:: kontrol.curvefit.model.Model
+.. automodule:: kontrol.curvefit.model
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: kontrol.curvefit.model.TransferFunctionModel
-   :members:
-   :undoc-members:
-   :show-inheritance:
+..
+   .. autoclass:: kontrol.curvefit.model.Model
+      :members:
+      :undoc-members:
+      :show-inheritance:
 
-.. autoclass:: kontrol.curvefit.model.DampedOscillator
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. autoclass:: kontrol.curvefit.model.TransferFunctionModel
+      :members:
+      :undoc-members:
+      :show-inheritance:
 
-.. autoclass:: kontrol.curvefit.model.SimpleZPK
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. autoclass:: kontrol.curvefit.model.DampedOscillator
+      :members:
+      :undoc-members:
+      :show-inheritance:
 
-.. autoclass:: kontrol.curvefit.model.ComplexZPK
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. autoclass:: kontrol.curvefit.model.SimpleZPK
+      :members:
+      :undoc-members:
+      :show-inheritance:
+
+   .. autoclass:: kontrol.curvefit.model.ComplexZPK
+      :members:
+      :undoc-members:
+      :show-inheritance:
+
+   .. autoclass:: kontrol.curvefit.model.
 
 Control Regulator Design
 ------------------------
@@ -139,3 +160,4 @@ Feedback Control
    :members:
    :undoc-members:
    :show-inheritance:
+

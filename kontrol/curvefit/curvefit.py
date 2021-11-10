@@ -129,6 +129,7 @@ class CurveFit:
             cost, args=(model, xdata, ydata, model_kwargs), **optimizer_kwargs)
         self.optimize_result = res
         self.optimized_args = res.x
+        self.model.args = self.optimized_args
         return res
 
     @property
