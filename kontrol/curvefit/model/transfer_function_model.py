@@ -121,12 +121,12 @@ class TransferFunctionModel(Model):
     @property
     def tf(self):
         """The Transfer Function object."""
-        if self.log_args:
-            num = 10**self.num
-            den = 10**self.den
-        else:
-            num = self.num
-            den = self.den
+        # if self.log_args:
+        #     num = 10**self.num
+        #     den = 10**self.den
+        # else:
+        num = self.num
+        den = self.den
         return kontrol.TransferFunction(num, den)
 
 
@@ -344,6 +344,8 @@ class SimpleZPK(Model):
         elif len(_args) != self.nzero + self.npole + 1:
             raise ValueError("Length of argument must match nzero and npole.")
         else:
+            if self.log_args:
+                _args = 10**_args
             self._args = _args
     
     #TODO Maybe I should consider setter for zero, pole and gain.

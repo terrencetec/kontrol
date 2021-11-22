@@ -23,11 +23,11 @@ class Model:
             10**args instead.
             Defaults to False.
         """
+        self.log_args = log_args
         self._args = None
         self._nargs = None
         self.args = args
         self.nargs = nargs
-        self.log_args = log_args
 
     def __call__(self, x, args=None, **kwargs):
         """Use self._x2y(x, **kwargs) to give y values from x.
@@ -58,8 +58,6 @@ class Model:
         if self.args is None:
             raise ValueError("Please specify model parameters by the "
                              "arg argument or by setting self.arg.")
-        if self.log_args:
-            self.args = 10**self.args
         return self._x2y(x, **kwargs)
 
    # def __add__(self, model2):
@@ -111,6 +109,8 @@ class Model:
     @args.setter
     def args(self, _args):
         """args.setter"""
+        if self.log_args and _args is not None:
+            _args = 10**_args
         self._args = _args
         # self.nargs = len(_args)
 
