@@ -88,6 +88,12 @@ def calibrate_linear(
     model : kontrol.curvefit.model.Model
         The fitted model.
     """
+    xdata = np.array(xdata)
+    ydata = np.array(ydata)
+    # Sort data
+    sort_indexes = np.argsort(xdata)
+    xdata = xdata[sort_indexes]
+    ydata = ydata[sort_indexes]
     if full_range is None:
         full_range = max(ydata) - min(ydata)
     if start_index is None:
@@ -116,7 +122,6 @@ def calibrate_linear(
             or i+1 == start_index):
             # Set the mask such the the middle points are true.
             mask[i] = True
-    
     # Starting from 3 points in the middle, fit a straight line
     # and include those data points which fall within the linearity
     # specification, and repeats.
@@ -207,7 +212,13 @@ def calibrate_erf(
     """
     xdata = np.array(xdata)
     ydata = np.array(ydata)
+    # Sort data
+    sort_indexes = np.argsort(xdata)
+    xdata = xdata[sort_indexes]
+    ydata = ydata[sort_indexes]
     # Scale data for numerical stability
+    xmean = np.mean(xdata)
+    xdata -= xmean
     x_scale = max(abs(xdata))
     y_scale = max(abs(ydata))
     xdata /= x_scale
@@ -249,8 +260,10 @@ def calibrate_erf(
     curvefit.model.amplitude *= y_scale
     curvefit.model.slope /= x_scale
     curvefit.model.x_offset *= x_scale
+    curvefit.model.x_offset += xmean
     curvefit.model.y_offset *= y_scale
     xdata *= x_scale
+    xdata += xmean
     ydata *= y_scale
 
     a = curvefit.model.amplitude
