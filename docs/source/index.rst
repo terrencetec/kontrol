@@ -48,6 +48,11 @@ Features
 
   * Read and write matrices to EPICS record.
 
+* Transfer Function
+  
+  * Export transfer functions to foton expressions.
+  * Save TransferFunction objects to pickle files.
+
 Don't hesitate to check out the `tutorials <https://kontrol.readthedocs.io/en/latest/tutorial.html>`_!
 
 - **Documentation:** https://kontrol.readthedocs.io/

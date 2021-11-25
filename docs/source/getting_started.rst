@@ -10,10 +10,11 @@ Dependencies
 Required
 ^^^^^^^^
 
-* numpy
-* scipy
-* matplotlib
 * control>=0.9
+* numpy
+* matplotlib
+* pandas
+* scipy
 
 Optional
 ^^^^^^^^
