@@ -75,7 +75,7 @@ def low_pass(cutoff, order=1, **kwargs):
     return kontrol.TransferFunction(lp)
 
 
-def notch(frequency, q, depth, **kwargs):
+def notch(frequency, q, depth=None, depth_db=None, **kwargs):
     r"""Notch filter defined in Foton.
 
     Parameters
@@ -84,8 +84,14 @@ def notch(frequency, q, depth, **kwargs):
         The notch frequency (Hz).
     q : float
         The quality factor.
-    depth : float
+    depth : float, optional
         The depth of the notch filter (magnitude).
+        If not specified, ``depth_db`` will be used.
+        Defaults None.
+    depth_db : float, optional
+        The depth of the notch filter (decibel).
+        If not specified, ``depth`` will be used instead.
+        Defaults None.
 
     Returns
     -------
@@ -104,9 +110,14 @@ def notch(frequency, q, depth, **kwargs):
     where :math:`f_n` is the notch frequency, :math:`q` is the quality factor
     , and :math:`d` is the depth.
     """
+    if depth is None and depth_db is None:
+        raise ValueError("Either depth or depth_db must be specified")
+    if depth is None:
+        depth = 10**(depth_db/20)
+
+    s = control.tf("s")
     wn = 2*np.pi*frequency
     qp = q/2
-    depth = 10**(depth_db/20)
     qz = qp*depth
     n = (s**2 + wn/qz*s + wn**2) / (s**2 + wn/qp*s + wn**2)
     return kontrol.TransferFunction(n) 

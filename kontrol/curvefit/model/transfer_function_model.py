@@ -530,6 +530,8 @@ class ComplexZPK(Model):
             raise ValueError("Length of argument must match the specfied "
                              "nzero_pairs and npole_pairs.")
         else:
+            if self.log_args:
+                _args = 10**_args
             self._args = _args
     
     @property

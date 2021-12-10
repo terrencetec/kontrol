@@ -6,7 +6,7 @@ import numpy as np
 import kontrol
 
 
-def critical_damping(plant, method="optimized", **kwargs):
+def critical_damping(plant, method="calculated", **kwargs):
     r"""Returns the critical damping derivative control gain.
 
     This functions calls
@@ -29,13 +29,13 @@ def critical_damping(plant, method="optimized", **kwargs):
 
         "calculated": the gain is set to :math:`2/\omega_n/K_{DC}`,
         where :math:`\omega_n` is the resonance frequency in rad/s
-        of the dominant mode, and :math:`K_{DC}` is the DC gain
-        of the plant.
+        of the mode to be damped, and :math:`K_{DC}` is the sum of DC gains
+        of the mode and that of the other high-frequency modes.
         
         Both method assumes that the plant has at least one pair of complex
         poles.
 
-        Defaults to "optimized".
+        Defaults to "calculated".
     **kwargs : dict
         Method specific keyword arguments.
         
@@ -64,7 +64,7 @@ def critical_damping(plant, method="optimized", **kwargs):
     return kd 
 
 
-def critical_damp_calculated(plant):
+def critical_damp_calculated(plant, nmode=1, **kwargs):
     r"""Find dominant mode and returns the approximate critical regulator.
 
     Parameters
@@ -73,6 +73,10 @@ def critical_damp_calculated(plant):
         The transfer function representation of the system to be feedback
         controlled.
         The plant must contain at least one pair of complex poles.
+    nmode : int, optional
+        The ``nmode``th dominant mode to be damped.
+        This number must be less than the number of modes in the plant.
+        Defaults 1.
 
     Returns
     -------
@@ -91,24 +95,29 @@ def critical_damp_calculated(plant):
         K(s) \approx \frac{2}{\omega_n K_\mathrm{DC}}\,,
 
     where :math:`\omega_n` is the resonance frequency of the dominant mode
-    and :math:`K_\mathrm{DC}` is the DC gain of the plant.
+    and :math:`K_\mathrm{DC}` is the sum of DC gains of the mode
+    and that of the other higher-frequency modes..
     """
-    poles = plant.pole()
-    dominant_wn = None
-    for p in poles:
-        if p.imag != 0:
-            wn = abs(p)
-            amp = abs(plant(1j*wn))
-            if dominant_wn is None:
-                dominant_wn = wn
-            if dominant_wn is not None:
-                if amp > abs(plant(1j*dominant_wn)):
-                    dominant_wn = wn
-    dcgain = plant.dcgain()
-    kd = 2/dominant_wn/dcgain
+    ## Decompose into frequencies, quality factors, and DC gains
+    wn, q, k = kontrol.regulator.feedback.mode_decomposition(plant)
+    peak_gain = q*k  # Gain at the resonances.
+
+    # indexes of the modes from most dominant to least dominant.
+    dominant_indexes = np.flip(np.argsort(peak_gain))
+    # The index of the mode that we want to damp
+    mode_index = dominant_indexes[nmode-1]
+
+    # Sum all the DC gains of the modes that has higher 
+    # or equal frequency than the mode (including the mode itself).
+    dcgain = np.sum(k[:mode_index+1])
+    dominant_wn = wn[mode_index]
+
+    kd = 2/dominant_wn/dcgain  # Estimate critical damping gain.
+
     return kd 
 
-def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6):
+
+def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6, **kwargs):
     r"""Optimize derivative damping gain and returns the critical regulator
     
     Parameters
@@ -136,6 +145,11 @@ def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6):
  
     Notes
     -----
+    Update on 2021-12-04: Use carefully. It only critically damps
+    the mode that has the highest peak when multiplied by an differentiator.
+    Note for myself: only 2 complex poles can become simple poles for
+    plants with second-order rolloff.
+
     Only works with plants that contain at least one complex pole pair.
     Works best with plants that only contain complex zeros/poles.
     If it returns unreasonably high gain, try lowering ``gain_step``.
@@ -174,14 +188,15 @@ def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6):
     n_complex_pole = _count_complex_poles(plant)
 
     # Find overdamp gain
-    # Do so by adding gain until number of complex poles of
-    # the closed-loop plant changes.
+    # Do so by adding gain until number of complex pole modes
+    # reduced by more than the number of n_overdamp_modes
     kd = kd_min
     while 1:
         kd *= gain_step
         oltf = kd * s * plant
         sensitivity = plant / (1+oltf)
-        if n_complex_pole > _count_complex_poles(sensitivity.minreal()):
+        damped_complex_poles = _count_complex_poles(sensitivity.minreal())
+        if n_complex_pole  > damped_complex_poles:
             kd_max = kd
             break
 
@@ -192,7 +207,8 @@ def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6):
         kd_mid = 10**((np.log10(kd_max)-np.log10(kd_min))/2 + np.log10(kd_min))
         oltf_mid = kd_mid * s *plant
         sensitivity = plant / (1+oltf_mid)
-        if n_complex_pole > _count_complex_poles(sensitivity.minreal()):
+        damped_complex_poles = _count_complex_poles(sensitivity.minreal())
+        if n_complex_pole  > damped_complex_poles:
             # Mid gain still overdamps
             kd_max = kd_mid
         else:
@@ -218,7 +234,67 @@ def _count_complex_poles(plant):
     return n_complex_pole
     
 
-def add_proportional_control(plant, regulator=None, dcgain=None):
+def _find_dominant_mode(plant):
+    """Returns the frequency (rad/s) of the dominant mode."""
+    poles = plant.pole()
+    dominant_wn = None
+    for p in poles:
+        if p.imag != 0:
+            wn = abs(p)
+            amp = abs(plant(1j*wn))
+            if dominant_wn is None:
+                dominant_wn = wn
+            if dominant_wn is not None:
+                if amp > abs(plant(1j*dominant_wn)):
+                    dominant_wn = wn
+    return dominant_wn
+
+
+def _count_overdamp_modes(plant):
+    """Count overdamped modes for critically damped dominant modes"""
+    s = control.tf("s")
+    n_overdamp_modes = 0
+    dominant_wn = _find_dominant_mode(plant)
+    spoles = (s*plant).pole()
+    for p in spoles:
+        if p.imag != 0:
+            wn = abs(p)
+            amp = abs((s*plant)(1j*wn))
+            if amp > abs((s*plant)(1j*dominant_wn)):
+                n_overdamp_modes += 1
+    return n_overdamp_modes
+
+
+# IDK where to put this function
+# FIXME Put this function in a proper module. 
+def mode_decomposition(plant):
+    """Returns a list of single mode transfer functions
+
+    Parameters
+    ----------
+    plant : TransferFunction
+        The transfer function with at list one pair of complex poles.
+
+    Returns
+    -------
+    list of TransferFunction
+        The list of decomposed plants
+    wn : array
+        Frequencies (rad/s).
+    q : array
+        Q factors.
+    k : array
+        Dcgains of the modes.
+    """
+    poles = plant.pole()
+    complex_mask = poles.imag > 0  # Avoid duplication
+    wn = abs(poles[complex_mask])  # Frequencies
+    q = wn/(-2*poles[complex_mask].real)  # Q factors of the modes
+    k = abs(plant(1j*wn)/q)  # DC gain of the modes
+    return wn, q, k
+
+    
+def add_proportional_control(plant, regulator=None, dcgain=None, **kwargs):
     """Match and returns proportional gain.
 
     This function finds a proportional gain such that
@@ -262,7 +338,8 @@ def add_proportional_control(plant, regulator=None, dcgain=None):
 
 
 def add_integral_control(
-    plant, regulator=None, integrator_ugf=None, integrator_time_constant=None):
+        plant, regulator=None, integrator_ugf=None,
+        integrator_time_constant=None, **kwargs):
     """Match and returns an integral gain.
 
     This function finds an integral gain such that

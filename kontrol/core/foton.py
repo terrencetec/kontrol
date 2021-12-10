@@ -7,7 +7,8 @@ import kontrol.logger
 
 
 def tf2foton(
-    tf, expression="zpk", root_location="s", itol=1e-25, epsilon=1e-25):
+        tf, expression="zpk", root_location="s", decimal_places=6,
+        itol=1e-25, epsilon=1e-25):
     """Convert a single transfer function to foton expression.
 
     Parameters
@@ -26,6 +27,9 @@ def tf2foton(
         "n": roots in frequency plane but negated and gains are normalized,
         i.e. real parts are positive zpk([...], [...], ..., "n").
         Defaults to "s".
+    decimal_places : int, optional
+        Number of decimal places to print out.
+        Defaults to 6.
     itol : float, optional
         Treating complex roots as real roots if the ratio of
         the imaginary part and the real part is smaller than this tolerance
@@ -69,7 +73,7 @@ def tf2foton(
     return foton_expression
 
 
-def tf2zpk(tf, root_location="s", itol=1e-25, epsilon=1e-25):
+def tf2zpk(tf, root_location="s", decimal_places=6, itol=1e-25, epsilon=1e-25):
     """Convert a single transfer function to foton zpk expression.
 
     Parameters
@@ -84,6 +88,9 @@ def tf2zpk(tf, root_location="s", itol=1e-25, epsilon=1e-25):
         "n": roots in frequency plane but negated and gains are normalized,
         i.e. real parts are positive zpk([...], [...], ..., "n").
         Defaults to "s".
+    decimal_places : int, optional
+        Number of decimal places to print out.
+        Defaults to 6.
     itol : float, optional
         Treating complex roots as real roots if the ratio of
         the imaginary part and the real part is smaller than this tolerance
@@ -144,31 +151,36 @@ def tf2zpk(tf, root_location="s", itol=1e-25, epsilon=1e-25):
     ## Convert to zpk expressing string
     for zero in zeros[z_sort_arg]:
         if abs(zero.imag)/abs(zero.real+epsilon) < itol:
-            str_zeros += "{}".format(zero.real)
+            str_zeros += "{:.{}f}".format(zero.real, decimal_places)
         else:
-            str_zeros += "{}+i*{}".format(zero.real, zero.imag)
+            str_zeros += "{:.{dp}f}+i*{:.{dp}f}".format(
+                zero.real, zero.imag, dp=decimal_places)
         str_zeros += ";"
     for pole in poles[p_sort_arg]:
         if abs(pole.imag)/abs(pole.real+epsilon) < itol:
-            str_poles += "{}".format(pole.real)
+            str_poles += "{:.{}f}".format(pole.real, decimal_places)
         else:
-            str_poles += "{}+i*{}".format(pole.real, pole.imag)
+            str_poles += "{:.{dp}f}+i*{:.{dp}f}".format(
+                pole.real, pole.imag, dp=decimal_places)
         str_poles += ";"
     str_zeros = str_zeros.rstrip(";")
     str_poles = str_poles.rstrip(";")
-    zpk_expression = "zpk([{}],[{}],{},\"{}\")".format(
-        str_zeros, str_poles, gain, root_location)
+    zpk_expression = "zpk([{}],[{}],{:.{}f},\"{}\")".format(
+        str_zeros, str_poles, gain, decimal_places, root_location)
 
     return zpk_expression
 
 
-def tf2rpoly(tf):
+def tf2rpoly(tf, decimal_places=6):
     """Convert a transfer function to foton rpoly expression.
 
     Parameters
     ----------
     tf : TransferFunction
         The transfer function object
+    decimal_places : int, optional
+        Number of decimal places to print out.
+        Defaults to 6.
 
     Returns
     -------
@@ -190,10 +202,10 @@ def tf2rpoly(tf):
     num /= num[0]
 
     for coef in num:
-        str_num += "{}".format(coef)
+        str_num += "{:.{}f}".format(coef, decimal_places)
         str_num += ";"
     for coef in den:
-        str_den += "{}".format(coef)
+        str_den += "{:.{}f}".format(coef, decimal_places)
         str_den += ";"
     str_num = str_num.rstrip(";")
     str_den = str_den.rstrip(";")
@@ -239,3 +251,29 @@ def _order_gt(tf, order):
     """
     nnum, nden = _order(tf)
     return max(nnum, nden) > order
+
+
+def notch(frequency, q, depth, decimal_places=6):
+    """Returns the foton expression of a notch filter.
+    
+    Parameters
+    ----------
+    frequency : float
+        The notch frequency (Hz).
+    q : float
+        The quality factor.
+    depth : float
+        The depth of the notch filter (magnitude).
+    decimal_places : int, optional
+        Number of decimal places to print out.
+        Defaults to 6.
+
+    Returns
+    -------
+    str
+        The foton representation of this notch filter.
+    """
+    depth_db = 20*np.log10(depth)
+    expression = "notch({:.{dp}f},{:.{dp}f},{:.{dp}f})".format(
+        frequency, q, depth_db, dp=decimal_places)
+    return expression
