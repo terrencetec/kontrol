@@ -47,9 +47,12 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
     phi_len: float, optional
         Angle from the length-sensing QPD frame to the yaw-pitch frame.
         Defaults None.
-    f: float, optional
-        Focal length of the convex lens.
-        Defaults None.
+    f_h : float, optional,
+        Focal length of the lens projected to the horizontal plane.
+        Defaults ``np.inf`` (no lens).
+    f_v : float, optional,
+        Focal length of the lens projected to the vertical plane.
+        Defaults ``np.inf`` (no lens).
     format: str, optional
         Format of the sensing matrix.
         Choose from
@@ -110,10 +113,12 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
         \begin{bmatrix}
             2\sin\alpha_h & 0 & 2r_h\\
             2\sin\alpha_v & 2r_v & 0\\
-            2\sin\alpha_h\left(1-\frac{d_h}{f}\right) & 0 &
-            2\left[\left(1-\frac{d_h}{f}\right)r_{\mathrm{lens},h}+d_h\right]\\
-            2\sin\alpha_v\left(1-\frac{d_v}{f}\right) &
-            2\left[\left(1-\frac{d_v}{f}\right)r_{\mathrm{lens},v}+d_v\right]
+            2\sin\alpha_h\left(1-\frac{d_h}{f_h}\right) & 0 &
+            2\left[\left(1-\frac{d_h}{f_h}\right)r_{\mathrm{lens},h}
+            + d_h\right]\\
+            2\sin\alpha_v\left(1-\frac{d_v}{f_v}\right) &
+            2\left[\left(1-\frac{d_v}{f_v}\right)r_{\mathrm{lens},v}
+            + d_v\right]
             & 0\\
         \end{bmatrix}^{+},
 
@@ -153,7 +158,7 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
     def __new__(cls, r_h, r_v, alpha_h, alpha_v,
                 r_lens_h=0, r_lens_v=0, d_h=0, d_v=0,
                 delta_x=0, delta_y=0,
-                phi_tilt=0, phi_len=0, f=np.inf,
+                phi_tilt=0, phi_len=0, f_h=np.inf, f_v=np.inf,
                 format="OPLEV2EUL",
                 coupling_matrix=None, *args, **kwargs):
         r"""Constructor
@@ -194,9 +199,12 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
         phi_len: float, optional
             Angle from the length-sensing QPD frame to the yaw-pitch frame.
             Defaults 0.
-        f: float, optional
-            Focal length of the convex lens.
-            Defaults np.inf.
+        f_h : float, optional,
+            Focal length of the lens projected to the horizontal plane.
+            Defaults ``np.inf`` (no lens).
+        f_v : float, optional,
+            Focal length of the lens projected to the vertical plane.
+            Defaults ``np.inf`` (no lens).
         format: str, optional
             Format of the sensing matrix.
             Choose from
@@ -235,7 +243,8 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
         # print("OpticalLeverSensingMatrix __new__")
         _c_align = c_align(
             r_h=r_h, r_v=r_v, alpha_h=alpha_h, alpha_v=alpha_v,
-            r_lens_h=r_lens_h, r_lens_v=r_lens_v, d_h=d_h, d_v=d_v, f=f,
+            r_lens_h=r_lens_h, r_lens_v=r_lens_v, d_h=d_h, d_v=d_v,
+            f_h=f_h, f_v=f_v,
             **kwargs)
         _c_rotation = c_rotation(phi_tilt, phi_len)
         _c_miscenter = c_miscenter(delta_x, delta_y)
@@ -261,7 +270,8 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
         self.delta_y = delta_y
         self.phi_tilt = phi_tilt
         self.phi_len = phi_len
-        self.f = f
+        self.f_h = f_h
+        self.f_v = f_v
         self.format = format
         return self
 
@@ -284,7 +294,7 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
                     r_h=self.r_h, r_v=self.r_v,
                     alpha_h=self.alpha_h, alpha_v=self.alpha_v,
                     r_lens_h=self.r_lens_h, r_lens_v=self.r_lens_v,
-                    d_h=self.d_h, d_v=self.d_v, f=self.f,
+                    d_h=self.d_h, d_v=self.d_v, f_h=self.f_h, f_v=self.f_v,
                     **kwargs)
                 _c_rotation = c_rotation(self.phi_tilt, self.phi_len)
                 _c_miscenter = c_miscenter(self.delta_x, self.delta_y)
@@ -453,17 +463,30 @@ class OpticalLeverSensingMatrix(kontrol.SensingMatrix):  # Too long?
         self._phi_len = _phi_len
 
     @property
-    def f(self):
-        """Focal length of the convex lens.
+    def f_h(self):
+        """Focal length of the convex lens projected on the horizontal plane.
         """
-        return self._f
+        return self._f_h
 
-    @f.setter
+    @f_h.setter
     @update_matrices_decorator
-    def f(self, _f):
-        """f setter
+    def f_h(self, _f_h):
+        """f_h.setter
         """
-        self._f = _f
+        self._f_h = _f_h
+
+    @property
+    def f_v(self):
+        """Focal length of the convex lens projected on the vertical plane.
+        """
+        return self._f_v
+
+    @f_v.setter
+    @update_matrices_decorator
+    def f_v(self, _f_v):
+        """f_v.setter
+        """
+        self._f_v = _f_v
 
     @property
     def format(self):
@@ -613,12 +636,16 @@ class HorizontalOpticalLeverSensingMatrix(OpticalLeverSensingMatrix):
         r_lens_h = r_lens
         if f is not np.inf:
             d_h = r_lens*f / (r_lens-f) + delta_d
+            f_h = f
+            f_v = r*np.cos(alpha_h)
         else:
             d_h = 0
+            f_h = np.inf
+            f_v = np.inf
         self = super(HorizontalOpticalLeverSensingMatrix, cls).__new__(
             cls,
             r_h=r_h, r_v=r_v, alpha_h=alpha_h, alpha_v=alpha_v,
-            r_lens_h=r_lens_h, f=f, d_h=d_h,
+            r_lens_h=r_lens_h, f_h=f_h, f_v=f_v, d_h=d_h,
             phi_tilt=phi_tilt, phi_len=phi_len,
             delta_x=delta_x, delta_y=delta_y,
             format=format, coupling_matrix=coupling_matrix, *args, **kwargs
@@ -672,7 +699,21 @@ class HorizontalOpticalLeverSensingMatrix(OpticalLeverSensingMatrix):
         """delta_d setter
         """
         self._delta_d = _delta_d
-        self.d_h = self.r_lens*self.f / (self.r_lens-self.f) + self._delta_d
+        self.d_h = self.r_lens*self.f_h/(self.r_lens-self.f_h) + self._delta_d
+
+    @property
+    def f(self):
+        """Focal length of the convex lens.
+        """
+        return self._f
+
+    @f.setter
+    def f(self, _f):
+        """f setter
+        """
+        self._f = _f
+        self.f_h = _f
+        self.f_v = _f * np.cos(self.alpha_h)
 
 
 class VerticalOpticalLeverSensingMatrix(OpticalLeverSensingMatrix):
@@ -774,17 +815,21 @@ class VerticalOpticalLeverSensingMatrix(OpticalLeverSensingMatrix):
         **kwargs:
             Keyword arguments passed to OpticalLeverSensingMatrix.
         """
-        r_h = r*np.cos(alpha_h)
+        r_h = r*np.cos(alpha_v)
         r_v = r
         r_lens_v = r_lens
         if f is not np.inf:
             d_v = r_lens*f / (r_lens-f) + delta_d
+            f_h = f*np.cos(alpha_v)
+            f_v = f
         else:
             d_v = 0
+            f_h = np.inf
+            f_v = np.inf
         self = super(VerticalOpticalLeverSensingMatrix, cls).__new__(
             cls,
             r_h=r_h, r_v=r_v, alpha_h=alpha_h, alpha_v=alpha_v,
-            r_lens_v=r_lens_v, f=f, d_v=d_v,
+            r_lens_v=r_lens_v, f_h=f_h, f_v=f_v, d_v=d_v,
             phi_tilt=phi_tilt, phi_len=phi_len,
             delta_x=delta_x, delta_y=delta_y,
             format=format, coupling_matrix=coupling_matrix, *args, **kwargs
@@ -792,6 +837,7 @@ class VerticalOpticalLeverSensingMatrix(OpticalLeverSensingMatrix):
         self.r = r
         self.r_lens = r_lens
         self.delta_d = delta_d
+        self.f = f
         return self
 
     def __init__(self, *args, **kwargs):
@@ -838,11 +884,27 @@ class VerticalOpticalLeverSensingMatrix(OpticalLeverSensingMatrix):
         """delta_d setter
         """
         self._delta_d = _delta_d
-        self.d_v = self.r_lens*self.f / (self.r_lens-self.f) + self._delta_d
+        self.d_v = self.r_lens*self.f_v/(self.r_lens-self.f_v) + self._delta_d
+
+    @property
+    def f(self):
+        """Focal length of the convex lens.
+        """
+        return self._f
+
+    @f.setter
+    def f(self, _f):
+        """f setter
+        """
+        self._f = _f
+        self.f_h = _f * np.cos(self.alpha_v)
+        self.f_v = _f
 
 
 def c_align(r_h, r_v, alpha_h, alpha_v,
-            r_lens_h=0, r_lens_v=0, d_h=0, d_v=0, f=np.inf, roundoff=6):
+            r_lens_h=0, r_lens_v=0, d_h=0, d_v=0,
+            f_h=np.inf, f_v=np.inf,
+            roundoff=6):
     r"""Return optical lever sensing matrix for a perfectly aligned case.
 
     Parameters
@@ -869,9 +931,12 @@ def c_align(r_h, r_v, alpha_h, alpha_v,
     d_v: float, optional
         Vertical distance from the lens to the length-sensing QPD.
         Defaults None.
-    f: float, optional
-        Focal length of the convex lens.
-        Defaults np.inf.
+    f_h : float, optional,
+        Focal length of the lens projected to the horizontal plane.
+        Defaults ``np.inf`` (no lens).
+    f_v : float, optional,
+        Focal length of the lens projected to the vertical plane.
+        Defaults ``np.inf`` (no lens).
     roundoff: int, optional
         How many decimal places to keep.
 
@@ -884,13 +949,13 @@ def c_align(r_h, r_v, alpha_h, alpha_v,
     -----
     See :math:`\mathbf{C}_\mathrm{align}` from [1]_.
 
-    If `f` or (`d_h` and `d_v`) or (`r_lens_h` and `r_lens_v`) are not
-    specified, then we assume no length-sensing QPD so first column, third
-    row, and forth row will be 0.
-    elif f is specified, (`d_h` or `r_lens_h`) are not specified, then
-    third row will be 0.
-    elif f is specified, (`d_v` or `r_lens_v`) are not specified, then
-    forth row will be 0.
+    If `f_h` or `f_v` or (`d_h` and `d_v`) or (`r_lens_h` and `r_lens_v`)
+    are not  specified, then we assume no length-sensing QPD so first column,
+    third row, and forth row will be 0.
+    elif `f_h` and `f_v` is specified, (`d_h` or `r_lens_h`) are not specified,
+    then third row will be 0.
+    elif `f_h` and `f_v` is specified, (`d_v` or `r_lens_v`) are not specified,
+    then forth row will be 0.
 
     References
     ----------
@@ -903,10 +968,10 @@ def c_align(r_h, r_v, alpha_h, alpha_v,
     c_align_inv = np.array([
             [2*np.sin(alpha_h), 0, 2*r_h],
             [2*np.sin(alpha_v), 2*r_v, 0],
-            [2*np.sin(alpha_h) * (1-d_h/f), 0, 2*((1-d_h/f)*r_lens_h + d_h)],
-            [2*np.sin(alpha_v) * (1-d_v/f), 2*((1-d_v/f)*r_lens_v + d_v), 0]
+            [2*np.sin(alpha_h)*(1-d_h/f_h), 0, 2*((1-d_h/f_h)*r_lens_h + d_h)],
+            [2*np.sin(alpha_v)*(1-d_v/f_v), 2*((1-d_v/f_v)*r_lens_v + d_v), 0]
         ])
-    if (f == np.inf
+    if (f_h == np.inf or f_v == np.inf
         or (d_h == 0 and d_v == 0) or (r_lens_h == 0 and r_lens_v == 0)):
         # If the length-sensing optical lever doesn't exist.
         c_align_inv[2:] = np.zeros_like(c_align_inv[2:])

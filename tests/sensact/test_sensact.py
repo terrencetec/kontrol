@@ -54,7 +54,8 @@ def test_optical_lever_sensing_matrix():
     delta_x = -0.0044
     kontrol_ol2eul = kontrol.OpticalLeverSensingMatrix(
         r_h=r_h, r_v=r_v, alpha_h=alpha_h, alpha_v=alpha_v,
-        r_lens_v=r_lens_v, d_v=d_v, f=f, phi_tilt=phi_tilt, phi_len=phi_len,
+        r_lens_v=r_lens_v, d_v=d_v, f_v=f, f_h=f*np.cos(alpha_v),
+        phi_tilt=phi_tilt, phi_len=phi_len,
         delta_y=delta_y, delta_x=delta_x
     )
     # Test setters and decorators
@@ -62,7 +63,8 @@ def test_optical_lever_sensing_matrix():
     kontrol_ol2eul.r_v = r_v
     kontrol_ol2eul.r_lens_v = r_lens_v
     kontrol_ol2eul.d_v = d_v
-    kontrol_ol2eul.f = f
+    kontrol_ol2eul.f_h = f*np.cos(alpha_v)
+    kontrol_ol2eul.f_v = f
     kontrol_ol2eul.phi_tilt = phi_tilt
     kontrol_ol2eul.phi_len = phi_len
     kontrol_ol2eul.delta_y = delta_y
