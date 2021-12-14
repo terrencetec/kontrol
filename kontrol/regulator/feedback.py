@@ -277,8 +277,6 @@ def mode_decomposition(plant):
 
     Returns
     -------
-    list of TransferFunction
-        The list of decomposed plants
     wn : array
         Frequencies (rad/s).
     q : array
