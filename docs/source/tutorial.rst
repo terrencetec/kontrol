@@ -74,3 +74,4 @@ Control Regulator Design
 
    tutorials/regulator_feedback_critical_damping
    tutorials/regulator_algorithmic_oscillator_control
+   tutorials/regulator_post_filtering

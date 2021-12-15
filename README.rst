@@ -53,6 +53,11 @@ Features
   * Export transfer functions to foton expressions.
   * Save TransferFunction objects to pickle files.
 
+* Controller design
+
+  * Auto-design of PID controller for oscillatory systems (like pendulum suspensions)
+  * Auto-design of post-filters such as notch filters and low-pass filters.
+
 Don't hesitate to check out the `tutorials <https://kontrol.readthedocs.io/en/latest/tutorial.html>`_!
 
 - **Documentation:** https://kontrol.readthedocs.io/
