@@ -176,7 +176,7 @@ def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6, **kwargs):
     if gain_step <= 1:
         raise ValueError("gain_step must be greater than 1")
     if ktol <= 0:
-        raise ValueError("ktol must be greater than 1")
+        raise ValueError("ktol must be greater than 0")
 
     s = control.tf("s")
     f_pole = abs(plant.pole())/2/np.pi

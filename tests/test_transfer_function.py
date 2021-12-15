@@ -3,9 +3,11 @@
 import os
 
 import control
+import numpy as np
 
 import kontrol
 import kontrol.core.controlutils
+import kontrol.regulator
 
 
 def test_transfer_function_stablize():
@@ -68,3 +70,52 @@ def test_transfer_function_save_load():
         raise
     except FileNotFoundError:
         pass
+
+
+def test_notch():
+    """Tests for kontrol.transfer_function.notch.Notch class"""
+    frequency = np.random.random()
+    q = np.random.randint(1, 100)
+    depth = np.random.randint(1, 100)
+    depth_db = 20*np.log10(depth)
+
+    # Test depth exception
+    try:
+        kontrol.Notch(frequency, q)
+        raise
+    except ValueError:
+        pass
+
+    notch = kontrol.Notch(frequency, q, depth)
+    notch_db = kontrol.Notch(
+        frequency, q, depth_db=depth_db)
+    correct_notch = kontrol.regulator.predefined.notch(frequency, q, depth)
+    assert kontrol.core.controlutils.check_tf_equal(correct_notch, notch)
+    assert kontrol.core.controlutils.check_tf_equal(correct_notch, notch_db)
+
+    # Test setters
+    notch = kontrol.Notch(1, 2, 3)
+    notch.frequency = frequency
+    notch.q = q
+    notch.depth = depth
+    assert kontrol.core.controlutils.check_tf_equal(correct_notch, notch)
+
+    # Test setter exceptions
+    try:
+        notch.frequency = -1
+        raise
+    except ValueError:
+        pass
+    try:
+        notch.q = 0.1
+        raise
+    except ValueError:
+        pass
+    try:
+        notch.depth = -1
+        raise
+    except ValueError:
+        pass
+    
+    # Foton. Test for error only, won't check accuracy.
+    notch.foton()
