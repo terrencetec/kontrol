@@ -20,6 +20,7 @@ def test_transfer_function_stablize():
     positive_real_zero_exist = any(kontrol_tf.zero().real > 0)
     assert all([not positive_real_pole_exist, not positive_real_zero_exist]) 
 
+
 def test_transfer_function_foton():
     tf = control.tf([1], [2, 3])
     kontrol_tf = kontrol.TransferFunction(tf)
@@ -38,6 +39,7 @@ def test_transfer_function_foton():
     #     kontrol_tf_foton_f==f_correct,
     #     kontrol_tf_foton_s==s_correct,
     #     kontrol_tf_foton_rpoly==rpoly_correct,])
+
 
 def test_transfer_function_save_load():
     path = "tf_test.pkl"
