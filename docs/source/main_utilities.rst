@@ -158,11 +158,25 @@ Feedback Control
    :members:
    :undoc-members:
    :show-inheritance:
-   
+
+Regulator for Oscillatory Systems
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. automodule:: kontrol.regulator.oscillator
    :members:
    :undoc-members:
    :show-inheritance:
+
+Post Filtering
+^^^^^^^^^^^^^^
+
+.. automodule:: kontrol.regulator.post_filter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Predefined Filters
+^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.regulator.predefined
    :members:
