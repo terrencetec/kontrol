@@ -39,8 +39,8 @@ class Notch(TransferFunction):
     
     .. math::
        
-       N(s) = \frac{s^2 + (2\pi f_n)/(dQ/2)s + (2\pi fn)**2}
-       {s^2 + (2\pi f_n)/(Q/2)s + (2\pi fn)**2}\,,
+       N(s) = \frac{s^2 + (2\pi f_n)/(dQ/2)s + (2\pi f_n)^2}
+       {s^2 + (2\pi f_n)/(Q/2)s + (2\pi f_n)^2}\,,
 
     where :math:`f_n` is the notch frequency, :math:`q` is the quality factor
     , and :math:`d` is the depth.    
