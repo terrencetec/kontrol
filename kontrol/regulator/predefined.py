@@ -54,8 +54,8 @@ def low_pass(cutoff, order=1, **kwargs):
     **kwargs
         Keyword arguments holder. Not passed to anywhere.
     
-    Return
-    ------
+    Returns
+    -------
     TransferFunction
         The low-pass filter.
 
@@ -65,7 +65,7 @@ def low_pass(cutoff, order=1, **kwargs):
 
     .. math::
        
-       L(s) = \left(\frac{2\pi f_c}/{s+2\pi f_c}\right)^n\,,
+       L(s) = \left(\frac{2\pi f_c}{s+2\pi f_c}\right)^n\,,
 
     where :math:`f_c` is the cutoff frequency (Hz), :math:`n` is the order
     of the filter.
@@ -104,8 +104,8 @@ def notch(frequency, q, depth=None, depth_db=None, **kwargs):
     
     .. math::
        
-       N(s) = \frac{s^2 + (2\pi f_n)/(dQ/2)s + (2\pi fn)**2}
-       {s^2 + (2\pi f_n)/(Q/2)s + (2\pi fn)**2}\,,
+       N(s) = \frac{s^2 + (2\pi f_n)/(dQ/2)s + (2\pi fn)^2}
+       {s^2 + (2\pi f_n)/(Q/2)s + (2\pi fn)^2}\,,
 
     where :math:`f_n` is the notch frequency, :math:`q` is the quality factor
     , and :math:`d` is the depth.
