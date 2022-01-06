@@ -21,7 +21,7 @@ kontrol.regulator.oscillator module
    :show-inheritance:
 
 kontrol.regulator.post_filter module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.regulator.post_filter
    :members:

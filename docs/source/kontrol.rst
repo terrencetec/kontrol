@@ -16,6 +16,5 @@ Subpackages
    kontrol.transfer_function
 
 
-
 Submodules
 ----------

@@ -1,4 +1,4 @@
-kontrol.transfer_Function package
+kontrol.transfer_function package
 =================================
 
 Primary modules
