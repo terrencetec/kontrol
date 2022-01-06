@@ -13,15 +13,9 @@ Subpackages
    kontrol.frequency_series
    kontrol.sensact
    kontrol.regulator
+   kontrol.transfer_function
 
 
 
 Submodules
 ----------
-kontrol.transfer_function module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: kontrol.transfer_function
-   :members:
-   :undoc-members:
-   :show-inheritance:
