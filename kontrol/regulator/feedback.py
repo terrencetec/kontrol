@@ -52,7 +52,7 @@ def critical_damping(plant, method="calculated", **kwargs):
     """
     if _count_complex_poles(plant) == 0:
         raise ValueError("Plant must contain at least one pair of"
-                         "complex poles")
+                         " complex poles")
 
     if method == "calculated":
         kd = critical_damp_calculated(plant, **kwargs)

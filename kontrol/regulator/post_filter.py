@@ -114,6 +114,7 @@ def post_low_pass(
     mask = lower_edge_mask * ignore_ugf_mask  #
     ugfs = ugfs[mask]
     if not oscillatory:
+        print("Not oscillatory")
         pms = pms[mask]
     else:
         pms = []
