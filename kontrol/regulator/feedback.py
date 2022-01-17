@@ -288,8 +288,37 @@ def mode_decomposition(plant):
     complex_mask = poles.imag > 0  # Avoid duplication
     wn = abs(poles[complex_mask])  # Frequencies
     q = wn/(-2*poles[complex_mask].real)  # Q factors of the modes
-    k = abs(plant(1j*wn)/q)  # DC gain of the modes
+    k = 1j * (plant(1j*wn)/q)  # DC gain of the modes
+    # clean complex number
+    sign = np.sign(k.real)
+    k = sign * abs(k)
     return wn, q, k
+
+
+def mode_composition(wn, q, k):
+    """Create a plant composed of many modes.
+    
+    Parameters
+    ----------
+    wn : array
+    Frequencies (rad/s).
+    q : array
+        Q factors.
+    k : array
+        Dcgains of the modes.
+        
+    Returns
+    -------
+    TransferFunction
+        The composed plant.
+    """
+    if len(wn) != len(q) or len(wn) != len(k):
+        raise ValueError("wn, q, k must have same length.")
+    plant = kontrol.TransferFunction([0], [1])
+    s = control.tf("s")
+    for wn_, q_, k_ in zip(wn, q, k):
+        plant = plant + k_ * wn_**2 / (s**2 + wn_/q_*s + wn_**2)
+    return plant
 
     
 def add_proportional_control(plant, regulator=None, dcgain=None, **kwargs):

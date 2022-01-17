@@ -26,8 +26,8 @@ def test_post_low_pass():
 
     # Test exception for all UGFs already below target phase margin
     try:
-        # Add a pole a 0 Hz to shift the phase by -90 degrees
-        kontrol.regulator.post_filter.post_low_pass(plant/s, pid)
+        # shift the plant by 180 degrees
+        kontrol.regulator.post_filter.post_low_pass(-plant, pid)
         raise
     except ValueError:
         pass

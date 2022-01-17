@@ -10,7 +10,8 @@ def post_low_pass(
         plant, regulator, post_filter=None,
         ignore_ugf_above=None, decades_after_ugf=1,
         phase_margin=45, f_start=None, f_step=1.1,
-        low_pass=None, mtol=1e-6, small_number=1e-6, **kwargs):
+        low_pass=None, mtol=1e-6, small_number=1e-6,
+        oscillatory=True, **kwargs):
     """Add low-pass filter after regulator.
 
     This function lowers/increase the the cutoff frequency
@@ -52,7 +53,7 @@ def post_low_pass(
         The gain that is used to multiply (or divide) the cutoff frequency
         during a coarse search.
         Defaults 1.1
-    low-pass : func(cutoff, order) -> TransferFunction, optional
+    low_pass : func(cutoff, order) -> TransferFunction, optional
         The low-pass filter.
         If not specified, ``kontrol.regulator.predefined.lowpass()``
         with order 2 will be used.
@@ -64,6 +65,16 @@ def post_low_pass(
         A small number as a delta f to detect whether the gain is a rising or
         lowering edge at the unity gain frequency.
         Defaults to 1e-6.
+    oscillatory : boolean, optional
+        Use the first mode of the oscillatory system to evaluate the phase
+        margins to avoid having UGFs at steep phase slopes.
+        The benefit of using this is to have a conservative phase margin
+        estimate. The phase response of the first mode
+        is the lower bound of the phase response.
+        If False, use the plant itself to calculate phase margins.
+        If the plant does not contain any complex poles, this option will be
+        overridden to False.
+        Defaults True.
     **kwargs
         Keyword arguments passed to ``low_pass``.
 
@@ -72,6 +83,10 @@ def post_low_pass(
     TransferFunction
         The low-pass filter.
     """
+    if oscillatory:
+        wn, q, k = kontrol.regulator.feedback.mode_decomposition(plant)
+        if len(wn) == 0:
+            oscillatory = False
     if low_pass is None:
         low_pass = kontrol.regulator.predefined.low_pass
     if "order" not in kwargs.keys():
@@ -98,8 +113,31 @@ def post_low_pass(
 
     mask = lower_edge_mask * ignore_ugf_mask  #
     ugfs = ugfs[mask]
-    pms = pms[mask]
+    if not oscillatory:
+        pms = pms[mask]
+    else:
+        pms = []
+        plant_one_mode = kontrol.regulator.feedback.mode_composition(
+            wn[-1:], q[-1:], k[-1:])
+        oltf_ = plant_one_mode * regulator
+        # For each UGF, scale the OLTF one-mode plant such that the UGF matches
+        # Then, find the phase margin using control.stability_margins.
+        for ugf in ugfs:
+            oltf_ *= 1/abs(oltf_(1j*ugf))  # Equalize the ugf
+            _, pms_, _, _, ugfs_, _ =  control.stability_margins(
+                oltf_, returnall=True)
+            for i, ugf_ in enumerate(ugfs_):
+                if i == 0:
+                    ugf_phase_eval = ugf_
+                    index_phase_eval = i
+                else:
+                    if abs(ugf_-ugf) < abs(ugf_phase_eval-ugf):
+                        ugf_phase_eval = ugf_
+                        index_phase_eval = i
+            pms.append(pms_[index_phase_eval])          
+        pms = np.array(pms)
 
+    print(pms)
     # Count phase margins that are already lower than
     # the specified phase margin and ignore them.
     n_pm_ignore = np.sum(pms < phase_margin)
@@ -117,9 +155,12 @@ def post_low_pass(
     pm_was_lower = False
     pm_was_higher = False
 
+    # Update 2022-01-17: Use the low-passed OLTF to evaluate UGF
+    # but only use the first mode of the plant (if the plant is oscillatory)
+    # to evaluate phase.
+    
     # Start coarse searching
     while 1:
-        # print(fc)
         oltf_lp = oltf * low_pass(fc, **kwargs)
         _, pms, _, _, ugfs, _ = control.stability_margins(
             oltf_lp, returnall=True)
@@ -128,9 +169,31 @@ def post_low_pass(
         ignore_ugf_mask = ugfs/2/np.pi < ignore_ugf_above
         mask = lower_edge_mask * ignore_ugf_mask
         ugfs = ugfs[mask]
-        pms = pms[mask]
-        # print(pms)
-
+        if not oscillatory:
+            pms = pms[mask]
+        else:
+            pms = []
+            plant_one_mode = kontrol.regulator.feedback.mode_composition(
+                wn[-1:], q[-1:], k[-1:])
+            oltf_ = plant_one_mode * regulator * low_pass(fc, **kwargs)
+            # For each UGF, scale the OLTF one-mode plant
+            # such that the UGF matches.
+            # Then, find the phase margin using control.stability_margins.
+            for ugf in ugfs:
+                oltf_ *= 1/abs(oltf_(1j*ugf))  # Equalize the ugf
+                _, pms_, _, _, ugfs_, _ =  control.stability_margins(
+                    oltf_, returnall=True)
+                for i, ugf_ in enumerate(ugfs_):
+                    if i == 0:
+                        ugf_phase_eval = ugf_
+                        index_phase_eval = i
+                    else:
+                        if abs(ugf_-ugf) < abs(ugf_phase_eval-ugf):
+                            ugf_phase_eval = ugf_
+                            index_phase_eval = i
+                pms.append(pms_[index_phase_eval])          
+            pms = np.array(pms)
+        
         # Check number of phase margins and see if it changed. 
         # If it changed, 
         # recount the number of phase margins already lower than target.
@@ -144,8 +207,6 @@ def post_low_pass(
         pms_order = np.argsort(pms)
         min_pm_index = pms_order[n_pm_ignore]
         min_pm = pms[min_pm_index]
-    #     print(min_pm)
-    #     break
         if min_pm < phase_margin:
             f1 = fc
             pm_lower_bound = min_pm
@@ -173,12 +234,37 @@ def post_low_pass(
         ignore_ugf_mask = ugfs/2/np.pi < ignore_ugf_above
         mask = lower_edge_mask * ignore_ugf_mask
         ugfs = ugfs[mask]
-        pms = pms[mask]
-        # print(ugfs/2/np.pi, pms)
+        if not oscillatory:
+            pms = pms[mask]
+        else:
+            pms = []
+            plant_one_mode = kontrol.regulator.feedback.mode_composition(
+                wn[-1:], q[-1:], k[-1:])
+            oltf_ = plant_one_mode * regulator * low_pass(fm, **kwargs)
+
+            # For each UGF, scale the OLTF one-mode plant
+            # such that the UGF matches.
+            # Then, find the phase margin using control.stability_margins.
+            for ugf in ugfs:
+                oltf_ *= 1/abs(oltf_(1j*ugf))  # Equalize the ugf
+                _, pms_, _, _, ugfs_, _ =  control.stability_margins(
+                    oltf_, returnall=True)
+                for i, ugf_ in enumerate(ugfs_):
+                    if i == 0:
+                        ugf_phase_eval = ugf_
+                        index_phase_eval = i
+                    else:
+                        if abs(ugf_-ugf) < abs(ugf_phase_eval-ugf):
+                            ugf_phase_eval = ugf_
+                            index_phase_eval = i
+                pms.append(pms_[index_phase_eval])          
+            #
+            pms = np.array(pms)
+
         pms_order = np.argsort(pms)
         min_pm_index = pms_order[n_pm_ignore]
         min_pm = pms[min_pm_index]
-        # print(fm, min_pm)
+
         if (abs((min_pm - phase_margin)/phase_margin) <= mtol
                 and min_pm > phase_margin):
             break
