@@ -137,7 +137,6 @@ def post_low_pass(
             pms.append(pms_[index_phase_eval])          
         pms = np.array(pms)
 
-    print(pms)
     # Count phase margins that are already lower than
     # the specified phase margin and ignore them.
     n_pm_ignore = np.sum(pms < phase_margin)
