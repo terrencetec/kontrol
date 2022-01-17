@@ -7,7 +7,7 @@ from .transfer_function import TransferFunction
 
 
 class Notch(TransferFunction):
-    """Notch Filter Object
+    r"""Notch Filter Object
     
     Parameters
     ----------
