@@ -10,59 +10,59 @@ import kontrol.curvefit.error_func
 class TransferFunctionFit(CurveFit):
     """Transfer function fitting class
 
-    This class is basically a `CurveFit` class
+    This class is basically a ``CurveFit`` class
     with default cost functions and optimizer
     that is designed for fitting a transfer
     function.
     By default, the error function is
-    `kontrol.curvefit.error_func.tf_error()`.
-    The default optimizer is `scipy.optimize.minimize(
-    ...,method="Nelder-Mead",...)`, with
-    `options = {"adaptive": True, "maxiter": N*1000}`,
-    where `N` is the number of variables.
+    ``kontrol.curvefit.error_func.tf_error()``.
+    The default optimizer is ``scipy.optimize.minimize(
+    ...,method="Nelder-Mead",...)``, with
+    ``options = {"adaptive": True, "maxiter": N*1000}``,
+    where ``N`` is the number of variables.
     All of these can be overridden if specified.
 
     Parameters
     ----------
-    xdata : `array` or `None`, optional
+    xdata : ``array`` or ``None``, optional
         Independent variable data.
-        Defaults to `None`.
-    ydata : `array` or `None`, optional
+        Defaults to ``None``.
+    ydata : ``array`` or ``None``, optional
         Transfer function frequency response in complex numbers.
-        Defaults to `None`.
-    model : `func(x: `array`, args: `array`, **kwargs)` ->\
-            `array`, or `None`, optional
+        Defaults to ``None``.
+    model : ``func(x: ``array``, args: ``array``, **kwargs)`` ->\
+            ``array``, or ``None``, optional
         The model used to fit the data.
-        ``args`` in model is an `array` of parameters that
+        ``args`` in model is an ``array`` of parameters that
         define the model.
-        Defaults to `None`
-    model_kwargs : `dict` or `None`, optional
+        Defaults to ``None``
+    model_kwargs : ``dict`` or ``None``, optional
         Keyword arguments passed to the model.
-        Defaults to `None`.
-    cost : `kontrol.curvefit.Cost` or `func(args, model, xdata, ydata)`\
-            -> `array`, optional
+        Defaults to ``None``.
+    cost : ``kontrol.curvefit.Cost`` or ``func(args, model, xdata, ydata)``\
+            -> ``array``, optional
         Cost function.
         The cost function to be used to fit the data.
         First argument is a list of parameters that will be passed to
         the model.
         This must be pickleable if multiprocessing is to be used.
-        Defaults to `None`.
-    weight : `array` or `None`, optional
+        Defaults to ``None``.
+    weight : ``array`` or ``None``, optional
         Weighting function.
-        Defaults `None`.
-    error_func_kwargs : `dict` or `None`, optional
+        Defaults ``None``.
+    error_func_kwargs : ``dict`` or ``None``, optional
         Keyword arguments the will be passed to ``error_func``,
         which is passed to the construct the cost function.
-        Defaults to `None`.
-    optimizer : `func(func, **kwargs)` -> `OptimizeResult`, or `None`,\
+        Defaults to ``None``.
+    optimizer : ``func(func, **kwargs)`` -> ``OptimizeResult``, or ``None``,\
                 optional
         The optimization algorithm use for minimizing the cost function.
-    optimizer_kwargs : `dict` or `None`, optional
+    optimizer_kwargs : ``dict`` or ``None``, optional
         Keyword arguments passed to the optimizer function.
-        Defaults to `None`.
-    options : `dict` or `None`, optional
-        The option arguments passed to the `optimizer`
-    x0 : `array`, optional
+        Defaults to ``None``.
+    options : ``dict`` or ``None``, optional
+        The option arguments passed to the ``optimizer``
+    x0 : ``array``, optional
         Inital guess.
         Defaults to None.
     """
@@ -75,45 +75,45 @@ class TransferFunctionFit(CurveFit):
 
         Parameters
         ----------
-        xdata : `array` or `None`, optional
+        xdata : ``array`` or ``None``, optional
             Independent variable data.
-            Defaults to `None`.
-        ydata : `array` or `None`, optional
+            Defaults to ``None``.
+        ydata : ``array`` or ``None``, optional
             Transfer function frequency response in complex numbers.
-            Defaults to `None`.
-        model : `func(x: `array`, args: `array`, **kwargs)` ->\
-                `array`, or `None`, optional
+            Defaults to ``None``.
+        model : ``func(x: ``array``, args: ``array``, **kwargs)`` ->\
+                ``array``, or ``None``, optional
             The model used to fit the data.
-            ``args`` in model is an `array` of parameters that
+            ``args`` in model is an ``array`` of parameters that
             define the model.
-            Defaults to `None`
-        model_kwargs : `dict` or `None`, optional
+            Defaults to ``None``
+        model_kwargs : ``dict`` or ``None``, optional
             Keyword arguments passed to the model.
-            Defaults to `None`.
-        cost : `kontrol.curvefit.Cost` or `func(args, model, xdata, ydata)`\
-                -> `array`, optional
+            Defaults to ``None``.
+        cost : ``kontrol.curvefit.Cost`` or ``func(args, model, xdata, ydata)``\
+                -> ``array``, optional
             Cost function.
             The cost function to be used to fit the data.
             First argument is a list of parameters that will be passed to
             the model.
             This must be pickleable if multiprocessing is to be used.
-            Defaults to `None`.
-        weight : `array` or `None`, optional
+            Defaults to ``None``.
+        weight : ``array`` or ``None``, optional
             Weighting function.
-            Defaults `None`.
-        error_func_kwargs : `dict` or `None`, optional
+            Defaults ``None``.
+        error_func_kwargs : ``dict`` or ``None``, optional
             Keyword arguments the will be passed to ``error_func``,
             which is passed to the construct the cost function.
-            Defaults to `None`.
-        optimizer : `func(func, **kwargs)` -> `OptimizeResult`, or `None`,\
+            Defaults to ``None``.
+        optimizer : ``func(func, **kwargs)`` -> ``OptimizeResult``, or ``None``,\
                     optional
             The optimization algorithm use for minimizing the cost function.
-        optimizer_kwargs : `dict` or `None`, optional
+        optimizer_kwargs : ``dict`` or ``None``, optional
             Keyword arguments passed to the optimizer function.
-            Defaults to `None`.
-        options : `dict` or `None`, optional
-            The option arguments passed to the `optimizer`
-        x0 : `array`, optional
+            Defaults to ``None``.
+        options : ``dict`` or ``None``, optional
+            The option arguments passed to the ``optimizer``
+        x0 : ``array``, optional
             Inital guess.
             Defaults to None.
         """
@@ -188,6 +188,7 @@ class TransferFunctionFit(CurveFit):
             self._options = {}
         else:
             self._options = _options
+        self._update_optimizer_kwargs()
         
     @property
     def x0(self):
@@ -210,9 +211,10 @@ class TransferFunctionFit(CurveFit):
 
     def _update_optimizer_kwargs(self):
         """Set optimizer_kwargs"""
-        update_optimizer_kwargs = {"x0": self.x0}
-        self.optimizer_kwargs = dict(
-            self.optimizer_kwargs, **update_optimizer_kwargs)
+        if self.x0 is not None:
+            update_optimizer_kwargs = {"x0": self.x0}
+            self.optimizer_kwargs = dict(
+                self.optimizer_kwargs, **update_optimizer_kwargs)
         self._update_options()
     
     def _update_options(self):
