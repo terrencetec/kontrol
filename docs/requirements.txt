@@ -1,7 +1,6 @@
 control>=0.9
 numpy
 matplotlib
-pandas
 scipy
 
 ipykernel

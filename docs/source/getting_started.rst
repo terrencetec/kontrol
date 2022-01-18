@@ -13,7 +13,6 @@ Required
 * control>=0.9
 * numpy
 * matplotlib
-* pandas
 * scipy
 
 Optional

@@ -74,8 +74,7 @@ Required
 
 * control>=0.9
 * numpy
-* matplotlib
-* pandas
+* matplotlib 
 * scipy
 
 Optional
