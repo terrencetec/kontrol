@@ -123,7 +123,7 @@ class CurveFit:
         if (cost is None or model is None or xdata is None or ydata is None or
                 optimizer is None):
             raise TypeError("Cost, model, xdata, ydata, and optimizer must"
-                            "be specified before fitting.")
+                            " be specified before fitting.")
 
         res = optimizer(
             cost, args=(model, xdata, ydata, model_kwargs), **optimizer_kwargs)
