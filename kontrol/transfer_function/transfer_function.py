@@ -6,7 +6,7 @@ import os
 
 import control
 import numpy as np
-import pandas
+import pickle
 
 import kontrol.core.controlutils
 
@@ -128,19 +128,9 @@ class TransferFunction(control.TransferFunction):
                                   "Set overwrite option to True if you "
                                   "want to overwrite the file."
                                   "".format(path))
-        num = self.num[0][0]
-        den = self.den[0][0]
+        with open(path, "wb") as f:
+            pickle.dump(self, f)
 
-        # Pad zeros to the shorter array so they fit in a table.
-        if len(num) < len(den):
-            num = np.pad(num, pad_width=(len(den)-len(num), 0))
-        elif len(den) < len(num):
-            den = np.pad(den, pad_width=(len(num)-len(den), 0))
-        
-        df = pandas.DataFrame()
-        df["num"] = num
-        df["den"] = den
-        df.to_pickle(path)
 
 def load_transfer_function(path):
     """Load a kontrol TransferFunction object from path.
@@ -157,8 +147,7 @@ def load_transfer_function(path):
     """
     if not os.path.exists(path):
         raise FileNotFoundError("{} does not exist.".format(path))
-    df = pandas.read_pickle(path)
-    num = df.num.to_numpy()
-    den = df.den.to_numpy()
-    return TransferFunction(num, den)
+    with open(path, "rb") as f:
+        tf = pickle.load(f)
+    return tf
 
