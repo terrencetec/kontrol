@@ -12,6 +12,14 @@ kontrol.curvefit.curvefit module
    :undoc-members:
    :show-inheritance:
 
+kontrol.curvefit.transfer_function_fit module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: kontrol.curvefit.transfer_function_fit
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Secondary modules
 -----------------
 

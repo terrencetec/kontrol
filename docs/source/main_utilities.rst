@@ -97,7 +97,18 @@ Curve fitting
 
 Curve fitting class
 ^^^^^^^^^^^^^^^^^^^
+Base class for general curve fitting.
+
 .. autoclass:: kontrol.curvefit.CurveFit
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Transfer function fitting class
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Curve fitting class for transfer function fitting.
+
+.. autoclass:: kontrol.curvefit.TransferFunctionFit
    :members:
    :undoc-members:
    :show-inheritance:
