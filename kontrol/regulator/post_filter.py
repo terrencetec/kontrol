@@ -2,6 +2,7 @@
 import control
 import numpy as np
 
+import kontrol.logger
 import kontrol.regulator.feedback
 import kontrol.regulator.predefined
 
@@ -149,7 +150,11 @@ def post_low_pass(
         raise ValueError("All phase margins already below"
                          " specified phase margins."
                          " Can't implement low-pass filter.")
- 
+    if n_pm_ignore > 0:
+        kontrol.logger.logger.warning(f"There are {n_pm_ignore} phase margins"
+                                      " below the specified phase margin"
+                                      " initially.")
+
     fc = f_start
 
     pm_was_lower = False
@@ -274,7 +279,7 @@ def post_low_pass(
             f2 = fm
         if min_pm < pm_lower_bound or min_pm > pm_upper_bound:
             raise ValueError("Phase margin diverges during refinement.")
-
+    
     return low_pass(fm, **kwargs)
 
 
