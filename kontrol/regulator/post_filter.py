@@ -94,7 +94,8 @@ def post_low_pass(
     if post_filter is None:
         post_filter = control.tf([1], [1])
 
-    oltf = plant * regulator * post_filter
+    regulator *= post_filter
+    oltf = plant * regulator
     _, pms, _, _, ugfs, _ = control.stability_margins(oltf, returnall=True)
  
     if ignore_ugf_above is None:
