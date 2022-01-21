@@ -284,21 +284,22 @@ def post_low_pass(
 
 
 def post_notch(
-        plant, regulator, post_filter=None, target_gain=None,
+        plant, regulator=None, post_filter=None, target_gain=None,
         notch_peaks_above=None, phase_margin=45, notch=None, **kwargs):
-    """Returns a list of notch filters that suppress unstable resonance peaks.
+    """Returns a list of notch filters that suppress resonance peaks.
 
-    This function finds resonances peaking out from the
-    open-loop transfer function above a target unity gain
-    frequency and computes necessary notch filters that
-    will suppress them to the specified target gain.
+    This functions finds the resonances peak of the plant/OLTF
+    above certain frequencies and
+    returns a list of notch filters that suppress
+    these peaks to the target gains.
 
     Parameters
     ----------
     plant : TransferFunction
         The transfer function of the system that needs to be controlled.
-    regulator : TransferFunction
+    regulator : TransferFunction, optional
         The regulator.
+        Defaults to None.
     post_filter : TransferFunction, optional
         Any post filters that will be applied on top of the regulator.
         Defaults None.
@@ -337,6 +338,8 @@ def post_notch(
     """
     if notch is None:
         notch = kontrol.Notch
+    if regulator is None:
+        regulator = control.tf([1], [1])
     if post_filter is None:
         post_filter = control.tf([1], [1])
 
@@ -359,7 +362,7 @@ def post_notch(
     gain_peak = q*k  # magnitude at the resonance
     
     # Choose modes that have peak higher than the DC gain.
-    gain_mask = gain_peak > k
+    gain_mask = abs(gain_peak) > abs(k)
     fn = fn[gain_mask]
     q = q[gain_mask]
     k = k[gain_mask]
