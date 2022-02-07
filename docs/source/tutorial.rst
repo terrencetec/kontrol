@@ -11,16 +11,17 @@ Complementary Filter
 
    tutorials/complementary_filter_synthesis_using_h-infinity_methods
 
-Noise Spectrum Modeling
------------------------
+..
+   Noise Spectrum Modeling
+   -----------------------
 
-.. toctree::
-   :maxdepth: 1
+   .. toctree::
+      :maxdepth: 1
 
-   tutorials/frequency_series_fitting_with_empirical_model
-   tutorials/frequency_series_fitting_with_transfer_function
-   tutorials/frequency_series_fitting_with_transfer_function_part2
-   tutorials/noise_spectrum_modeling_with_optimization
+      tutorials/frequency_series_fitting_with_empirical_model
+      tutorials/frequency_series_fitting_with_transfer_function
+      tutorials/frequency_series_fitting_with_transfer_function_part2
+      tutorials/noise_spectrum_modeling_with_optimization
 
 Noise Spectral Density Estimation using Correlation Methods
 -----------------------------------------------------------
@@ -65,6 +66,7 @@ Curve Fitting
    tutorials/curve_fitting_transfer_function
    tutorials/curve_fitting_simple_zpk
    tutorials/curve_fitting_complex_zpk
+   tutorials/curve_fitting_lvdt_and_geophone_noise
 
 Control Regulator Design
 ------------------------
