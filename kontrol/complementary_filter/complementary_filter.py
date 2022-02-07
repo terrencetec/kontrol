@@ -7,6 +7,7 @@ import numpy as np
 import kontrol.core.math
 import kontrol.core.controlutils
 import kontrol.complementary_filter.synthesis
+import kontrol.transfer_function
 
 
 class ComplementaryFilter():
@@ -271,7 +272,11 @@ class ComplementaryFilter():
         ----------
         _filter1 : TransferFunction
         """
-        self._filter1 = _filter1
+        if _filter1 is None:
+            self._filter1 = _filter1
+        else:
+            self._filter1 = kontrol.transfer_function.TransferFunction(
+                _filter1)
 
     @property
     def filter2(self):
@@ -287,7 +292,11 @@ class ComplementaryFilter():
         ----------
         _filter2 : TransferFunction
         """
-        self._filter2 = _filter2
+        if _filter2 is None:
+            self._filter2 = _filter2
+        else:
+            self._filter2 = kontrol.transfer_function.TransferFunction(
+                _filter2)
 
     @property
     def f(self):

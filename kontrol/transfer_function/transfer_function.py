@@ -70,7 +70,7 @@ class TransferFunction(control.TransferFunction):
         super().__init__(stable_tf)
 
     def foton(
-            self, expression="zpk", root_location="s",
+            self, expression="zpk", root_location="s", significant_figures=6,
             itol=1e-25, epsilon=1e-25):
         """Foton expression of this transfer function
         
@@ -91,6 +91,9 @@ class TransferFunction(control.TransferFunction):
             "n": roots in frequency plane but negated and gains are normalized,
             i.e. real parts are positive zpk([...], [...], ..., "n").
             Defaults to "s".
+        significant_figures : int, optional
+            Number of significant figures to print out.
+            Defaults to 6.
         itol : float, optional
             Treating complex roots as real roots if the ratio of
             the imaginary part and the real part is smaller than this tolerance
@@ -107,6 +110,7 @@ class TransferFunction(control.TransferFunction):
         ## TODO add MIMO support
         return kontrol.core.foton.tf2foton(
             tf=self, expression=expression, root_location=root_location,
+            significant_figures=significant_figures,
             itol=itol, epsilon=epsilon)
     
     def save(self, path, overwrite=True):

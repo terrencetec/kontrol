@@ -7,7 +7,7 @@ import kontrol.logger
 
 
 def tf2foton(
-        tf, expression="zpk", root_location="s", decimal_places=6,
+        tf, expression="zpk", root_location="s", significant_figures=6,
         itol=1e-25, epsilon=1e-25):
     """Convert a single transfer function to foton expression.
 
@@ -27,8 +27,8 @@ def tf2foton(
         "n": roots in frequency plane but negated and gains are normalized,
         i.e. real parts are positive zpk([...], [...], ..., "n").
         Defaults to "s".
-    decimal_places : int, optional
-        Number of decimal places to print out.
+    significant_figures : int, optional
+        Number of significant figures to print out.
         Defaults to 6.
     itol : float, optional
         Treating complex roots as real roots if the ratio of
@@ -61,9 +61,12 @@ def tf2foton(
     for tf_ in tf_list:
         if expression == "zpk":
             foton_expression += tf2zpk(
-                tf_, root_location=root_location, itol=itol, epsilon=epsilon)
+                tf_, root_location=root_location,
+                significant_figures=significant_figures,
+                itol=itol, epsilon=epsilon)
         elif expression == "rpoly":
-            foton_expression += tf2rpoly(tf_)
+            foton_expression += tf2rpoly(
+                tf_, significant_figures=significant_figures)
         else:
             foton_expression += ""
             print("If you see this, contact maintainer.")
@@ -73,7 +76,8 @@ def tf2foton(
     return foton_expression
 
 
-def tf2zpk(tf, root_location="s", decimal_places=6, itol=1e-25, epsilon=1e-25):
+def tf2zpk(tf, root_location="s", significant_figures=6,
+           itol=1e-25, epsilon=1e-25):
     """Convert a single transfer function to foton zpk expression.
 
     Parameters
@@ -88,8 +92,8 @@ def tf2zpk(tf, root_location="s", decimal_places=6, itol=1e-25, epsilon=1e-25):
         "n": roots in frequency plane but negated and gains are normalized,
         i.e. real parts are positive zpk([...], [...], ..., "n").
         Defaults to "s".
-    decimal_places : int, optional
-        Number of decimal places to print out.
+    significant_figures : int, optional
+        Number of significant figures to print out.
         Defaults to 6.
     itol : float, optional
         Treating complex roots as real roots if the ratio of
@@ -151,35 +155,35 @@ def tf2zpk(tf, root_location="s", decimal_places=6, itol=1e-25, epsilon=1e-25):
     ## Convert to zpk expressing string
     for zero in zeros[z_sort_arg]:
         if abs(zero.imag)/abs(zero.real+epsilon) < itol:
-            str_zeros += "{:.{}f}".format(zero.real, decimal_places)
+            str_zeros += "{:.{}g}".format(zero.real, significant_figures)
         else:
-            str_zeros += "{:.{dp}f}+i*{:.{dp}f}".format(
-                zero.real, zero.imag, dp=decimal_places)
+            str_zeros += "{:.{sf}f}+i*{:.{sf}f}".format(
+                zero.real, zero.imag, sf=significant_figures)
         str_zeros += ";"
     for pole in poles[p_sort_arg]:
         if abs(pole.imag)/abs(pole.real+epsilon) < itol:
-            str_poles += "{:.{}f}".format(pole.real, decimal_places)
+            str_poles += "{:.{}g}".format(pole.real, significant_figures)
         else:
-            str_poles += "{:.{dp}f}+i*{:.{dp}f}".format(
-                pole.real, pole.imag, dp=decimal_places)
+            str_poles += "{:.{sf}f}+i*{:.{sf}f}".format(
+                pole.real, pole.imag, sf=significant_figures)
         str_poles += ";"
     str_zeros = str_zeros.rstrip(";")
     str_poles = str_poles.rstrip(";")
-    zpk_expression = "zpk([{}],[{}],{:.{}f},\"{}\")".format(
-        str_zeros, str_poles, gain, decimal_places, root_location)
+    zpk_expression = "zpk([{}],[{}],{:.{}g},\"{}\")".format(
+        str_zeros, str_poles, gain, significant_figures, root_location)
 
     return zpk_expression
 
 
-def tf2rpoly(tf, decimal_places=6):
+def tf2rpoly(tf, significant_figures=6):
     """Convert a transfer function to foton rpoly expression.
 
     Parameters
     ----------
     tf : TransferFunction
         The transfer function object
-    decimal_places : int, optional
-        Number of decimal places to print out.
+    significant_figures : int, optional
+        Number of significant figures to print out.
         Defaults to 6.
 
     Returns
@@ -202,10 +206,10 @@ def tf2rpoly(tf, decimal_places=6):
     num /= num[0]
 
     for coef in num:
-        str_num += "{:.{}f}".format(coef, decimal_places)
+        str_num += "{:.{}g}".format(coef, significant_figures)
         str_num += ";"
     for coef in den:
-        str_den += "{:.{}f}".format(coef, decimal_places)
+        str_den += "{:.{}g}".format(coef, significant_figures)
         str_den += ";"
     str_num = str_num.rstrip(";")
     str_den = str_den.rstrip(";")
@@ -253,7 +257,7 @@ def _order_gt(tf, order):
     return max(nnum, nden) > order
 
 
-def notch(frequency, q, depth, decimal_places=6):
+def notch(frequency, q, depth, significant_figures=6):
     """Returns the foton expression of a notch filter.
     
     Parameters
@@ -264,8 +268,8 @@ def notch(frequency, q, depth, decimal_places=6):
         The quality factor.
     depth : float
         The depth of the notch filter (magnitude).
-    decimal_places : int, optional
-        Number of decimal places to print out.
+    significant_figures : int, optional
+        Number of significant figures to print out.
         Defaults to 6.
 
     Returns
@@ -274,6 +278,6 @@ def notch(frequency, q, depth, decimal_places=6):
         The foton representation of this notch filter.
     """
     depth_db = 20*np.log10(depth)
-    expression = "notch({:.{dp}f},{:.{dp}f},{:.{dp}f})".format(
-        frequency, q, depth_db, dp=decimal_places)
+    expression = "notch({:.{sf}f},{:.{sf}f},{:.{sf}f})".format(
+        frequency, q, depth_db, sf=significant_figures)
     return expression
