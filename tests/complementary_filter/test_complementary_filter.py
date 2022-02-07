@@ -11,10 +11,14 @@ import kontrol.frequency_series.noise_models
 def test_complementary_filter():
     omega = np.logspace(-2,2,1000)
     f = omega/2/np.pi
-    tf_noise1 = control.tf([1/10, 1], [1/0.1, 1]) *10
-    tf_noise2 = control.tf([1/0.1, 1], [1/10, 1])
+    noise1 = control.tf([1/10, 1], [1/0.1, 1]) *10
+    noise2 = control.tf([1/0.1, 1], [1/10, 1])
 
-    comp = kontrol.ComplementaryFilter(noise1=tf_noise1, noise2=tf_noise2)
+    comp = kontrol.ComplementaryFilter()
+    comp.noise1 = noise1
+    comp.noise2 = noise2
+    comp.weight1 = 1/noise2
+    comp.weight2 = 1/noise1
     comp.hinfsynthesis()
     comp.f = f
     noise_super_correct = np.array(
@@ -59,7 +63,7 @@ def test_complementary_filter():
             0.7963558 , 0.78928282, 0.78228031, 0.77534761, 0.76848403,
             0.7616889 , 0.75496154, 0.74830131, 0.74170756, 0.73517964,
             0.72871693, 0.72231878, 0.71598458, 0.70971372, 0.70350559])
-    assert np.allclose(comp.noise_super[400:600], noise_super_correct, rtol=1e-2)
+    assert np.allclose(comp.noise_super()[400:600], noise_super_correct, rtol=1e-2)
     # Let's not check the result because of numerical error
     # tf_correct = control.tf([1, 2.08392466e+04, 1.58200377e+04, 2.53883414e+03, 1.16522184e+02], [1, 2.08679038e+04, 1.64005175e+04, 5.55127674e+03, 8.50146586e+02])
     # assert kontrol.core.controlutils.check_tf_equal(

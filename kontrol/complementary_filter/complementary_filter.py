@@ -6,169 +6,140 @@ import numpy as np
 
 import kontrol.core.math
 import kontrol.core.controlutils
-import kontrol.transfer_function
 import kontrol.complementary_filter.synthesis
 
 
-class ComplementaryFilter(kontrol.transfer_function.TransferFunction):
-    r"""A set of complementary filters.
+class ComplementaryFilter():
+    r"""Complementary filter synthesis class.
 
-    This instances will return a TransferFunction object that
-    has two inputs and one output, i.e. 2 transfer functions, which
-    represents the two complementary filters.
-
-    To use the synthesis methods, it's best to declare this class
-    with two transfer functions that model the noises to be filtered.
-
-    Attributes
+    Parameters
     ----------
-    f: array or None
-        The frequency axis (Hz) of the noises to be filtered.
-    omega: array or None
-        The frequency axis (rad/s) of the noises to be filtered.
-    noise1: array or None
-        Noise amplitude spectral density of the first input.
-    noise2: array or None
-        Noise amplitude spectral density of the second input.
-    tf_noise1: TransferFunction or None
-        A transfer function that models the amplitude spectral density of
-        the first input.
-    tf_noise2: TransferFunction or None
-        A transfer function that models the amplitude spectral density of
-        the second input.
-    filter1: TransferFunction or None
-        The first complementary filter.
-    filter2: TransferFunction or None
-        The second complementary filter.
+    noise1 : TransferFunction
+        Sensor noise 1 transfer function model.
+        A transfer function that has magnitude response matching the
+        amplitude spectral density of noise 1.
+    noise2 : TransferFunction
+        Sensor noise 2 transfer function model.
+        A transfer function that has magnitude response matching the
+        amplitude spectral density of noise 2.
+    weight1 : TransferFunction, optional
+        Weighting function 1.
+        Frequency dependent specification for noise 1.
+        Defaults None.
+    weight2 : TransferFunction, optional
+        Weighting function 2.
+        Frequency dependent specification for noise 2.
+        Defaults None.
+    filter1 : TransferFunction, optional
+        The complementary filter for noise 1.
+        Defaults None.
+    filter2 : TransferFunction, optional
+        The complementary filter for noise 2.
+        Defaults None.
+    f : array, optional
+        The frequency axis in Hz for evaluating the super sensor noise.
+        Defaults None.
 
     Methods
     -------
-    h2synthesis(w1=None, w2=None)
+    h2synthesis()
         Complementary filter synthesis that minimizes the
         :math:`\mathcal{H}_2`-norm
         of the super sensor noise. The noise must be specified
         before using this method.
-    hinfsynthesis(w1=None, w2=None)
+    hinfsynthesis()
         Complementary filter synthesis that minimizes the
         :math:`\mathcal{H}_\infty`-norm
         of the super sensor noise. The noise must be specified
         before using this method.
+    
+    Notes
+    -----
+    This is a utility class for complementary filter synthesis,
+    sensor noise estimation and analysis.
+    To use synthesis methods, specify ``noise1`` and ``noise2`` as
+    the transfer function modesl for the sensor noises, and
+    specify ``weight1`` and ``weight2`` as the frequency dependent
+    specification for the two sensor noises.
+
+    The synthesis is done for the generalized plant
+
+    .. image:: /images/kontrol_logo_128x64.svg
     """
-    def __init__(self, f=None, noise1=None, noise2=None,
-                 filter1=None, filter2=None, unit="f"):
+    def __init__(self, noise1=None, noise2=None, weight1=None, weight2=None,
+                 filter1=None, filter2=None, f=None):
         """Constructor
 
         Parameters
         ----------
-        f: array or None, optional
-            The frequency axis of the noises to be filtered.
-            Default None.
-        noise1: array, TransferFunction, FrequencySeries or None, optional
-            Noise amplitude spectral density of the first input.
-            Default None.
-        noise2: array, TransferFunction, FrequencySeries or None, optional
-            Noise amplitude spectral density of the second input.
-            Default None.
-        filter1: TransferFunction or None, optional
-            The first complementary filter.
-            Default None.
-        filter2: TransferFunction or None, optional
-            The second complementary filter. This should complement
-            filter 1.
-            Default None.
-        unit: str, optional
-            The unit of the frequency axis.
-            Choose from ["f", "s", "Hz", "omega"].
-            Default "f".
-
-        Raises
-        ------
-        ValueError
-            Filter1 doesn't complement filter2.
+        noise1 : TransferFunction
+            Sensor noise 1 transfer function model.
+            A transfer function that has magnitude response matching the
+            amplitude spectral density of noise 1.
+        noise2 : TransferFunction
+            Sensor noise 2 transfer function model.
+            A transfer function that has magnitude response matching the
+            amplitude spectral density of noise 2.
+        weight1 : TransferFunction, optional
+            Weighting function 1.
+            Frequency dependent specification for noise 1.
+            Defaults None.
+        weight2 : TransferFunction, optional
+            Weighting function 2.
+            Frequency dependent specification for noise 2.
+            Defaults None.
+        filter1 : TransferFunction, optional
+            The complementary filter for noise 1.
+            Defaults None.
+        filter2 : TransferFunction, optional
+            The complementary filter for noise 2.
+            Defaults None.
+        f : array, optional
+            The frequency axis in Hz for evaluating the super sensor noise.
+            Defaults None.
         """
-        if f is not None:
-            f = np.array(f)
-            if unit in ["f", "Hz"]:
-                self.f = f
-                self.omega = 2*np.pi*f
-            else:
-                self.f = f/2/np.pi
-                self.omega = f
-        else:
-            self.f = None
-            self.omega = None
-
-        if isinstance(noise1, control.xferfcn.TransferFunction):
-            self.tf_noise1 = noise1
-            if self.omega is not None:
-                self.noise1 = abs(noise1(1j*self.omega))
-            else:
-                self.noise1 = noise1
-        else:
-            self.tf_noise1 = None
-            self.noise1 = noise1
-
-        if isinstance(noise2, control.xferfcn.TransferFunction):
-            self.tf_noise2 = noise2
-            if self.omega is not None:
-                self.noise2 = abs(noise2(1j*self.omega))
-            else:
-                self.noise2 = noise2
-        else:
-            self.tf_noise2 = None
-            self.noise2 = noise2
-
+        self._noise1 = None
+        self._noise2 = None
+        self._weight1 = None
+        self._weight2 = None
+        self._filter1 = None
+        self._filter2 = None
+        self._f = None
+        self.noise1 = noise1
+        self.noise2 = noise2
+        self.weight1 = weight1
+        self.weight2 = weight2
         self.filter1 = filter1
         self.filter2 = filter2
-        if filter1 is not None and filter2 is not None:
-            tf_1 = control.tf([1], [1])
-            tf_check = filter1+filter2
-            if not kontrol.core.controlutils.check_tf_equal(tf_1, tf_check):
-                raise ValueError("filter1 is not complementary to filter2.")
-        elif filter1 is not None and filter2 is None:
-            filter2 = control.tf([1], [1]) - filter1
-            self.filter2 = filter2
-        elif filter1 is None and filter2 is not None:
-            filter1 = control.tf([1], [1]) - filter2
-            self.filter1 = filter1
+        self._f = f
 
-        if filter1 is not None and filter2 is not None:
-            tf_complementary_matrix = [[filter1], [filter2]]
-            tf_complementary = kontrol.core.controlutils.tfmatrix2tf(
-                tf_complementary_matrix)
-            super().__init__(tf_complementary)
-
-    def h2synthesis(self, w1=None, w2=None):
+    def h2synthesis(self):
         """Synthesize complementary filters using H2 synthesis.
-
-        Parameters
-        ----------
-        w1: TransferFunction or None, optional
-            Addition weighting function on filter 1.
-            Default None.
-        w2: TransferFunction or None, optional
-            Additional weighting function on filter 2.
-            Default None.
+        
+        Returns
+        -------
+        filter1 : TransferFunction
+            The complementary filter filtering noise 1.
+        filter2 : TransferFunction
+            The complementary filter filtering noise 2.
         """
         func = kontrol.complementary_filter.synthesis.h2complementary
-        self._synthesis(func=func, w1=w1, w2=w2)
+        return self._synthesis(func=func)
 
-    def hinfsynthesis(self, w1=None, w2=None):
+    def hinfsynthesis(self):
         """Synthesize complementary filters using H-inifinity synthesis.
-
-        Parameters
-        ----------
-        w1: TransferFunction or None, optional
-            Addition weighting function on filter 1.
-            Default None.
-        w2: TransferFunction or None, optional
-            Additional weighting function on filter 2.
-            Default None.
+        
+        Returns
+        -------
+        filter1 : TransferFunction
+            The complementary filter filtering noise 1.
+        filter2 : TransferFunction
+            The complementary filter filtering noise 2.
         """
         func = kontrol.complementary_filter.synthesis.hinfcomplementary
-        self._synthesis(func=func, w1=w1, w2=w2)
+        return self._synthesis(func=func)
 
-    def _synthesis(self, func, w1=None, w2=None):
+    def _synthesis(self, func):
         """Generic complementary filter synthesis function.
 
         Synthesize the complementary filter using the function and
@@ -183,112 +154,103 @@ class ComplementaryFilter(kontrol.transfer_function.TransferFunction):
             It should have a siguration of
             func(TransferFunction, TransferFunction) ->
             (TransferFunction, TransferFunction).
-        w1: TransferFunction or None, optional
-            Addition weighting function on filter 1.
-            Default None.
-        w2: TransferFunction or None, optional
-            Additional weighting function on filter 2.
-            Default None.
         """
-        if w1 is None:
-            w1 = control.tf([1], [1])
-        if w2 is None:
-            w2 = control.tf([1], [1])
-        n1 = self.tf_noise1/self.tf_noise2*w1
-        n2 = self.tf_noise2/self.tf_noise1*w2
-        h1, h2 = func(n1, n2)
-        self.filter1 = h1
-        self.filter2 = h2
+        filter1, filter2 = func(
+            self.noise1, self.noise2, self.weight1, self.weight2)
+        self.filter1 = filter1
+        self.filter2 = filter2
+        return filter1, filter2
 
     @property
     def noise1(self):
-        """Amplitude spectral density of sensor noise 1.
+        """Transfer munction model of sensor noise 1.
         """
-        ## Calculate here.
-        if self._noise1 is not None:
-            return self._noise1
-        elif self.tf_noise1 is not None:
-            if self.omega is not None:
-                return abs(self.tf_noise1(1j*self.omega))
-            else:
-                raise ValueError("noise1 is not specfied."
-                                 "tf_nosie1 is specified but f/omega is not.")
-                return None
-        else:
-            raise ValueError("noise1 is not specfied."
-                             "tf_nosie1 is not specified")
-            return None
+        return self._noise1
 
     @noise1.setter
-    def noise1(self, noise):
+    def noise1(self, _noise1):
         """noise1 setter
 
         Parameters
         ----------
-        noise1: array, FrequencySeries or TransferFunction
-            Noise amplitude spectral density of the first input.
+        noise1 : TransferFunction
         """
-        if isinstance(noise, control.xferfcn.TransferFunction):
-            self.tf_noise1 = noise
-            if self.omega is not None:
-                self._noise1 = abs(self.tf_noise1(1j*self.omega))
-            else:
-                self._noise1 = None
-        else:
-            self._noise1 = noise
+        self._noise1 = _noise1
 
     @property
     def noise2(self):
-        """Amplitude spectral density of sensor noise 2.
+        """Transfer munction model of sensor noise 2.
         """
-        if self._noise2 is not None:
-            return self._noise2
-        elif self.tf_noise2 is not None:
-            if self.omega is not None:
-                return abs(self.tf_noise2(1j*self.omega))
-            else:
-                raise ValueError("noise2 is not specfied."
-                                 "tf_nosie2 is specified but f/omega is not.")
-                return None
-        else:
-            raise ValueError("noise2 is not specfied."
-                             "tf_nosie2 is not specified")
-            return None
+        return self._noise2
 
     @noise2.setter
-    def noise2(self, noise):
+    def noise2(self, _noise2):
         """noise2 setter
 
         Parameters
         ----------
-        noise1: array, FrequencySeries or TransferFunction
-            Noise amplitude spectral density of the first input.
+        noise2 : TransferFunction
         """
-        if isinstance(noise, control.xferfcn.TransferFunction):
-            self.tf_noise2 = noise
-            if self.omega is not None:
-                self._noise2 = abs(self.tf_noise2(1j*self.omega))
-            else:
-                self._noise2 = None
-        else:
-            self._noise2 = noise
+        self._noise2 = _noise2
 
-    @property
-    def noise_super(self):
-        """Super sensor noise amplitude spectral density
+    def noise_super(self, f=None, noise1=None, noise2=None,
+                    filter1=None, filter2=None):
+        """Compute and return predicted the ASD of the super sensor noise
+
+        Parameter
+        ---------
+        f : array, optional
+            The frequency axis in Hz.
+            Use self.f if None.
+            Defaults None.
+        noise1 : array, optional
+            The amplitude spectral density of noise 1.
+            Use self.noise1 and self.f to estimate if None.
+            Defaults None.
+        noise2 : array, optional
+            The amplitude spectral density of noise 2.
+            Use self.noise1 and self.f to estimate if None.
+            Defaults None.
+        filter1 : TransferFunction, optional
+            The complementary filter for filtering noise1
+            Use self.filter1 if not specified.
+            Defaults None
+        filter2 : TransferFunction, optional
+            The complementary filter for filtering noise1
+            Use self.filter2 if not specified.
+            Defaults None
+        
+        Returns
+        -------
+        array
+            The amplitude spectral density of the super sensor noise.
         """
-        if self.f is None:
-            raise ValueError("self.f is not specified.")
-        elif self.filter1 is None:
-            raise ValueError("self.filter1 is not specified.")
-        elif self.filter2 is None:
-            raise ValueError("self.filter2 is not specified.")
-        elif self.noise1 is None:
-            raise ValueError("self.noise1 is not specified.")
-        elif self.noise2 is None:
-            raise ValueError("self.noise2 is not specified.")
-        noise1_filtered = abs(self.filter1(1j*self.omega)) * self.noise1
-        noise2_filtered = abs(self.filter2(1j*self.omega)) * self.noise2
+        if f is None:
+            if self.f is None:
+                raise ValueError("self.f is not specified.")
+            f = self.f
+        if filter1 is None:
+            if self.filter1 is None:
+                raise ValueError("self.filter1 is not specified. "
+                                 "Please specify self.filter1 or synthesize.")
+            filter1 = self.filter1
+        if filter2 is None:
+            if self.filter2 is None:
+                raise ValueError("self.filter2 is not specified. "
+                                 "Please specify self.filter2 or synthesize.")
+            filter2 = self.filter2
+        if noise1 is None:
+            if self.noise1 is None:
+                raise ValueError("noise1 is not specified. "
+                                 "Please specify noise1 or self.noise1.")
+            noise1 = abs(self.noise1(1j*2*np.pi*f))
+        if noise2 is None:
+            if self.noise2 is None:
+                raise ValueError("noise2 is not specified. "
+                                 "Please specify noise2 or self.noise2.")
+            noise2 = abs(self.noise2(1j*2*np.pi*f))
+        noise1_filtered = abs(filter1(1j*2*np.pi*f)) * noise1
+        noise2_filtered = abs(filter2(1j*2*np.pi*f)) * noise2
         return kontrol.core.math.quad_sum(noise1_filtered, noise2_filtered)
 
     @property
@@ -298,19 +260,14 @@ class ComplementaryFilter(kontrol.transfer_function.TransferFunction):
         return self._filter1
 
     @filter1.setter
-    def filter1(self, tf):
+    def filter1(self, _filter1):
         """filter1 setter.
 
         Parameters
         ----------
-        tf: TransferFunction
+        _filter1 : TransferFunction
         """
-        self._filter1 = tf
-        if self.filter1 is not None and self.filter2 is not None:
-            tf_complementary_matrix = [[self.filter1], [self.filter2]]
-            tf_complementary = kontrol.core.controlutils.tfmatrix2tf(
-                tf_complementary_matrix)
-            super().__init__(tf_complementary)
+        self._filter1 = _filter1
 
     @property
     def filter2(self):
@@ -319,30 +276,20 @@ class ComplementaryFilter(kontrol.transfer_function.TransferFunction):
         return self._filter2
 
     @filter2.setter
-    def filter2(self, tf):
+    def filter2(self, _filter2):
         """filter2 setter.
 
         Parameters
         ----------
-        tf: TransferFunction
+        _filter2 : TransferFunction
         """
-        self._filter2 = tf
-        if self.filter1 is not None and self.filter2 is not None:
-            tf_complementary_matrix = [[self.filter1], [self.filter2]]
-            tf_complementary = kontrol.core.controlutils.tfmatrix2tf(
-                tf_complementary_matrix)
-            super().__init__(tf_complementary)
+        self._filter2 = _filter2
 
     @property
     def f(self):
         """The frequency axis in Hz.
         """
-        if self._f is not None:
-            return self._f
-        elif self._omega is not None:
-            return self._omega/2/np.pi
-        else:
-            return None
+        return self._f
 
     @f.setter
     def f(self, _f):
@@ -354,29 +301,3 @@ class ComplementaryFilter(kontrol.transfer_function.TransferFunction):
             The frequency axis.
         """
         self._f = _f
-        if _f is not None:
-            self._omega = _f*2*np.pi
-
-    @property
-    def omega(self):
-        """The frequency axis in rad/s.
-
-        Parameters
-        ----------
-        _omega: array
-            The frequency axis in rad/s.
-        """
-        if self._omega is not None:
-            return self._omega
-        elif self.f is not None:
-            return self.f*2*np.pi
-        else:
-            return None
-
-    @omega.setter
-    def omega(self, _omega):
-        """Frequency axis setter.
-        """
-        self._omega = _omega
-        if _omega is not None:
-            self._f = _omega/2/np.pi
