@@ -14,7 +14,7 @@ control filter design.
 
 Features
 --------
-* Complementary filter synthesis using :math:`\mathcal{H}_\infty` methods.
+* Complementary filter synthesis using :math:`\mathcal{H}_\infty` methods [1]_.
 
   * Synthesize optimal complementary filters in a 2-sensor configuration.
 
@@ -35,8 +35,8 @@ Features
 
 * Noise spectral density estimation using correlation methods.
 
-  * 2-channel method [1]_
-  * 3-channel method [2]_
+  * 2-channel method [2]_
+  * 3-channel method [3]_
 
 * Foton utilities.
 
@@ -85,12 +85,18 @@ Indices and tables
 
 
 .. [1]
+    T. T. L. Tsang, T. G. F. Li, T. Dehaeze, C. Collette.
+    Optimal Sensor Fusion Method for Active Vibration Isolation Systems in
+    Ground-Based Gravitational-Wave Detectors.
+    https://arxiv.org/pdf/2111.14355.pdf
+
+.. [2]
     Aaron Barzilai, Tom VanZandt, and Tom Kenny.
     Technique for measurement of the noise of a sensor in the
     presence of large background signals. Review of Scientific Instruments,
     69:2767–2772, 07 1998.
 
-.. [2]
+.. [3]
     R. Sleeman, A. Wettum, and J. Trampert.
     Three-channel correlation analysis: A new technique to measure
     instrumental noise of digitizers and seismic sensors.

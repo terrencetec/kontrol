@@ -29,12 +29,6 @@ def generalized_plant(noise1, noise2, weight1, weight2):
     -------
     control.xferfcn.TransferFunction
         The plant.
-
-    Notes
-    -----
-    The plant is defined as
-
-    .. image:: /images/kontrol_logo_128x64.svg
     """
     zero = control.tf([0], [1])
     one = control.tf([1], [1])
@@ -101,7 +95,12 @@ def h2complementary(noise1, noise2, weight1=None, weight2=None):
     .. [1]
         Dehaeze, T.
         https://tdehaeze.github.io/dehaeze20_optim_robus_compl_filte/matlab/\
-        index.html
+index.html
+    .. [2]
+        T. T. L. Tsang, T. G. F. Li, T. Dehaeze, C. Collette.
+        Optimal Sensor Fusion Method for Active Vibration Isolation Systems in
+        Ground-Based Gravitational-Wave Detectors.
+        https://arxiv.org/pdf/2111.14355.pdf
     """
     p = generalized_plant(noise1, noise2, weight1, weight2)
     p = control.ss(p)
@@ -157,7 +156,12 @@ def hinfcomplementary(noise1, noise2, weight1=None, weight2=None):
     .. [1]
         Dehaeze, T.
         https://tdehaeze.github.io/dehaeze20_optim_robus_compl_filte/matlab/\
-        index.html
+index.html
+    .. [2]
+        T. T. L. Tsang, T. G. F. Li, T. Dehaeze, C. Collette.
+        Optimal Sensor Fusion Method for Active Vibration Isolation Systems in
+        Ground-Based Gravitational-Wave Detectors.
+        https://arxiv.org/pdf/2111.14355.pdf
     """
     p = generalized_plant(noise1, noise2, weight1, weight2)
     p = control.ss(p)

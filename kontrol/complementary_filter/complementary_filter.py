@@ -62,9 +62,13 @@ class ComplementaryFilter():
     specify ``weight1`` and ``weight2`` as the frequency dependent
     specification for the two sensor noises.
 
-    The synthesis is done for the generalized plant
-
-    .. image:: /images/kontrol_logo_128x64.svg
+    References
+    ----------
+    .. [1]
+        T. T. L. Tsang, T. G. F. Li, T. Dehaeze, C. Collette.
+        Optimal Sensor Fusion Method for Active Vibration Isolation Systems in
+        Ground-Based Gravitational-Wave Detectors.
+        https://arxiv.org/pdf/2111.14355.pdf
     """
     def __init__(self, noise1=None, noise2=None, weight1=None, weight2=None,
                  filter1=None, filter2=None, f=None):
