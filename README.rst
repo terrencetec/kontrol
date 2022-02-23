@@ -33,10 +33,11 @@ Features
   * General optical lever, horizontal and vertical optical lever sensing matrices,
     using parameters defined in `kagra-optical-lever <https://www.github.com/terrencetec/kagra-optical-lever>`_.
 
-* Noise spectral density estimation using correlation methods.
+* Spectral analysis
 
-  * 2-channel method [2]_
-  * 3-channel method [3]_
+  * Noise spectral density estimation using 2-channel method [2]_
+  * Noise spectral density estimation using 3-channel method [3]_
+  * Time series simulation of a given spectral density.
 
 * Foton utilities.
 

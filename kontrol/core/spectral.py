@@ -265,3 +265,77 @@ def three_channel_correlation(x1, x2=None, x3=None, fs=None,
                          "'x1', 'cpsd_13', 'cpsd_23', and 'cpsd_21'.")
     noise = psd1 * (1 - (coherence_13/coherence_23*coherence_21)**0.5)
     return noise
+
+
+def asd2ts(asd, f=None, fs=None, t=None, window=None, zero_mean=True):
+    """Simulate time series from amplitude spectral density
+
+    Parameters
+    ----------
+    asd : array
+        The amplitude spectral density.
+    f : array, optional
+        The frequency axis of the amplitude spectral density.
+        This is used to calculate the sampling frequency.
+        If ``fs`` is not specified, ``f`` must be specified.
+        Defaults ``None``.
+    fs : float, optional
+        The sampling frequency in Hz.
+        If ``f`` is specified, the last element of ``f`` will
+        be treated as the Nyquist frequency so the double of
+        it would be the sampling frequency.
+        Defaults ``None``.
+    t : array, optional
+        The desired time axis for the time series.
+        If ``t`` is specified, then the time series will
+        be interpolated using ``numpy.interp()`` assuming
+        that the time series is periodic.
+        Default ``None``.
+    window : array, optional
+        The FFT window used to compute the amplitude spectral density.
+        Defaults ``None``.
+    zero_mean : boolean, optional
+        Returns a time series with zero mean.
+        Defaults ``True``.
+
+    Returns
+    -------
+    t : array
+        Time axis.
+    time_series : array
+        The time series
+
+    Notes
+    -----
+    Using a custom time axis is not recommended as interpolation leads
+    to distortion of the signal.
+    To extend the signal in time, it's recommended to repeat the
+    original time series instead.
+    """
+    if f is not None:
+        fs = f[-1]*2  # Double the Nyquist frequency.
+    elif fs is None:
+        raise ValueError("Either f or fs must be specified.")
+
+    if window is None:
+        window = np.ones_like(asd)
+
+    s2 = np.sum(window**2)  # One of the normalization factor.
+    # Compute absolute value of the FFT
+    abs_ym = asd*np.sqrt(fs*s2)
+    # Assume ASD is noise and generate random phase for the FFT
+    random_phase = np.random.random(len(abs_ym))*360-180
+    # Convert abs(FFT) to FFT by adding random phase
+    ym = abs_ym * np.exp(1j*random_phase)
+    ts = np.fft.irfft(ym)
+
+    if zero_mean:
+        ts -= np.mean(ts)
+
+    t_original = np.linspace(0, (len(ts)-1)/fs, len(ts))
+    if t is None:
+        t = t_original
+    else:
+        period = t_original[-1] - t_original[0]
+        ts = np.interp(t, xp=t_original, fp=ts, period=period)
+    return t, ts

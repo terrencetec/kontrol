@@ -2,7 +2,6 @@
 """
 import control
 import numpy as np
-import matplotlib.pyplot as plt
 import scipy.signal
 
 import kontrol
@@ -170,3 +169,34 @@ def test_three_channel_correlation():
     predict_equal_true = np.allclose(P_n3_3channel, P_n3, rtol=0, atol=0.5)
 
     assert np.all([ts_equal_coh, ts_equal_cpsd, predict_equal_true])
+
+
+def test_asd2ts():
+    """Tests for kontrol.spectral.asd2ts"""
+    f = np.linspace(0, 128, 4096)
+    f = f[f>0]
+    s = control.tf("s")
+    color = (s+1)**2 / (s**2 * (s+10))
+    colored_noise_asd = abs(color(1j*2*np.pi*f))
+
+    fs = f[-1]*2
+    averages = 10
+    t = np.arange(0, len(f)*2*1/fs*averages, 1/fs)
+    t_sim, time_series = kontrol.spectral.asd2ts(colored_noise_asd, f=f, t=t)
+    fs_sim = 1/(t_sim[1]-t_sim[0])
+    window = np.hanning(int(len(time_series)/averages))
+    f_sim, psd_sim = scipy.signal.welch(time_series, fs=fs_sim, window=window)
+    asd_sim = psd_sim[f_sim>0]**0.5
+    f_sim = f_sim[f_sim>0]
+    log_mse = np.mean((np.log10(asd_sim) - np.log10(colored_noise_asd))**2)
+    assert log_mse < 0.1
+
+    # Test raise
+    try:
+        kontrol.spectral.asd2ts(colored_noise_asd)
+        raise
+    except ValueError:
+        pass
+    # Try without specifying time
+    t_sim, time_series = kontrol.spectral.asd2ts(colored_noise_asd, f=f)
+
