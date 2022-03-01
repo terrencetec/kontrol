@@ -9,6 +9,7 @@ Complementary Filter
 .. toctree::
    :maxdepth: 1
 
+   tutorials/complementary_filter_systnesis_for_typical_lvdt_and_geophone
    tutorials/complementary_filter_synthesis_using_h-infinity_methods
    tutorials/complementary_filter_systnesis_for_typical_lvdt_and_geophone
 
