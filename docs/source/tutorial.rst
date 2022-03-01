@@ -11,6 +11,7 @@ Complementary Filter
 
    tutorials/complementary_filter_synthesis_using_h-infinity_methods
    tutorials/complementary_filter_systnesis_for_typical_lvdt_and_geophone
+
 ..
    Noise Spectrum Modeling
    -----------------------
@@ -31,7 +32,6 @@ Spectral Analysis
 
    tutorials/noise_estimation_using_correlation_methods
    tutorials/spectral_time_series_simulation
-   tutorials/complementary_filter_systnesis_for_typical_lvdt_and_geophone
 
 Sensing Matrices
 ----------------
