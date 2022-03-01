@@ -69,106 +69,60 @@ def test_two_channel_correlation():
     """
     Tests for `kontrol.core.spectral.two_channel_correlation()`.
     """
-    P_n1_2channel = kontrol.spectral.two_channel_correlation(y1, y2, fs=fs)
-
-    # Alternatively, use the PSD and coherence.
-    _, coherence_12 = scipy.signal.coherence(y1, y2, fs=fs)
-    P_n1_2channel_coh = kontrol.spectral.two_channel_correlation(
-        P_y1, P_y2, fs=fs, coherence=coherence_12)
-
-    # Alternatively, use the PSD and cross power spectral density.
-    _, cpsd_12 = scipy.signal.csd(y1, y2, fs=fs)
-    _, cpsd_21 = scipy.signal.csd(y2, y1, fs=fs)
-    P_n1_2channel_cpsd = kontrol.spectral.two_channel_correlation(
-        P_y1, P_y2, fs=fs, cpsd=cpsd_12)
-
-    ts_equal_coh = np.allclose(P_n1_2channel, P_n1_2channel_coh)
-    ts_equal_cpsd = np.allclose(P_n1_2channel, P_n1_2channel_cpsd)
-    predict_equal_true = np.allclose(
-        np.log10(P_n1_2channel), np.log10(P_n1), rtol=0, atol=0.1)
-
-    assert np.all([ts_equal_coh, ts_equal_cpsd, predict_equal_true])
+    _, coh = scipy.signal.coherence(y1, y2, fs=fs)
+    P_n1 = kontrol.spectral.two_channel_correlation(psd=P_y1, coh=coh)
 
 
 def test_three_channel_correlation():
     """Tests for `kontrol.core.spectral.three_channel_correlation()`.
     """
-    P_n1_3channel = kontrol.spectral.three_channel_correlation(
-        y1, y2, y3, fs=fs)
-    P_n2_3channel = kontrol.spectral.three_channel_correlation(
-        y2, y1, y3, fs=fs)
-    P_n3_3channel = kontrol.spectral.three_channel_correlation(
-        y3, y1, y2, fs=fs)
-
-    # Alternatively, use PSD and coherences
-    _, coherence_12 = scipy.signal.coherence(y1, y2, fs=fs)
-    _, coherence_13 = scipy.signal.coherence(y1, y3, fs=fs)
-    _, coherence_21 = scipy.signal.coherence(y2, y1, fs=fs)
-    _, coherence_23 = scipy.signal.coherence(y2, y3, fs=fs)
-    _, coherence_31 = scipy.signal.coherence(y3, y1, fs=fs)
-    _, coherence_32 = scipy.signal.coherence(y3, y2, fs=fs)
+    _, csd12 = scipy.signal.csd(y1, y2, fs=fs)
+    _, csd13 = scipy.signal.csd(y1, y3, fs=fs)
+    _, csd21 = scipy.signal.csd(y2, y1, fs=fs)
+    _, csd23 = scipy.signal.csd(y2, y3, fs=fs)
+    _, csd31 = scipy.signal.csd(y3, y1, fs=fs)
+    _, csd32 = scipy.signal.csd(y3, y2, fs=fs)
 
     n1_kwargs = {
-        "coherence_13": coherence_13,
-        "coherence_23": coherence_23,
-        "coherence_21": coherence_21,
-    }
-    # Notice the changes.
-    n2_kwargs = {
-        "coherence_13": coherence_23,
-        "coherence_23": coherence_13,
-        "coherence_21": coherence_12,
-    }
-    n3_kwargs = {
-        "coherence_13": coherence_32,
-        "coherence_23": coherence_12,
-        "coherence_21": coherence_13,
-    }
-
-    P_n1_3channel_coh = kontrol.spectral.three_channel_correlation(
-        P_y1, **n1_kwargs)
-    P_n2_3channel_coh = kontrol.spectral.three_channel_correlation(
-        P_y2, **n2_kwargs)
-    P_n3_3channel_coh = kontrol.spectral.three_channel_correlation(
-        P_y3, **n3_kwargs)
-
-
-    # And Alternatively, use PSD and cross power spectral densities.
-    _, cpsd_12 = scipy.signal.csd(y1, y2, fs=fs)
-    _, cpsd_13 = scipy.signal.csd(y1, y3, fs=fs)
-    _, cpsd_21 = scipy.signal.csd(y2, y1, fs=fs)
-    _, cpsd_23 = scipy.signal.csd(y2, y3, fs=fs)
-    _, cpsd_31 = scipy.signal.csd(y3, y1, fs=fs)
-    _, cpsd_32 = scipy.signal.csd(y3, y2, fs=fs)
-
-    n1_kwargs = {
-        "cpsd_13": cpsd_13,
-        "cpsd_23": cpsd_23,
-        "cpsd_21": cpsd_21
+        "csd13": csd13,
+        "csd23": csd23,
+        "csd21": csd21,
+        "returnall": False,
     }
     n2_kwargs = {
-        "cpsd_13": cpsd_23,
-        "cpsd_23": cpsd_13,
-        "cpsd_21": cpsd_12,
+        "csd13": csd23,
+        "csd23": csd13,
+        "csd21": csd12,
+        "returnall": False,
     }
     n3_kwargs = {
-        "cpsd_13": cpsd_32,
-        "cpsd_23": cpsd_12,
-        "cpsd_21": cpsd_13
+        "csd13": csd32,
+        "csd23": csd12,
+        "csd21": csd13,
+        "returnall": False,
     }
+    
+    # Test functionality only, not testing correctness.
+    P_n1 = kontrol.spectral.three_channel_correlation(P_y1, **n1_kwargs)
+    P_n2 = kontrol.spectral.three_channel_correlation(P_y2, **n2_kwargs)
+    P_n3 = kontrol.spectral.three_channel_correlation(P_y3, **n3_kwargs)
+    P_n1, P_n2, P_n3 = kontrol.spectral.three_channel_correlation(
+        P_n1, P_n2, P_n3, csd13=csd13, csd23=csd23, csd21=csd21)
+    P_n1, P_n2, P_n3 = kontrol.spectral.three_channel_correlation(
+        P_n1, P_n2, P_n3, csd31=csd31, csd32=csd32, csd12=csd12)
+    
+    # Test raises
+    try:
+        kontrol.spectral.three_channel_correlation(P_y1)
+        raise
+    except ValueError:
+        pass
 
-    P_n1_3channel_cpsd = kontrol.spectral.three_channel_correlation(
-        P_y1, **n1_kwargs)
-    P_n2_3channel_cpsd = kontrol.spectral.three_channel_correlation(
-        P_y2, **n2_kwargs)
-    P_n3_3channel_cpsd = kontrol.spectral.three_channel_correlation(
-        P_y3, **n3_kwargs)
-
-    ts_equal_coh = np.allclose(P_n3_3channel, P_n3_3channel_coh)
-    ts_equal_cpsd = np.allclose(P_n3_3channel, P_n3_3channel_coh)
-    predict_equal_true = np.allclose(P_n3_3channel, P_n3, rtol=0, atol=0.5)
-
-    assert np.all([ts_equal_coh, ts_equal_cpsd, predict_equal_true])
+    try:
+        kontrol.spectral.three_channel_correlation(P_y1, returnall=False)
+        raise
+    except ValueError:
+        pass
 
 
 def test_asd2ts():

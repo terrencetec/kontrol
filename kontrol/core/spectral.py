@@ -4,60 +4,16 @@ import numpy as np
 import scipy.signal
 
 
-def two_channel_correlation(x1, x2, fs=None, cpsd=None, coherence=None,
-                            **welch_kwargs):
+def two_channel_correlation(psd, coh):
     r"""Noise estimation from two identical sensors' readouts.
 
     Parameters
     ----------
-    x1 : array
-        Sensor readout 1. Time series or Power spectral density.
-        The signal should contain a superposition of a
-        signal that is correlated with that in `x2` and a self noise
-        that is uncorrelated.
-        If this is specified as time series,
-        `fs` must be specified.
-        If this is specified as a power spectral density,
-        either `cpsd` or `coherence` must be specified.
-    x2 : array
-        Sensor readout 2. Time series or Power spectral density.
-        The signal should contain a superposition of a
-        signal that is correlated with that in `x1` and a self noise
-        that is uncorrelated.
-        If this is specified as time series,
-        `fs` must be specified.
-        If this is specified as a power spectral density,
-        either `cpsd` or `coherence` must be specified.
-    fs : float, optional
-        Sampling frequency.
-        This must be specified if `x1` and `x2` are time series.
-        If this is specified, this will override the value in **welch_kwargs.
-        Default None.
-    x_type : str, optional
-        Type of `x1` and `x2`.
-        Choose from ["time series", "ts", "power spectral density", "psd"]
-        If `x1` and `x2` are time series, then select "time series" or "ts".
-        If `x1` and `x2` are power spectral densities, then select
-        "power spectral density" or "psd".
-    cpsd : array, optional
-        Cross power spectral density bewween `x1` and `x2`.
-        If `cpsd` is specified, `x1` and `x2` will be treated as a
-        power spectral density.
-        Otherwise, `x1` and `x2` will be treated as time series.
-        If `coherence` is specified, `cpsd` will be ignored.
-        Default None.
-    coherence : array, optional
-        Coherence between `x1` and `x2`.
-        If coherence is specified, `x1` and `x2` will be treated as a power
-        spectral density.
-        Otherwise, `x1` and `x2` will be treated as time series.
-        If coherence is specified, cpsd will be ignored.
-        Default None.
-    **welch_kwargs :
-        Keyword arguments passed to `scipy.signal.welch` and
-        `scipy.signal.coherence`
-        to compute power spectral density and coherence
-        of `x1` and `x2`, if they are time series.
+    psd : array
+        The power spectral density of the readout of the sensor
+    coh : array
+        The coherence between readout of the sensor and another identical
+        sensor.
 
     Returns
     -------
@@ -72,8 +28,8 @@ def two_channel_correlation(x1, x2, fs=None, cpsd=None, coherence=None,
         P_{nn}(f) = P_{x_1x_1}(f)\left(1-C_{x_1x_2}(f)^{\frac{1}{2}}\right)\,,
 
     where :math:`P_{x_1x_1}(f)` is the power spectral density of the readout
-    :math:`x_1` and :math:`C_{x_1x_2}(f)` is the coherence
-    betwwen the readout :math:`x_1` and :math:`x_2`
+    and :math:`C_{x_1x_2}(f)` is the coherence
+    between the two sensor readouts.
 
     References
     ----------
@@ -83,149 +39,79 @@ def two_channel_correlation(x1, x2, fs=None, cpsd=None, coherence=None,
         presence of large background signals. Review of Scientific Instruments,
         69:2767–2772, 07 1998.
     """
-    if fs is not None:
-        welch_kwargs["fs"] = fs
-    if cpsd is None and coherence is None and "fs" in welch_kwargs.keys():
-        ## x1 and x2 are time series, compute the PSD and coherence.
-        _, psd1 = scipy.signal.welch(x1, **welch_kwargs)
-        _, coherence = scipy.signal.coherence(x1, x2, **welch_kwargs)
-    elif coherence is not None:
-        psd1 = x1
-    elif cpsd is not None:
-        ## x1 and x2 are PSDs but coherence is not given.
-        psd1 = x1
-        psd2 = x2
-        coherence = np.abs(cpsd)**2 / (psd1*psd2)
-    else:
-        raise ValueError("The following must be specified:\n"
-                         "If 'x1', and 'x2' are time series, specify:\n"
-                         "'x1', 'x2', and 'fs'.\n"
-                         "If 'x1, and 'x2' are power spectral densities,"
-                         "specify:\n"
-                         "'x1', 'x2' and 'coherence' or\n"
-                         "'x1', 'x2' and 'cpsd'.")
-    noise = psd1 * (1 - coherence**(1/2))
+    noise = psd * (1 - coh**0.5)
     return noise
 
 
-def three_channel_correlation(x1, x2=None, x3=None, fs=None,
-                              cpsd_13=None, cpsd_23=None, cpsd_21=None,
-                              coherence_13=None, coherence_23=None,
-                              coherence_21=None, **welch_kwargs):
+def three_channel_correlation(psd1, psd2=None, psd3=None,
+                              csd12=None, csd13=None,
+                              csd21=None, csd23=None,
+                              csd31=None, csd32=None,
+                              returnall=True):
     r"""Noise estimation from three sensors' readouts.
-
-    If `x1`, `x2`, and `x3` are time series:
-    `three_channel_correlation(x1, x2, x3, fs,...)`
-    If `x1`, `x2` and `x3` are power spectral densities,
-    `three_channel_correlation(x1, coherence_13, coherence_23,
-    coherence_21,...)`
-    or
-    `three_channel_correlation(x1, cpsd_13, cpsd_23, cpsd_21,...)`
 
     Parameters
     ----------
-    x1 : array
-        Sensor readout 1. Time series or Power spectral density.
-        The signal should contain a superposition of a
-        signal that is correlated with that in `x2` and a self noise
-        that is uncorrelated.
-        If this is specified as time series,
-        `fs` must be specified.
-        If this is specified as a power spectral density,
-        either `cpsd` or `coherence` must be specified.
-    x2 : array, optional
-        Sensor readout 2. Time series or Power spectral density.
-        The signal should contain a superposition of a
-        signal that is correlated with that in `x1` and `x3` and a self noise
-        that is uncorrelated.
-        This must be specified if `x1` is time series.
-        Default None
-    x3 : array, optional
-        Sensor readout 3. Time series or Power spectral density.
-        The signal should contain a superposition of a
-        signal that is correlated with that in `x1` and `x2` and a self noise
-        that is uncorrelated.
-        This must be specified if `x1` is time series.
-        Default None
-    fs : float, optional
-        Sampling frequency.
-        This must be specified if `x1`, `x2`, and `x3` are time series.
-        If this is specified, this will override the value in **welch_kwargs.
-    x_type : str, optional
-        Type of `x1` and `x2`.
-        Choose from ["time series", "ts", "power spectral density", "psd"]
-        If `x1` and `x2` are time series, then select "time series" or "ts".
-        If `x1` and `x2` are power spectral densities, then select
-        "power spectral density" or "psd".
-    cpsd_13 : array, optional
-        Cross power spectral density bewween `x1` and `x3`.
-        If `coherence` is specified, `cpsd` will be ignored.
-        Default None.
-    cpsd_23 : array, optional
-        Cross power spectral density bewween `x2` and `x3`.
-        If `coherence` is specified, `cpsd` will be ignored.
-        Default None.
-    cpsd_21 : array, optional
-        Cross power spectral density bewween `x2` and `x1`.
-        If `coherence` is specified, `cpsd` will be ignored.
-        Default None.
-    coherence_13 : array, optional
-        Coherence between `x1` and `x3`.
-        If coherence is specified, `x1`, `x2`m and `x3` will be treated as
-        power spectral densities.
-        Otherwise, `x1`, `x2`, and `x3` will be treated as time series.
-        If coherence is specified, cpsd will be ignored.
-        Default None.
-    coherence_23 : array, optional
-        Coherence between `x2` and `x3`.
-        If coherence is specified, `x1`, `x2`m and `x3` will be treated as
-        power spectral densities.
-        Otherwise, `x1`, `x2`, and `x3` will be treated as time series.
-        If coherence is specified, cpsd will be ignored.
-        Default None.
-    coherence_21 : array, optional
-        Coherence between `x2` and `x1`.
-        If coherence is specified, `x1`, `x2`, and `x3` will be treated as
-        power spectral densities.
-        Otherwise, `x1`, `x2`, and `x3` will be treated as time series.
-        If coherence is specified, cpsd will be ignored.
-        Default None.
-    **welch_kwargs :
-        Keyword arguments passed to `scipy.signal.welch` and
-        `scipy.signal.coherence`
-        to compute power spectral density and coherence
-        of `x1` and `x2`, if they are time series.
+    psd1 : array
+        The power spectral density of the readout of the first sensor.
+    psd2 : array, optional
+        The power spectral density of the readout of the second sensor.
+        Defaults ``None``.
+    psd3 : array, optional
+        The power spectral density of the readout of the third sensor.
+        Defaults ``None``.
+    csd12 : array, optional
+        Cross power spectral density between readout 1 and 2.
+        If not specified, this will be estimated as ``psd1*psd2/csd21``.
+        Default ``None``.
+    csd13 : array, optional
+        Cross power spectral density between readout 1 and 3.
+        If not specified, this will be estimated as ``psd1*psd3/csd31``.
+        Default ``None``.
+    csd21 : array, optional
+        Cross power spectral density between readout 2 and 1.
+        If not specified, this will be estimated as ``psd2*psd1/csd12``.
+        Default ``None``.
+    csd23 : array, optional
+        Cross power spectral density between readout 2 and 3.
+        If not specified, this will be estimated as ``psd2*psd3/csd32``.
+        Default ``None``.
+    csd31 : array, optional
+        Cross power spectral density between readout 3 and 1.
+        If not specified, this will be estimated as ``psd1*psd3/csd13``.
+        Default ``None``.
+    csd32 : array, optional
+        Cross power spectral density between readout 3 and 1.
+        If not specified, this will be estimated as ``psd3*psd2/csd23``.
+        Default ``None``.
+    returnall : boolean, optional
+        If ``True``, return all three noise estimations.
+        If ``False``, return noise estimation of first sensor only.
+        Defaults True.
 
     Returns
     -------
-    noise : array
-        Power spectral density of the estimated noise in `x1`.
+    noise1 : array
+        Power spectral density of the estimated noise in `psd1`.
+    noise2 : array, optional
+        Power spectral density of the estimated noise in `psd2`.
+        Returns only if ``returnall==True``
+    noise3 : array
+        Power spectral density of the estimated noise in `psd3`.
+        Returns only if ``returnall==True``
 
     Notes
     -----
-    If coherences `coherence_13`, `coherence_23`, and `coherence_21`
-    are specified,
-    the PSD of the noise in `x1` is computed as
-
-    .. math::
-        P_{n_1n_1}(f) = P_{x_1x_1}(f)\left[1-
-        \left(\frac{C_{x_1x_3}(f)}{C_{x_2x_3}(f)}C_{x_2x_1}\right)
-        ^{\frac{1}{2}}\right]\,,
-
-    where :math:`P_{x_1x_1}(f)` is the power spectral density of the readout
-    :math:`x_1` and :math:`C_{x_ix_j}(f)` is the coherence
-    betwwen the readout :math:`x_i` and :math:`x_j`.
-
-    If cross power spectral densities `cpsd_13`, `cpsd_23`, and `cpsd_21` are
+    If cross power spectral densities `csd13`, `csd23`, and `csd21` are
     specified instead, the PSD of the noise in `x1` is then computed as
 
     .. math::
-       P_{n_1n_1}(f) = P_{x_1x_1}(f) -
-       \left\vert\frac{P_{x_1x_3}(f)}{P_{x_2x_3}(f)}P_{x_2x_1}\right\vert\,,
+       P_{n_1n_1}(f) = \left\lvert P_{x_1x_1}(f) -
+       \frac{P_{x_1x_3}(f)}{P_{x_2x_3}(f)}P_{x_2x_1}\right\vert\,,
 
-    If none of the above is specified, then `x1`, `x2`, and `x3` will be
-    treated as time series and their coherence will be computed and
-    used to to calculate the PSD of noise in `x1` using the first equation.
+    If ``returnall`` is ``True``, at least ``psd1``, ``psd2``, ``psd3``
+    (``csd13`` or ``csd31``), (``csd23`` or ``csd32``), and
+    (``csd12`` and ``csd21``) must be provided.
 
     References
     ----------
@@ -235,36 +121,46 @@ def three_channel_correlation(x1, x2=None, x3=None, fs=None,
         instrumental noise of digitizers and seismic sensors.
         Bulletin of the Seismological Society of America, 96:258–271, 2006.
     """
-    if fs is not None:
-        welch_kwargs["fs"] = fs
-    if ((cpsd_13 is None or cpsd_23 is None or cpsd_21 is None) and
-       (coherence_13 is None or coherence_23 is None or coherence_21 is None)
-       and (x2 is not None and x3 is not None)
-       and "fs" in welch_kwargs.keys()):
-        ## x1, x2, and x3 are time series, compute the PSD and coherence.
-        _, psd1 = scipy.signal.welch(x1, **welch_kwargs)
-        _, coherence_13 = scipy.signal.coherence(x1, x3, **welch_kwargs)
-        _, coherence_23 = scipy.signal.coherence(x2, x3, **welch_kwargs)
-        _, coherence_21 = scipy.signal.coherence(x2, x1, **welch_kwargs)
-    elif (coherence_13 is not None and coherence_23 is not None
-         and coherence_21 is not None):
-        psd1 = x1
-    elif cpsd_13 is not None and cpsd_23 is not None and cpsd_21 is not None:
-        ## x1, x2 and x2 are PSDs but coherence is not given.
-        psd1 = x1
-        noise = psd1 - np.abs(cpsd_13/cpsd_23*cpsd_21)
-        return noise
+    if csd12 is None:
+        if all([csd21 is not None, psd1 is not None, psd2 is not None]):
+            csd12 = psd1*psd2/csd21
+    if csd13 is None:
+        if all([csd31 is not None, psd1 is not None, psd3 is not None]):
+            csd13 = psd1*psd3/csd31
+    if csd21 is None:
+        if all([csd12 is not None, psd2 is not None, psd1 is not None]):
+            csd21 = psd2*psd1/csd12
+    if csd23 is None:
+        if all([csd32 is not None, psd2 is not None, psd3 is not None]):
+            csd23 = psd2*psd3/csd32
+    if csd31 is None:
+        if all([csd13 is not None, psd3 is not None, psd1 is not None]):
+            csd31 = psd3*psd1/csd13
+    if csd32 is None:
+        if all([csd23 is not None, psd3 is not None, psd2 is not None]):
+            csd32 = psd3*psd2/csd23
+    if returnall:
+        if any([psd2 is None, psd3 is None,
+                csd12 is None, csd13 is None,
+                csd21 is None, csd23 is None,
+                csd31 is None, csd32 is None]):
+            raise ValueError("If returnall is True,"
+                             " at least psd2, psd3"
+                             " (csd13 or csd31),"
+                             " (csd23 or csd32), and"
+                             " (csd12 and csd21) must be provided.")
+        noise1 = three_channel_correlation(
+            psd1, csd13=csd13, csd23=csd23, csd21=csd21, returnall=False)
+        noise2 = three_channel_correlation(
+            psd2, csd13=csd21, csd23=csd31, csd21=csd32, returnall=False)
+        noise3 = three_channel_correlation(
+            psd3, csd13=csd32, csd23=csd12, csd21=csd13, returnall=False)
+        return noise1, noise2, noise3
     else:
-        raise ValueError("The following must be specified:\n"
-                         "If 'x1', 'x2', and 'x3' are time series, specify:\n"
-                         "'x1', 'x2', 'x3', and 'fs'.\n"
-                         "If 'x1, 'x2', 'x3' are power spectral densities,"
-                         "specify:\n"
-                         "'x1', 'coherence_13', 'coherence_23',and"
-                         "'coherence_21'. or\n"
-                         "'x1', 'cpsd_13', 'cpsd_23', and 'cpsd_21'.")
-    noise = psd1 * (1 - (coherence_13/coherence_23*coherence_21)**0.5)
-    return noise
+        if any([csd13 is None, csd23 is None, csd21 is None]):
+            raise ValueError("(csd13 or csd31), (csd23 or csd32),"
+                             " and (csd21 or csd12) must be provided")
+        return abs(psd1-csd13/csd23*csd21)
 
 
 def asd2ts(asd, f=None, fs=None, t=None, window=None, zero_mean=True):
