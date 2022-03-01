@@ -96,20 +96,19 @@ def three_channel_correlation(psd1, psd2=None, psd3=None,
     noise2 : array, optional
         Power spectral density of the estimated noise in `psd2`.
         Returns only if ``returnall==True``
-    noise3 : array
+    noise3 : array, optional
         Power spectral density of the estimated noise in `psd3`.
         Returns only if ``returnall==True``
 
     Notes
     -----
-    If cross power spectral densities `csd13`, `csd23`, and `csd21` are
-    specified instead, the PSD of the noise in `x1` is then computed as
+    The PSD of the noise in `psd1` is then computed as
 
     .. math::
        P_{n_1n_1}(f) = \left\lvert P_{x_1x_1}(f) -
        \frac{P_{x_1x_3}(f)}{P_{x_2x_3}(f)}P_{x_2x_1}\right\vert\,,
 
-    If ``returnall`` is ``True``, at least ``psd1``, ``psd2``, ``psd3``
+    If ``returnall`` is ``True``, at least ``psd1``, ``psd2``, ``psd3``,
     (``csd13`` or ``csd31``), (``csd23`` or ``csd32``), and
     (``csd12`` and ``csd21``) must be provided.
 
