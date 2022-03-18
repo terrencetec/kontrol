@@ -59,8 +59,8 @@ def log_mse(x1, x2, weight=None, small_multiplier=1e-6):
     return mse(x1=np.log10(x1), x2=np.log10(x2), weight=weight)
 
 
-def tf_error(tf1, tf2, weight=None, small_number=1e-6):
-    """Mean log error between two transfer functions frequency response
+def tf_error(tf1, tf2, weight=None, small_number=1e-6, norm=2):
+    r"""Mean log error between two transfer functions frequency response
 
     Parameters
     ----------
@@ -75,12 +75,25 @@ def tf_error(tf1, tf2, weight=None, small_number=1e-6):
         A small number to be added in before evaluating np.log10 to
         prevent error.
         Defaults to 1e-6.
+    norm : int, optional
+        The type of norm used to estimate the error.
+        Choose ``1`` for $\mathcal{L}_1$ norm and
+        ``2`` for $\mathcal{L}_2$ norm.
+        Other norms are are possible but not encouraged unless
+        there's a specifiy reason.
+        Defaults 2.
 
     Returns
     -------
     float
         Mean log error between two transfer function.
+
+    Notes
+    -----
+    $\mathcal{L}_1$ norm is more robust while
+    $\mathcal{L}_2$ norm is more susceptible to outliers, but fits
+    data with large dynamic range well.
     """
     if weight is None:
         weight = np.ones_like(tf1, dtype=float)
-    return np.mean(np.log10(abs(tf1-tf2) + small_number) * weight)
+    return np.mean(np.log10(abs(tf1-tf2)**norm + small_number) * weight)

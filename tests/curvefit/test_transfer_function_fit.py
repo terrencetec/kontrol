@@ -28,7 +28,7 @@ def test_transfer_function_fit():
     tf_fit.model = model
     tf_fit.x0 = x0
     tf_fit.fit()
-    assert np.allclose(tf_fit.optimized_args, [1, 1])
+    assert np.allclose(tf_fit.optimized_args, [1, 1], rtol=1e-3)
 
     options = {"maxiter": 1000, "maxfev": 1000, "adaptive": False}
     optimizer_kwargs = {"x0": x0}
@@ -38,4 +38,4 @@ def test_transfer_function_fit():
     tf_fit.ydata = ydata
     tf_fit.model = model
     tf_fit.fit()
-    assert np.allclose(tf_fit.optimized_args, [1, 1])
+    assert np.allclose(tf_fit.optimized_args, [1, 1], rtol=1e-3)
