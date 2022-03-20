@@ -268,7 +268,7 @@ def asd2rms(asd, f=None, df=1., return_series=True):
 
     .. math::
     
-       x_\mathrm{RMS}(f) = \int_\infty^{f}\,x(f')\,df'\,,
+       x_\mathrm{RMS}(f) = \int_\infty^{f}\,x(f')^2\,df'\,,
 
     where :math:`x(f)` is the amplitude spectral density.
 
