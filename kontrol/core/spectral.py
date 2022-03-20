@@ -234,3 +234,66 @@ def asd2ts(asd, f=None, fs=None, t=None, window=None, zero_mean=True):
         period = t_original[-1] - t_original[0]
         ts = np.interp(t, xp=t_original, fp=ts, period=period)
     return t, ts
+
+
+def asd2rms(asd, f=None, df=1., return_series=True):
+    r"""Calculate root-mean-squared value from amplitude spectral density
+
+    Parameters
+    ----------
+    asd : array
+        The amplitude spectral density
+    f : array, optional
+        The frequency axis.
+        Defaults ``None``.
+    df : float, optional
+        The frequency spacing.
+        Defaults 1.
+    return_series : bool, optional
+        Returns the RMS as a frequency series,
+        where each value is the integrated RMS from highest frequency.
+        If False, returns a single RMS value for the whole spectrum.
+        Defaults True.
+
+    Returns
+    -------
+    array
+        The integrated RMS series, if ``return_series==True``.
+    float
+        The integrated RMS value, if ``return_series==False``.
+    
+    Notes
+    -----
+    The integrated RMS series is defined as
+
+    .. math::
+    
+       x_\mathrm{RMS}(f) = \int_\infty^{f}\,x(f')\,df'\,,
+
+    where :math:`x(f)` is the amplitude spectral density.
+
+    When ``return_series`` is False, only :math:`x_\mathrm{RMS}(0)` is
+    returned.
+    """
+    # Flip the ASD to integrate from high frequency to low.
+    if f is not None:
+        f_inv = -np.flip(f)  # Minus sign necessary as integration limits
+                             # are flipped
+    else:
+        f_inv = None
+    asd_inv = np.flip(asd)
+
+    if not return_series:
+        rms = np.sqrt(np.trapz(y=asd_inv**2, x=f_inv, dx=df))
+    else:
+        rms = np.zeros_like(asd_inv)
+        for i in range(len(rms)):
+            if f_inv is None:
+                rms[i] = np.sqrt(np.trapz(y=asd_inv[:i]**2, dx=df))
+            else:
+                rms[i] = np.sqrt(np.trapz(y=asd_inv[:i]**2, x=f_inv[:i]))
+        rms = np.flip(rms)
+    return rms
+
+
+    

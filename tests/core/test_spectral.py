@@ -154,3 +154,26 @@ def test_asd2ts():
     # Try without specifying time
     t_sim, time_series = kontrol.spectral.asd2ts(colored_noise_asd, f=f)
 
+
+def test_asd2rms():
+    """Tests for kontrol.spectral.asd2rms()"""
+    t = np.linspace(0, 10, 32768)
+    y = np.random.normal(loc=0, scale=1, size=len(t))
+
+    fs = 1/(t[1]-t[0])
+
+    f, pyy = scipy.signal.welch(y, fs=fs, nfft=len(y)/16)
+
+    asd = pyy**0.5
+    rms = kontrol.spectral.asd2rms(asd=asd, f=f)
+    assert np.isclose(1, rms[0], rtol=1e-2)
+
+    rms = kontrol.spectral.asd2rms(asd=asd, f=f, return_series=False)
+    assert np.isclose(1, rms, rtol=1e-2)
+
+    rms = kontrol.spectral.asd2rms(asd=asd, df=f[1]-f[0])
+    assert np.isclose(1, rms[0], rtol=1e-2)
+
+    rms = kontrol.spectral.asd2rms(asd=asd, df=f[1]-f[0], return_series=False)
+    assert np.isclose(1, rms, rtol=1e-2)
+
