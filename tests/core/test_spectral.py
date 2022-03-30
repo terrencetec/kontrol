@@ -172,6 +172,7 @@ def test_asd2rms():
     assert np.isclose(1, rms, rtol=1e-2)
 
     rms = kontrol.spectral.asd2rms(asd=asd, df=f[1]-f[0])
+    print(rms)
     assert np.isclose(1, rms[0], rtol=1e-2)
 
     rms = kontrol.spectral.asd2rms(asd=asd, df=f[1]-f[0], return_series=False)

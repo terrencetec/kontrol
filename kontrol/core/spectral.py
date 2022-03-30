@@ -276,23 +276,23 @@ def asd2rms(asd, f=None, df=1., return_series=True):
     returned.
     """
     # Flip the ASD to integrate from high frequency to low.
-    if f is not None:
-        f_inv = -np.flip(f)  # Minus sign necessary as integration limits
-                             # are flipped
-    else:
-        f_inv = None
-    asd_inv = np.flip(asd)
-
+    # if f is not None:
+    #     f_inv = -np.flip(f)  # Minus sign necessary as integration limits
+    #                          # are flipped
+    # else:
+    #     f_inv = None
+    # asd_inv = np.flip(asd)
+    print(f)
     if not return_series:
-        rms = np.sqrt(np.trapz(y=asd_inv**2, x=f_inv, dx=df))
+        rms = np.sqrt(np.trapz(y=asd**2, x=f, dx=df))
     else:
-        rms = np.zeros_like(asd_inv)
+        rms = np.zeros_like(asd)
         for i in range(len(rms)):
-            if f_inv is None:
-                rms[i] = np.sqrt(np.trapz(y=asd_inv[:i]**2, dx=df))
+            if f is None:
+                rms[i] = np.sqrt(np.trapz(y=asd[i:]**2, dx=df))
             else:
-                rms[i] = np.sqrt(np.trapz(y=asd_inv[:i]**2, x=f_inv[:i]))
-        rms = np.flip(rms)
+                rms[i] = (np.trapz(y=asd[i:]**2, x=f[i:]))
+        # rms = np.flip(rms)
     return rms
 
 
