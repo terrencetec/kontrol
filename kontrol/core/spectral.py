@@ -282,7 +282,6 @@ def asd2rms(asd, f=None, df=1., return_series=True):
     # else:
     #     f_inv = None
     # asd_inv = np.flip(asd)
-    print(f)
     if not return_series:
         rms = np.sqrt(np.trapz(y=asd**2, x=f, dx=df))
     else:
