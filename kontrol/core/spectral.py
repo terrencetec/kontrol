@@ -290,7 +290,7 @@ def asd2rms(asd, f=None, df=1., return_series=True):
             if f is None:
                 rms[i] = np.sqrt(np.trapz(y=asd[i:]**2, dx=df))
             else:
-                rms[i] = (np.trapz(y=asd[i:]**2, x=f[i:]))
+                rms[i] = np.sqrt(np.trapz(y=asd[i:]**2, x=f[i:]))
         # rms = np.flip(rms)
     return rms
 
