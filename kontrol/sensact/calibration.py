@@ -250,7 +250,7 @@ def calibrate_erf(
             error = abs(ydata[i] - mid_range)
     x0_x_offset = xdata[start_index]
     x0_y_offset = ydata[start_index]
-    x0 = [x0_slope, x0_amplitude, x0_x_offset, x0_y_offset]
+    x0 = [x0_amplitude, x0_slope, x0_x_offset, x0_y_offset]
     optimizer_kwargs = {"x0": x0}
     
     curvefit.optimizer_kwargs = optimizer_kwargs
