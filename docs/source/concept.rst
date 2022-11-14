@@ -53,7 +53,7 @@ A typical complete control systems setup workflow would be the following:
    #. (Optional) Obtain a transfer function from ``kontrol.curvefit.model.ComplexZPK.tf`` (or otherwise), define it as a ``kontrol.TransferFunction`` object and export a Foton expression using ``kontrol.TransferFunction.foton()`` method.
    #. (Optional) Alternatively, export the transfer function object using ``kontrol.TransferFunction.save()`` method.
 
-4. Obtain the optimal PID controller (For systems that has 2 more complex poles than complex zeros).
+4. Obtain the optimal PID controller (For systems that have 2 more complex poles than complex zeros).
 
    #. Obtain a transfer function (from above or otherwise).
    #. Use ``kontrol.regulator.oscillator.pid()`` to optimize a derivative, PD, or PID controller.
