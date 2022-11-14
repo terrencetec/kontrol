@@ -73,7 +73,9 @@ def pid(
         regulator = kontrol.regulator.predefined.pid(kd=kd)
         kp = kontrol.regulator.feedback.add_proportional_control(
             plant, regulator=regulator, dcgain=dcgain, **kwargs)
-        regulator = kontrol.regulator.predefined.pid(kd=kd, kp=kp)
+        # Commented line below so the open-loop gain don't go
+        # below unity at low frequency.
+        # regulator = kontrol.regulator.predefined.pid(kd=kd, kp=kp)
         ki = kontrol.regulator.feedback.add_integral_control(
             plant, regulator=regulator,
             integrator_ugf=integrator_ugf,
