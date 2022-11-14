@@ -47,7 +47,7 @@ A typical complete control systems setup workflow would be the following:
 
 3. Transfer function modeling
 
-   #. Obtain the frequency response data and load it using something like ``vishack.data.diaggui.Diaggui.tf()`` from `VISHack<https://github.com/gw-vis/vishack>`_.
+   #. Obtain the frequency response data and load it using something like ``vishack.data.diaggui.Diaggui.tf()`` from `VISHack <https://github.com/gw-vis/vishack>`_.
    #. (Optional) Initial guess: Fit the frequency response manually by tweaking a ``kontrol.curvefit.model.ComplexZPK`` class (or other models).
    #. Fit the frequency response with a ``kontrol.curvefit.TransferFunctionFit`` class. If the an initial guess is not provided, then a global optimization method, such as ``scipy.optimize.differential_evolution``, is needed to be specified as the optimizer attribute.
    #. (Optional) Obtain a transfer function from ``kontrol.curvefit.model.ComplexZPK.tf`` (or otherwise), define it as a ``kontrol.TransferFunction`` object and export a Foton expression using ``kontrol.TransferFunction.foton()`` method.
@@ -65,4 +65,7 @@ A typical complete control systems setup workflow would be the following:
 Advanced control methods
 ------------------------
 * ``kontrol.complementary_filter.ComplementaryFilter`` class provides an option use H-infinity synthesis to optimize complementary filters according to modeled sensor noises.
+  
   * The same method can be used to optimize sensor correction filters and feedback controllers.
+
+Don't hesitate to check out the :ref:`Tutorials` for examples. 
