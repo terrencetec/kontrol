@@ -165,7 +165,8 @@ index.html
     """
     p = generalized_plant(noise1, noise2, weight1, weight2)
     p = control.ss(p)
-    filter1, _, _, _ = control.hinfsyn(p, 1, 1)
+    filter1, _, gamma, _ = control.hinfsyn(p, 1, 1)
+    # print(gamma)
     filter1 = control.tf(filter1)
     filter2 = 1 - filter1
     return filter1, filter2
