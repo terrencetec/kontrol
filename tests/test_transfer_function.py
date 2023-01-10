@@ -74,6 +74,18 @@ def test_transfer_function_save_load():
         pass
 
 
+def test_transfer_function_clean():
+    """Tests for kontrol.TransferFunction.clean()
+    """
+    num = [1e-9, 1, 2, 3]
+    den = [1e-9, 2, 3, 4]
+    tf = control.tf(num, den)
+    tf = kontrol.TransferFunction(tf)
+    tf.clean()
+    assert len(tf.num[0][0]) == 3
+    assert len(tf.den[0][0]) == 3
+
+
 def test_notch():
     """Tests for kontrol.transfer_function.notch.Notch class"""
     frequency = np.random.random()

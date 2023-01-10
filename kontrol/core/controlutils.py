@@ -530,3 +530,33 @@ def tf_order_split(tf, max_order=20):
             tf_list += [tf_zero_list[i]*tf_pole_list[i]]
     tf_list[0] *= gain
     return tf_list
+
+
+def clean_tf(tf, tol_order=5):
+    """Remove numerator/denominator coefficients that are small outliers
+
+    Parameters
+    ----------
+    tf : TransferFunction
+        The transfer function to be cleaned
+    tol_order : float, optional
+        If the coefficient is ``tol_order`` order smaller than
+        the rest of the coefficients, then this coefficient is an outlier.
+        Defaults 5.
+
+    Returns
+    -------
+    tf_cleaned : TransferFunction
+        The cleaned transfer function.
+    """
+    num = tf.num[0][0].copy()
+    den = tf.den[0][0].copy()
+    log_num = np.log10(num)
+    log_den = np.log10(den)
+    num_mask = log_num.mean() - log_num > tol_order
+    den_mask = log_den.mean() - log_den > tol_order
+    num[num_mask] = 0
+    den[den_mask] = 0
+    tf_cleaned = control.tf(num, den)
+    tf_cleaned = tf_cleaned.minreal()
+    return tf_cleaned

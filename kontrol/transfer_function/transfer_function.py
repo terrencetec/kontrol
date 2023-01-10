@@ -63,6 +63,21 @@ class TransferFunction(control.TransferFunction):
         # Work in progress
         pass
 
+    def clean(self, tol_order=5):
+        """Remove numerator/denominator coefficients that are small outliers
+
+        Parameters
+        ----------
+        tol_order : int, optional
+            If the coefficient is ``tol_order`` order smaller than
+            the rest of the coefficients, then this coefficient is an outlier.
+            Defaults 5.
+        """
+        tf_cleaned = kontrol.core.controlutils.clean_tf(
+            self, tol_order=tol_order)
+        super().__init__(tf_cleaned)
+
+
     def stabilize(self):
         """Convert unstable zeros and poles to stable ones.
         """

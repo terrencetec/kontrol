@@ -123,6 +123,17 @@ def test_tf_order_split():
             assert False
 
 
+def test_clean_tf():
+    """Tests for kontrol.core.controlutils.clean_tf()
+    """
+    num = [1e-9, 1, 2, 3]
+    den = [1e-9, 2, 3, 4]
+    tf = control.tf(num, den)
+    tf_cleaned = kontrol.core.controlutils.clean_tf(tf)
+    assert len(tf_cleaned.num[0][0]) == 3
+    assert len(tf_cleaned.den[0][0]) == 3
+
+
 def check_tf_equal(tf1, tf2):
     zeros_close = np.allclose(tf1.zero(), tf2.zero())
     poles_close = np.allclose(tf1.pole(), tf2.pole())
