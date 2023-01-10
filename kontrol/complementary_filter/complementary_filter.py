@@ -118,7 +118,7 @@ class ComplementaryFilter():
         self.filter2 = filter2
         self._f = f
 
-    def h2synthesis(self):
+    def h2synthesis(self, clean_filter=True, **kwargs):
         """Synthesize complementary filters using H2 synthesis.
         
         Returns
@@ -127,11 +127,16 @@ class ComplementaryFilter():
             The complementary filter filtering noise 1.
         filter2 : TransferFunction
             The complementary filter filtering noise 2.
+        clean_filter : boolean, optional
+            Remove small outlier coefficients from filters.
+            Defaults True.
+        **kwargs
+            Keyword arguments passed to kontrol.TransferFunction.clean()
         """
         func = kontrol.complementary_filter.synthesis.h2complementary
-        return self._synthesis(func=func)
+        return self._synthesis(func=func, clean_filter=clean_filter, **kwargs)
 
-    def hinfsynthesis(self):
+    def hinfsynthesis(self, clean_filter=True, **kwargs):
         """Synthesize complementary filters using H-inifinity synthesis.
         
         Returns
@@ -140,11 +145,16 @@ class ComplementaryFilter():
             The complementary filter filtering noise 1.
         filter2 : TransferFunction
             The complementary filter filtering noise 2.
+        clean_filter : boolean, optional
+            Remove small outlier coefficients from filters.
+            Defaults True.
+        **kwargs
+            Keyword arguments passed to kontrol.TransferFunction.clean()
         """
         func = kontrol.complementary_filter.synthesis.hinfcomplementary
-        return self._synthesis(func=func)
+        return self._synthesis(func=func, clean_filter=clean_filter, **kwargs)
 
-    def _synthesis(self, func):
+    def _synthesis(self, func, clean_filter=True, **kwargs):
         """Generic complementary filter synthesis function.
 
         Synthesize the complementary filter using the function and
@@ -159,16 +169,24 @@ class ComplementaryFilter():
             It should have a siguration of
             func(TransferFunction, TransferFunction) ->
             (TransferFunction, TransferFunction).
+        clean_filter : boolean, optional
+            Remove small outlier coefficients from filters.
+            Defaults True.
+        **kwargs
+            Keyword arguments passed to kontrol.TransferFunction.clean()
         """
         filter1, filter2 = func(
-            self.noise1, self.noise2, self.weight1, self.weight2)
+            self.noise1, self.noise2, self.weight1, self.weight2, **kwargs)
         self.filter1 = filter1
         self.filter2 = filter2
-        return filter1, filter2
+        if clean_filter:
+            self.filter1.clean(**kwargs)
+            self.filter2 = 1 - self.filter1
+        return self.filter1, self.filter2
 
     @property
     def noise1(self):
-        """Transfer munction model of sensor noise 1.
+        """Transfer function model of sensor noise 1.
         """
         return self._noise1
 
@@ -184,7 +202,7 @@ class ComplementaryFilter():
 
     @property
     def noise2(self):
-        """Transfer munction model of sensor noise 2.
+        """Transfer function model of sensor noise 2.
         """
         return self._noise2
 
