@@ -295,4 +295,102 @@ def asd2rms(asd, f=None, df=1., return_series=True):
     return rms
 
 
-    
+def pad_below_minima(series, pad_index=0, **kwargs):
+    """Pad series below local minima
+
+    Parameters
+    ----------
+    series : array
+        The series to be padded.
+    pad_index : int, optional
+        The index of the local minima.
+        Defaults to 0.
+    **kwargs
+        Keyword arguments passed to scipy.signal.argrelmin()
+
+    Returns
+    -------
+    series_padded : array
+        The padded series
+    """
+    i_min_list = scipy.signal.argrelmin(series, **kwargs)
+    i_min = i_min_list[0][pad_index]
+    series_padded = series.copy()
+    series_padded[:i_min+1] = series[i_min]
+    return series_padded
+
+
+def pad_above_minima(series, pad_index=-1, **kwargs):
+    """Pad series above local minima
+
+    Parameters
+    ----------
+    series : array
+        The series to be padded.
+    pad_index : int, optional
+        The index of the local minima.
+        Defaults to -1.
+    **kwargs
+        Keyword arguments passed to scipy.signal.argrelmin()
+
+    Returns
+    -------
+    series_padded : array
+        The padded series
+    """
+    i_min_list = scipy.signal.argrelmin(series, **kwargs)
+    i_min = i_min_list[0][pad_index]
+    series_padded = series.copy()
+    series_padded[i_min:] = series[i_min]
+    return series_padded
+
+
+def pad_below_maxima(series, pad_index=0, **kwargs):
+    """Pad series below local maxima
+
+    Parameters
+    ----------
+    series : array
+        The series to be padded.
+    pad_index : int, optional
+        The index of the local maxima.
+        Defaults to 0.
+    **kwargs
+        Keyword arguments passed to scipy.signal.argrelmin()
+
+    Returns
+    -------
+    series_padded : array
+        The padded series
+    """
+    i_max_list = scipy.signal.argrelmax(series, **kwargs)
+    i_max = i_max_list[0][pad_index]
+    series_padded = series.copy()
+    series_padded[:i_max+1] = series[i_max]
+    return series_padded
+
+
+def pad_above_maxima(series, pad_index=-1, **kwargs):
+    """Pad series above local maxima
+
+    Parameters
+    ----------
+    series : array
+        The series to be padded.
+    pad_index : int, optional
+        The index of the local maxima.
+        Defaults to -1.
+    **kwargs
+        Keyword arguments passed to scipy.signal.argrelmin()
+
+    Returns
+    -------
+    series_padded : array
+        The padded series
+    """
+    i_max_list = scipy.signal.argrelmax(series, **kwargs)
+    i_max = i_max_list[0][pad_index]
+    series_padded = series.copy()
+    series_padded[i_max:] = series[i_max]
+    return series_padded
+

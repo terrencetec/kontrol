@@ -178,3 +178,22 @@ def test_asd2rms():
     rms = kontrol.spectral.asd2rms(asd=asd, df=f[1]-f[0], return_series=False)
     assert np.isclose(1, rms, rtol=1e-2)
 
+
+def test_pad_series():
+    """Test for kontrol.spectral.pad_*
+    """
+    x = np.linspace(-5, 10, 1024)
+    series = x**3 - 10*x**2 + 1*x + 1
+
+    series_below_min = kontrol.spectral.pad_below_minima(series)
+    series_above_min = kontrol.spectral.pad_above_minima(series)
+    series_below_max = kontrol.spectral.pad_below_maxima(series)
+    series_above_max = kontrol.spectral.pad_above_maxima(series)
+
+    i_min = scipy.signal.argrelmin(series)
+    i_max = scipy.signal.argrelmax(series)
+
+    assert series_below_min[0] == series[i_min[0][0]] 
+    assert series_above_min[-1] == series[i_min[0][0]] 
+    assert series_below_max[0] == series[i_max[0][0]]
+    assert series_above_max[-1] == series[i_max[0][0]]
