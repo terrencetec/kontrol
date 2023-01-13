@@ -32,3 +32,13 @@ def test_log_mse():
                         correct==test_zero_value_array_ba)
 
     assert np.all([test_cal, test_zero_handle])
+
+
+def test_noise_error():
+    correct = 1
+    a = np.array([1, 10, 100, 1000, 10000])
+    b = np.array([10+0j, 100+0j, 1000+0j, 10000+0j, 100000+0j])
+    test = kontrol.curvefit.error_func.noise_error(a, b)
+    test_cal = correct==test
+    assert test_cal
+
