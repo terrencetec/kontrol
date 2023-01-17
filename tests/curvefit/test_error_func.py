@@ -42,3 +42,11 @@ def test_noise_error():
     test_cal = correct==test
     assert test_cal
 
+
+def test_spectrum_error():
+    correct = 1
+    a = np.array([1, 10, 100, 1000, 10000])
+    b = np.array([10+0j, 100+0j, 1000+0j, 10000+0j, 100000+0j])
+    test = kontrol.curvefit.error_func.spectrum_error(a, b)
+    test_cal = correct==test
+    assert test_cal

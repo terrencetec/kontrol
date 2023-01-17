@@ -137,3 +137,43 @@ def noise_error(noise1, noise2, weight=None, small_number=1e-6, norm=2):
     if weight is None:
         weight = np.ones_like(noise1, dtype=float)
     return np.mean((np.log10(abs(noise1))-np.log10(abs(noise2)))**norm*weight)
+
+
+def spectrum_error(spectrum1, spectrum2,
+                   weight=None, small_number=1e-6, norm=2):
+    r"""Mean log error between two spectrums. Alias of noise_error().
+
+    Parameters
+    ----------
+    spectrum1 : array
+        Spectrum 1.
+    spectrum2 : array
+        Spectrum 2.
+    weight : array or None, optional
+        Weighting function.
+        Defaults None.
+    small_number : float, optional
+        A small number to be added in before evaluating np.log10 to
+        prevent error.
+        Defaults to 1e-6.
+    norm : int, optional
+        The type of norm used to estimate the error.
+        Choose ``1`` for $\mathcal{L}_1$ norm and
+        ``2`` for $\mathcal{L}_2$ norm.
+        Other norms are are possible but not encouraged unless
+        there's a specifiy reason.
+        Defaults 2.
+
+    Returns
+    -------
+    float
+        The mean log error.
+
+    Notes
+    -----
+    $\mathcal{L}_1$ norm is more robust while
+    $\mathcal{L}_2$ norm is more susceptible to outliers, but fits
+    data with large dynamic range well.
+    """
+    return noise_error(spectrum1, spectrum2,
+                       weight=weight, small_number=small_number, norm=norm)
