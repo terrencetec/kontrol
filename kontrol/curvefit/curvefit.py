@@ -89,6 +89,10 @@ class CurveFit:
         self.optimized_args = None
         self.optimize_result = None
 
+    def prefit(self):
+        """Something to do before fitting."""
+        pass
+
     def fit(self, model_kwargs=None, cost_kwargs=None, optimizer_kwargs=None):
         """Fit the data
 
@@ -110,6 +114,7 @@ class CurveFit:
         -------
         scipy.optimizer.OptimizeResult
         """
+        self.prefit()
         if model_kwargs is None:
             model_kwargs = self.model_kwargs
         if optimizer_kwargs is None:
