@@ -63,7 +63,7 @@ class TransferFunction(control.TransferFunction):
         # Work in progress
         pass
 
-    def clean(self, tol_order=5):
+    def clean(self, tol_order=6):
         """Remove numerator/denominator coefficients that are small outliers
 
         Parameters
