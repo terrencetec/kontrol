@@ -1,6 +1,9 @@
 """Some predefined complementary filters
 """
 import control
+import numpy as np
+import scipy
+import kontrol
 
 
 def sekiguchi(coefs):
@@ -87,6 +90,34 @@ def modified_sekiguchi(coefs):
     hpf = control.tf(hpf_numerator, [1]) * control.tf([1], [1, a4])**7
     lpf = 1 - hpf
     return (lpf, hpf)
+
+
+def generalized_sekiguchi(fb, order_low_pass, order_high_pass):
+    """Generalized Sekiguchi Filter
+    
+    Parameters
+    ----------
+    fb : float
+        Blending frequency in Hz.
+    order_low_pass : int
+        Order of roll-off of the low-pass filter
+    order_high_pass : int
+        Order of roll-off of the high-pass filter
+    
+    Returns
+    -------
+    lpf : kontrol.TransferFunction
+        The low-pass filter
+    hpf : kontrol.TransferFunction
+        The high-pass filter
+    """
+    nl = order_low_pass
+    nh = order_high_pass
+    den = (scipy.special.comb(nl+nh-1, np.arange(0, nl+nh))
+           *(2*np.pi*fb)**np.arange(0, nl+nh))
+    lpf_num = den[nl:]
+    lpf = kontrol.TransferFunction(lpf_num, den)
+    return lpf, 1-lpf
 
 
 def lucia(coefs):

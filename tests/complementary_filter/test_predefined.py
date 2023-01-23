@@ -12,3 +12,4 @@ def test_predefined():
     kontrol.complementary_filter.predefined.modified_sekiguchi(coefs)
     coefs = np.random.random(7)
     kontrol.complementary_filter.predefined.lucia(coefs)
+    kontrol.complementary_filter.predefined.generalized_sekiguchi(1, 4, 4)
