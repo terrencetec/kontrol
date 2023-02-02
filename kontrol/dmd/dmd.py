@@ -4,17 +4,81 @@ import scipy
 
 
 class DMD:
-    """Dynamic mode decomposition class"""
+    """Dynamic mode decomposition class
+
+    Parameters
+    ----------
+    snapshot_1 : array
+        The 2-D snapshot array.
+    snapshot_2 : array, optional
+        The 2-D snapshot array at next time step.
+        If not provided, ``snapshot_1[:, :-1]`` becomes snapshot_1 and
+        ``snapshot_2[:, 1:]`` becomes ``snapshot_2``.
+        Defaults None.
+    truncation_value : float, optional
+        The truncation value (order/rank) of the system.
+        Defaults None.
+    dt : float, optional
+        The time difference between two snapshots.
+        Defaults None.
+    run : bool, optional
+        Run dynamic mode decomposition upon construction.
+        Computes DMD modes, Reduced-order model, etc.
+        truncation_value must be specified for this to work.
+        Defaults True.
+
+    Attributes
+    ----------
+    snapshot_1 : array
+        The 2-D snapshot matrix
+    snapshot_2 : array
+        The 2-D snapshot matrix at next time step.
+    truncation_value : int
+        The truncation value (order/rank) of the system.
+    dt : float
+        The time difference between two snapshots.
+    u : array
+        The left singular vector of the snapshot_1 matrix.
+    vh : array
+        The right singular vector (conjugate-transposed) of the snapshot_1
+        matrix.
+    sigma : array
+        The singular values of the snapshot_1 matrix
+    u_truncated : array
+        The truncated left singular vector of the snapshot_1 matrix.
+    vh_truncated : array
+        The truncated right singular vector (conjugate-transposed) of the
+        snapshot_1 matrix.
+    sigma_truncated : array
+        The truncated singular values of the snapshot_1 matrix
+    A_reduced : array
+        The reduced-order model of the dynamics.
+    w_reduced : array
+        The eigenvalues of the reduced-order model.
+    v_reduced : array
+        The eigenvectors of the reduced-order model.
+    dmd_modes : array
+        The DMD modes.
+    complex_frequencies : array
+        The complex frequencies of the modes.
+    v_constant : array
+        The constant vector of the time dynamics, determined by
+        initial conditions.
+    time_dynamics : array
+        The time dynamics of the ODE solution.
+    prediction : array
+        The predicted time series.
+    """
     def __init__(self, snapshot_1, snapshot_2=None,
                  truncation_value=None, dt=None, run=True):
         """Constructor
 
         Parameters
-        ---------
+        ----------
         snapshot_1 : array
-            The 2-D snapshot array.
+            The 2-D snapshot matrix.
         snapshot_2 : array, optional
-            The 2-D snapshot array at next time step.
+            The 2-D snapshot matrix at next time step.
             If not provided, ``snapshot_1[:, :-1]`` becomes snapshot_1 and
             ``snapshot_2[:, 1:]`` becomes ``snapshot_2``.
             Defaults None.
@@ -61,12 +125,16 @@ class DMD:
             self.snapshot_2 = snapshot_2
 
         if run:
-            self.svd()
-            self.low_rank_approximation()
-            self.compute_reduced_model()
-            self.eig_reduced_model()
-            self.compute_dmd_modes()
-            self.compute_complex_frequencies()
+            self.run()
+
+    def run():
+        """Run the DMD algorithm, compute dmd modes and complex frequencies"""
+        self.svd()
+        self.low_rank_approximation()
+        self.compute_reduced_model()
+        self.eig_reduced_model()
+        self.compute_dmd_modes()
+        self.compute_complex_frequencies()
 
     @property
     def snapshot_1(self):

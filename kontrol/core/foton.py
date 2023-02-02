@@ -1,5 +1,6 @@
 """KAGRA/LIGO Foton related utilities.
 """
+import control
 import numpy as np
 
 import kontrol.core.controlutils
@@ -255,6 +256,109 @@ def _order_gt(tf, order):
     """
     nnum, nden = _order(tf)
     return max(nnum, nden) > order
+
+
+def foton2tf(foton_string):
+    """Convert a Foton string to TransferFunction
+    
+    Parameters
+    ----------
+    foton_string : str
+        The foton string, e.g. zpk([0], [1; 1], 1, "n").
+    
+    Returns
+    -------
+    tf : TransferFunction
+        The transfer function.
+    """
+    foton_string = foton_string.replace(" ", "")
+    foton_string = foton_string.lstrip("zpk(")
+    foton_string = foton_string.rstrip(")")
+    split = foton_string.split(",")
+    if len(split) == 3:
+        z_string, p_string, gain_string = split
+        root_location = "s"
+    else:
+        z_string, p_string, gain_string, root_location = split
+
+    def process_zp_string(zp_string):
+        zp_string = zp_string.replace("[", "")
+        zp_string = zp_string.replace("]", "")
+        zp_string = zp_string.split(";")
+        zp = []
+        if zp_string == [""]:
+            return np.array(zp)
+        for string in zp_string:
+            #split real and imaginary
+            split = string.split("i*")
+            if len(split) == 2:
+                real_string, imag_string = split
+                sign = real_string[-1]
+            else:
+                real_string, = split
+                imag_string = "0"
+                sign = "+"
+            real_string = real_string.rstrip("+")
+            real_string = real_string.rstrip("-")
+            
+            zp_complex = f"{real_string}{sign}{imag_string}j"
+            zp.append(complex(zp_complex))
+        zp = np.array(zp)
+        return zp
+
+    zeros = process_zp_string(z_string)
+    poles = process_zp_string(p_string)
+    gain = float(gain_string)
+
+    root_location = root_location.replace("'", "")
+    root_location = root_location.replace('"', "")
+    # print(root_location)
+    if root_location in "nf":
+        # zeros poles are in Hz. Gain is DC.
+        zeros *= 2*np.pi  # Convert to rad/s
+        poles *= 2*np.pi
+    #     print("nf")
+
+    if root_location in "sf":
+        # Negate for (s+z), (s+p) convention.
+        zeros = -zeros
+        poles = -poles
+
+    tf = control.tf([1],[1])
+    s = control.tf("s")
+
+    for zero in zeros:
+        if zero == 0:
+            tf *= (s+zero)/(2*np.pi)
+        elif zero.imag > 0 and zero.real != 0:
+            wn = np.sqrt(zero.real**2 + zero.imag**2)
+            q = wn / (2*zero.real)
+            tf *= (s**2 + wn/q*s + wn**2) / wn**2
+        elif zero.imag > 0 and zero.real == 0:
+            wn = zero.imag
+            tf *= (s**2 + wn**2)/wn**2
+        elif zero.imag == 0 and zero.real != 0:
+            tf *= (s+zero.real)/zero.real
+
+    for pole in poles:
+        if pole == 0:
+            tf /= (s+pole)/(2*np.pi)
+        elif pole.imag > 0 and pole.real != 0:
+            wn = np.sqrt(pole.real**2 + pole.imag**2)
+            q = wn / (2*pole.real)
+            tf /= (s**2 + wn/q*s + wn**2) / wn**2
+        elif pole.imag > 0 and pole.real == 0:
+            wn = pole.imag
+            tf /= (s**2 + wn**2)/wn**2
+        elif pole.imag == 0 and pole.real != 0:
+            tf /= (s+pole.real)/pole.real
+
+    if root_location == "n":
+        tf *= gain
+    elif root_location in "sf":
+        tf *= gain / (tf.num[0][0][0]/tf.den[0][0][0])
+    
+    return kontrol.TransferFunction(tf)
 
 
 def notch(frequency, q, depth, significant_figures=6):
