@@ -75,3 +75,23 @@ def test_tf2rpoly():
 
     # assert rpoly_str_test == rpoly_str
     # FIXME Use better comparison. 
+
+def test_foton2tf():
+    """Tests for kontrol.core.foton.foton2tf()"""
+    foton_string_poly = "rpoly([1;2;3], [2;3; 4], 5)"
+    foton_string_n = ("zpk([0+i*1; 0-i*1; 0; 10+i*1;10-i*1;0.1], "
+                     "[0+i*3;0-i*3;3;0; 1+i*10; 1-i*10], 1, 'n')")
+    foton_string_s = ("zpk([0+i*1; 0-i*1; 0; -10+i*1;-10-i*1;-0.1], "
+                      "[0+i*3;0-i*3;-3;0; -1+i*10; -1-i*10], 1, 's')")
+    foton_string_f = ("zpk([0+i*1; 0-i*1; 0; -10+i*1;-10-i*1;-0.1], "
+                      "[0+i*3;0-i*3;-3;0; -1+i*10; -1-i*10], 1, 'f')")
+    #Test raise
+    try:
+        kontrol.core.foton.foton2tf("abc")
+    except ValueError:
+        pass
+
+    kontrol.core.foton.foton2tf(foton_string_poly)
+    kontrol.core.foton.foton2tf(foton_string_n)
+    kontrol.core.foton.foton2tf(foton_string_s)
+    kontrol.core.foton.foton2tf(foton_string_f)

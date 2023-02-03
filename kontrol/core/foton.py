@@ -264,8 +264,30 @@ def foton2tf(foton_string):
     Parameters
     ----------
     foton_string : str
-        The foton string, e.g. zpk([0], [1; 1], 1, "n").
+        The Foton string, e.g. zpk([0], [1; 1], 1, "n").
     
+    Returns
+    -------
+    tf : TransferFunction
+        The transfer function.
+    """
+    # Categorize the string and call the relevant function.
+    if "zpk" in foton_string:
+        return zpk2tf(foton_string)
+    elif "rpoly" in foton_string:
+        return rpoly2tf(foton_string)
+    else:
+        raise ValueError("Foton string not recognized. "
+                         "Only zpk and rpoly strings are supported.")
+
+
+def zpk2tf(foton_string):
+    """Convert a Foton ZPK string to TransferFunction
+    
+    Paramters
+    ---------
+    foton_string : str
+        The Foton ZPK string, e.g. zpk([0], [1; 1], 1, "n").
     Returns
     -------
     tf : TransferFunction
@@ -358,6 +380,38 @@ def foton2tf(foton_string):
     elif root_location in "sf":
         tf *= gain / (tf.num[0][0][0]/tf.den[0][0][0])
     
+    return kontrol.TransferFunction(tf)
+
+
+def rpoly2tf(foton_string):
+    """Converts rpoly Foton strings to TransferFunction
+
+    Parameters
+    ----------
+    foton_string : str
+        The rpoly Foton string. E.g. rpoly([1; 2; 3], [2; 3; 4], 5)
+    """
+    foton_string = foton_string.lstrip("rpoly")
+    foton_string = foton_string.replace(" ", "")
+    foton_string = foton_string.replace("(", "")
+    foton_string = foton_string.replace(")", "")
+    num_string, den_string, gain_string = foton_string.split(",")
+    def string2floatarray(string):
+        """Convert a string of float array to array"""
+        string = string.replace("[", "")
+        string = string.replace("]", "")
+        string = string.split(";")
+        float_array = []
+        if string == [""]:
+            return np.array(float_array) 
+        for value in string:
+            float_array.append(float(value))
+        return np.array(float_array)
+    num = string2floatarray(num_string)
+    den = string2floatarray(den_string)
+    gain = float(gain_string)
+    tf = control.tf(num, den)
+    tf *= gain
     return kontrol.TransferFunction(tf)
 
 
