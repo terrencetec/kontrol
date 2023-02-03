@@ -179,7 +179,7 @@ def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6, **kwargs):
         raise ValueError("ktol must be greater than 0")
 
     s = control.tf("s")
-    f_pole = abs(plant.pole())/2/np.pi
+    f_pole = abs(plant.poles())/2/np.pi
     kd_min = 1/max(abs((s*plant)(1j*2*np.pi*f_pole)))
 
     k_min = kd_min * s
@@ -228,7 +228,7 @@ def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6, **kwargs):
 def _count_complex_poles(plant):
     """Returns number of complex poles in a transfer function"""
     n_complex_pole = 0
-    for p in plant.pole():
+    for p in plant.poles():
         if p.imag != 0:
             n_complex_pole += 1
     return n_complex_pole
@@ -236,7 +236,7 @@ def _count_complex_poles(plant):
 
 def _find_dominant_mode(plant):
     """Returns the frequency (rad/s) of the dominant mode."""
-    poles = plant.pole()
+    poles = plant.poles()
     dominant_wn = None
     for p in poles:
         if p.imag != 0:
@@ -255,7 +255,7 @@ def _count_overdamp_modes(plant):
     s = control.tf("s")
     n_overdamp_modes = 0
     dominant_wn = _find_dominant_mode(plant)
-    spoles = (s*plant).pole()
+    spoles = (s*plant).poles()
     for p in spoles:
         if p.imag != 0:
             wn = abs(p)
@@ -284,7 +284,7 @@ def mode_decomposition(plant):
     k : array
         Dcgains of the modes.
     """
-    poles = plant.pole()
+    poles = plant.poles()
     complex_mask = poles.imag > 0  # Avoid duplication
     wn = abs(poles[complex_mask])  # Frequencies
     q = wn/(-2*poles[complex_mask].real)  # Q factors of the modes

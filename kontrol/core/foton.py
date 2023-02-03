@@ -118,8 +118,8 @@ def tf2zpk(tf, root_location="s", significant_figures=6,
     if root_location not in ["s", "f", "n"]:
         raise ValueError("Select root_location from [\"s\", \"f\", \"n\"]")
 
-    zeros = tf.zero()
-    poles = tf.pole()
+    zeros = tf.zeros()
+    poles = tf.poles()
     str_zeros = ""  # String of list of zeros (placeholder)
     str_poles = ""  # String of list of poles (placeholder)
 
@@ -132,8 +132,8 @@ def tf2zpk(tf, root_location="s", significant_figures=6,
         poles = -poles.conjugate()
 
     ## get zeros and poles list, and sort.
-    z_wn = np.sqrt(tf.zero().real**2 + tf.zero().imag**2)
-    p_wn = np.sqrt(tf.pole().real**2 + tf.pole().imag**2)
+    z_wn = np.sqrt(tf.zeros().real**2 + tf.zeros().imag**2)
+    p_wn = np.sqrt(tf.poles().real**2 + tf.poles().imag**2)
     z_sort_arg = z_wn.argsort()
     p_sort_arg = p_wn.argsort()
     z_wn.sort()
