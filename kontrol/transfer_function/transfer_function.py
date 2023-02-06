@@ -73,7 +73,7 @@ class TransferFunction(control.TransferFunction):
             the rest of the coefficients, then this coefficient is an outlier.
             Defaults 5.
         """
-        tf_cleaned = kontrol.core.controlutils.clean_tf2(
+        tf_cleaned = kontrol.core.controlutils.clean_tf3(
             self, tol_order=tol_order)
         super().__init__(tf_cleaned)
 
