@@ -134,6 +134,17 @@ def test_clean_tf():
     assert len(tf_cleaned.den[0][0]) == 3
 
 
+def test_clean_tf2():
+    """Tests for kontrol.core.controlutils.clean_tf2()"""
+    tol_order = 5
+    s = control.tf("s")
+    tf = ((s+1)*(s**2+10/3*s+10**2)*(s+100)*(s+1e9)*s
+          / (s*(s+0.1)*(s**2+30/3*s+30**2)*(s+300)*(s+2e9)))
+    tf_cleaned = kontrol.core.controlutils.clean_tf2(tf)
+    assert len(tf_cleaned.num[0][0]) == 5
+    assert len(tf_cleaned.den[0][0]) == 5
+
+
 def check_tf_equal(tf1, tf2):
     zeros_close = np.allclose(tf1.zeros(), tf2.zeros())
     poles_close = np.allclose(tf1.poles(), tf2.poles())

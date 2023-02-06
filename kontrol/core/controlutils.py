@@ -532,7 +532,7 @@ def tf_order_split(tf, max_order=20):
     return tf_list
 
 
-def clean_tf(tf, tol_order=5):
+def clean_tf(tf, tol_order=5, small_number=1e-25):
     """Remove numerator/denominator coefficients that are small outliers
 
     Parameters
@@ -543,6 +543,8 @@ def clean_tf(tf, tol_order=5):
         If the coefficient is ``tol_order`` order smaller than
         the rest of the coefficients, then this coefficient is an outlier.
         Defaults 5.
+    small_number : float, optional
+        A small number to be added to the log10 in case 0 is encountered.
 
     Returns
     -------
@@ -551,8 +553,8 @@ def clean_tf(tf, tol_order=5):
     """
     num = tf.num[0][0].copy()
     den = tf.den[0][0].copy()
-    log_num = np.log10(num)
-    log_den = np.log10(den)
+    log_num = np.log10(num+small_number)
+    log_den = np.log10(den+small_number)
     num_mask = log_num.mean() - log_num > tol_order
     den_mask = log_den.mean() - log_den > tol_order
     num[num_mask] = 0
@@ -560,3 +562,97 @@ def clean_tf(tf, tol_order=5):
     tf_cleaned = control.tf(num, den)
     tf_cleaned = tf_cleaned.minreal()
     return tf_cleaned
+
+
+def clean_tf2(tf, tol_order=5, small_number=1e-25):
+    """Remove zeros/poles that are outliers.
+
+    Parameters
+    ----------
+    tf : TransferFunction
+        The transfer function to be cleaned.
+    tol_order : float, optional
+        If the frequency of the zero/pole is ``tol_order'' order away from the
+        mean order, then this zero/pole is an outlier.
+        Defaults 5.
+    small_number : float, optional
+        A small number to be added to the log10() in case 0 is encountered
+
+    Returns
+    -------
+    tf_cleaned : TransferFunction
+        The cleaned transfer function.
+    """
+    zeros = tf.zeros().copy()
+    poles = tf.poles().copy()
+    wn_zeros = abs(zeros)
+    wn_poles = abs(poles)
+    log_wn_zeros = np.log10(wn_zeros+small_number)
+    log_wn_poles = np.log10(wn_poles+small_number)
+    mean_wn_zeros = np.mean(log_wn_zeros)
+    mean_wn_poles = np.mean(log_wn_poles)
+    mask_zeros = abs(log_wn_zeros-mean_wn_zeros) > tol_order
+    mask_poles = abs(log_wn_poles-mean_wn_poles) > tol_order
+    zeros[mask_zeros] = None
+    poles[mask_poles] = None
+
+    s = control.tf("s")
+    tf_cleaned = control.tf([1], [1])
+    for i, zero in enumerate(zeros):
+        if mask_zeros[i]:  # Remove outliers
+            continue
+        if zero.imag < 0:  # Only treat positive imag part.
+            continue
+        elif zero.imag != 0 and zero.real != 0:
+            wn, q = complex2wq(zero)
+            tf_cleaned *= (s**2 + wn/q*s + wn**2) / wn**2
+        elif zero.real == 0 and zero.imag != 0:
+            wn = abs(zero)
+            tf_cleaned *= (s**2 + wn**2) / wn**2
+        elif zero.real != 0 and zero.imag == 0:
+            tf_cleaned *= (s+abs(zero))/abs(zero)
+        elif zero == 0:
+            tf_cleaned *= s
+        
+    for i, pole in enumerate(poles):
+        if mask_poles[i]:  # Remove outliers
+            continue
+        if pole.imag < 0:  # Only treat positive imag part.
+            continue
+        elif pole.imag != 0 and pole.real != 0:
+            wn, q = complex2wq(pole)
+            tf_cleaned /= (s**2 + wn/q*s + wn**2) / wn**2
+        elif pole.real == 0 and pole.imag != 0:
+            wn = abs(pole)
+            tf_cleaned /= (s**2 + wn**2) / wn**2
+        elif pole.real != 0 and pole.imag == 0:
+            tf_cleaned /= (s+abs(pole))/abs(pole)
+        elif pole == 0:
+            tf_cleaned /= s
+
+    # Match gain at 1 Hz
+    gain_1hz = abs(tf(1j*2*np.pi*1))
+    tf_cleaned *= gain_1hz / abs(tf_cleaned(1j*2*np.pi*1))
+    tf_cleaned = tf_cleaned.minreal()
+    return tf_cleaned
+
+
+def complex2wq(complex_frequency):
+    """Convert a complex frequency to frequency and Q-factor.
+
+    Parameters
+    ----------
+    complex_frequency : complex
+        Complex frequency in rad/s.
+
+    Returns
+    -------
+    wn : float
+        The frequency in rad/s
+    q : float
+        The Q factor.
+    """
+    wn = abs(complex_frequency)
+    q = -wn / (2*complex_frequency.real)
+    q = abs(q)
+    return wn, q
