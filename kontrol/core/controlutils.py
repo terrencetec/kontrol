@@ -560,7 +560,7 @@ def clean_tf(tf, tol_order=5, small_number=1e-25):
     num[num_mask] = 0
     den[den_mask] = 0
     tf_cleaned = control.tf(num, den)
-    tf_cleaned = tf_cleaned.minreal()
+    # tf_cleaned = tf_cleaned.minreal()
     return tf_cleaned
 
 
@@ -633,7 +633,7 @@ def clean_tf2(tf, tol_order=5, small_number=1e-25):
     # Match gain at 1 Hz
     gain_1hz = abs(tf(1j*2*np.pi*1))
     tf_cleaned *= gain_1hz / abs(tf_cleaned(1j*2*np.pi*1))
-    tf_cleaned = tf_cleaned.minreal()
+    # tf_cleaned = tf_cleaned.minreal()
     return tf_cleaned
 
 
