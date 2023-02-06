@@ -637,6 +637,37 @@ def clean_tf2(tf, tol_order=5, small_number=1e-25):
     return tf_cleaned
 
 
+def clean_tf3(tf, tol_order=5, small_number=1e-25):
+    """Remove first coefficient if it is much smaller than the second
+    
+    Parameters
+    ----------
+    tf : TransferFunction
+        Transfer function to be cleaned
+    tol_order : float, optional
+        First coefficient is removed if it is ``tol_order'' order
+        smaller than the second coefficient.
+        Remove only if there exists such coefficient in both
+        numerator and denominator.
+    small_number : float, optional
+        A small number to be added to the log10() in case 0 is encountered.
+    
+    Returns
+    -------
+    tf_cleaned : TransferFunction
+        The cleaned TransferFunction
+    """
+    num = tf.num[0][0].copy()
+    den = tf.den[0][0].copy()
+    if (abs(np.log10(num[0]) - np.log10(num[1])) > tol_order
+        and abs(np.log10(den[0]) - np.log10(den[1])) > tol_order):
+        #
+        tf_cleaned = control.tf(tf.num[0][0][1:], tf.den[0][0][1:])
+    else:
+        tf_cleaned = tf
+    return tf_cleaned
+
+
 def complex2wq(complex_frequency):
     """Convert a complex frequency to frequency and Q-factor.
 

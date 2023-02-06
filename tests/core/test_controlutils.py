@@ -145,6 +145,17 @@ def test_clean_tf2():
     assert len(tf_cleaned.den[0][0]) == 5
 
 
+def test_clean_tf3():
+    """Tests for kontrol.core.controlutils.clean_tf3()
+    """
+    num = [1e-9, 1, 2, 3]
+    den = [1e-9, 2, 3, 4]
+    tf = control.tf(num, den)
+    tf_cleaned = kontrol.core.controlutils.clean_tf3(tf)
+    assert len(tf_cleaned.num[0][0]) == 3
+    assert len(tf_cleaned.den[0][0]) == 3
+
+
 def check_tf_equal(tf1, tf2):
     zeros_close = np.allclose(tf1.zeros(), tf2.zeros())
     poles_close = np.allclose(tf1.poles(), tf2.poles())
