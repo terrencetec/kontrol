@@ -157,8 +157,8 @@ def convert_unstable_tf(control_tf):
     This happens due to numerical accuracy,
     i.e. coefficients get astronomically high when order gets high.
     """
-    zeros_unstable = control_tf.zeros()
-    poles_unstable = control_tf.poles()
+    zeros_unstable = control_tf.zero()
+    poles_unstable = control_tf.pole()
     zeros_stable = []
     poles_stable = []
     for zero in zeros_unstable:
@@ -224,8 +224,8 @@ def check_tf_equal(tf1, tf2, allclose_kwargs={}, minreal=True):
     if minreal:
         tf1 = control.minreal(tf1, verbose=False)
         tf2 = control.minreal(tf2, verbose=False)
-    zeros_close = np.allclose(tf1.zeros(), tf2.zeros(), **allclose_kwargs)
-    poles_close = np.allclose(tf1.poles(), tf2.poles(), **allclose_kwargs)
+    zeros_close = np.allclose(tf1.zero(), tf2.zero(), **allclose_kwargs)
+    poles_close = np.allclose(tf1.pole(), tf2.pole(), **allclose_kwargs)
     gain_close = np.allclose(tf1.dcgain(), tf2.dcgain(), **allclose_kwargs)
     return all([zeros_close, poles_close, gain_close])
 
@@ -326,8 +326,8 @@ def outliers(tf, f, unit="f"):
     """
     outlier_zeros = []
     outlier_poles = []
-    zeros = tf.zeros()
-    poles = tf.poles()
+    zeros = tf.zero()
+    poles = tf.pole()
     f = np.array(f)
     if unit in ["f", "Hz"]:
         f = f*2*np.pi
@@ -389,8 +389,8 @@ def tf_order_split(tf, max_order=20):
     list of TransferFunction.
         The list of splitted transfer functions.
     """
-    zeros = tf.zeros()
-    poles = tf.poles()
+    zeros = tf.zero()
+    poles = tf.pole()
     gain = tf.minreal().num[0][0][0]
     # for i in range(len(zeros)):
         # if zeros[i]
@@ -583,8 +583,8 @@ def clean_tf2(tf, tol_order=5, small_number=1e-25):
     tf_cleaned : TransferFunction
         The cleaned transfer function.
     """
-    zeros = tf.zeros().copy()
-    poles = tf.poles().copy()
+    zeros = tf.zero().copy()
+    poles = tf.pole().copy()
     wn_zeros = abs(zeros)
     wn_poles = abs(poles)
     log_wn_zeros = np.log10(wn_zeros+small_number)

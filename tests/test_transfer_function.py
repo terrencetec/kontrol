@@ -16,8 +16,8 @@ def test_transfer_function_stablize():
     tf_unstable = (s-2) / (s-1) / (s**2-s-1)
     kontrol_tf = kontrol.TransferFunction(tf_unstable)
     kontrol_tf.stabilize()
-    positive_real_pole_exist = any(kontrol_tf.poles().real > 0)
-    positive_real_zero_exist = any(kontrol_tf.zeros().real > 0)
+    positive_real_pole_exist = any(kontrol_tf.pole().real > 0)
+    positive_real_zero_exist = any(kontrol_tf.zero().real > 0)
     assert all([not positive_real_pole_exist, not positive_real_zero_exist]) 
 
 
