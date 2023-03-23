@@ -127,7 +127,7 @@ class DMD:
         if run:
             self.run()
 
-    def run():
+    def run(self):
         """Run the DMD algorithm, compute dmd modes and complex frequencies"""
         self.svd()
         self.low_rank_approximation()

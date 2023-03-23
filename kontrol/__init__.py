@@ -11,6 +11,7 @@ from .sensact.optical_lever import (
     OpticalLeverSensingMatrix, HorizontalOpticalLeverSensingMatrix,
     VerticalOpticalLeverSensingMatrix)
 from .core import spectral, foton
+from . import dmd
 
 
 ## for ad hoc/optional packages
