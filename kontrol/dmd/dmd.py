@@ -20,12 +20,12 @@ class DMD:
         Defaults None.
     dt : float, optional
         The time difference between two snapshots.
-        Defaults None.
+        Defaults 1.
     run : bool, optional
         Run dynamic mode decomposition upon construction.
         Computes DMD modes, Reduced-order model, etc.
         truncation_value must be specified for this to work.
-        Defaults True.
+        Defaults False.
 
     Attributes
     ----------
@@ -92,7 +92,7 @@ class DMD:
             Run dynamic mode decomposition upon construction.
             Computes DMD modes, Reduced-order model, etc.
             truncation_value must be specified for this to work.
-            Defaults True.
+            Defaults False.
         """
         # Initializing attributes
         self._snapshot_1 = None
