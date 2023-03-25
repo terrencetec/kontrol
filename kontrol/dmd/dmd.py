@@ -70,7 +70,7 @@ class DMD:
         The predicted time series.
     """
     def __init__(self, snapshot_1, snapshot_2=None,
-                 truncation_value=None, dt=None, run=True):
+                 truncation_value=None, dt=1, run=False):
         """Constructor
 
         Parameters
@@ -87,7 +87,7 @@ class DMD:
             Defaults None.
         dt : float, optional
             The time difference between two snapshots.
-            Defaults None.
+            Defaults 1.
         run : bool, optional
             Run dynamic mode decomposition upon construction.
             Computes DMD modes, Reduced-order model, etc.
@@ -111,6 +111,7 @@ class DMD:
         self._v_constant = None
         self._time_dynamics = None
         self._dt = None
+        self._complex_frequencies = None
         self._prediction = None
         self._truncation_value = None
 
@@ -362,21 +363,21 @@ class DMD:
         dt : float, optional
             The time spacing between snapshots.
             Specified as self.dt or in constructor option.
-            Defaults None.
+            Defaults 1.
 
         Returns
         -------
         complex_frequencies : array
             Array of complex frequencies
         """
-        if dt is None:
-            if self.dt is None:
-                raise ValueError("Please specified dt")
-            dt = self.dt
+        if dt is None and self.dt is None:
+            self.dt = 1
+        elif self.dt is None:
+            self.dt = dt
         if self.w_reduced is None:
             self.eig_reduced_model()
             
-        complex_frequencies = np.log(self.w_reduced) / dt
+        complex_frequencies = np.log(self.w_reduced) / self.dt
         self.complex_frequencies = complex_frequencies
         return complex_frequencies
 
@@ -389,6 +390,16 @@ class DMD:
     def dt(self, _dt):
         """dt.setter"""
         self._dt = _dt
+
+    @property
+    def complex_frequencies(self):
+        """Complex frequencies"""
+        return self._complex_frequencies
+
+    @complex_frequencies.setter
+    def complex_frequencies(self, _complex_frequencies):
+        """complex_frequencies.setter"""
+        self._complex_frequencies = _complex_frequencies
 
     def predict(self, t):
         """Predict the future states given a time array
