@@ -194,3 +194,23 @@ Predefined Filters
    :undoc-members:
    :show-inheritance:
 
+
+Dynamic Mode Decomposition
+--------------------------
+Dynamic mode decomposition algorithm
+
+Dynamic mode decomposition main class
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: kontrol.dmd.dmd
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Dynamic mode decomposition utilities
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: kontrol.dmd.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

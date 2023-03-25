@@ -59,6 +59,10 @@ Features
   * Auto-design of PID controller for oscillatory systems (like pendulum suspensions)
   * Auto-design of post-filters such as notch filters and low-pass filters.
 
+* Dynamic mode decomposition
+
+  * Time series modeling using dynamic mode decomposition
+
 Don't hesitate to check out the `tutorials <https://kontrol.readthedocs.io/en/latest/tutorial.html>`_!
 
 - **Documentation:** https://kontrol.readthedocs.io/

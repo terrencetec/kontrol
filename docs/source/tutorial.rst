@@ -79,3 +79,11 @@ Control Regulator Design
    tutorials/regulator_feedback_critical_damping
    tutorials/regulator_algorithmic_oscillator_control
    tutorials/regulator_post_filtering
+
+Dynamic Mode Decomposition
+--------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   tutorials/dmd_time_series_prediction

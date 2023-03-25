@@ -10,6 +10,7 @@ Subpackages
    kontrol.core
    kontrol.complementary_filter
    kontrol.curvefit
+   kontrol.dmd
    kontrol.frequency_series
    kontrol.sensact
    kontrol.regulator
