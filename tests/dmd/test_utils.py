@@ -15,3 +15,10 @@ def test_hankel():
     ]
     array_hankel = kontrol.dmd.utils.hankel(array=array, order=order)
     assert np.allclose(array_hankel, array_correct)
+
+
+def test_auto_truncate():
+    """Tests for kontrol.dmd.utils.auto_truncate()"""
+    sigma = [5, 4, 3, 2, 1]
+    truncation_value = kontrol.dmd.auto_truncate(sigma, threshold=0.9)
+    assert truncation_value==4
