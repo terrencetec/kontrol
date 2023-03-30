@@ -43,6 +43,7 @@ def auto_truncate(sigma, threshold=0.99):
     threshold : float, optional
         Only include singular values so their sum is
         ``threshold`` of the original sum.
+        Defaults 0.99.
         
     Returns
     -------
