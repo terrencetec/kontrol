@@ -11,7 +11,7 @@ def hankel(array, order):
         Array with rows as channels and columns as samples
     
     order : int
-        The number of rows added
+        The number of rows of the hankelized matrix.
     
     Returns
     -------
@@ -22,7 +22,7 @@ def hankel(array, order):
     --------
     .. code-block: python
         a = [1, 2, 3, 4, 5]
-        hankel(a, 2)
+        hankel(a, 3)
         array([[1, 2, 3],
                [2, 3, 4],
                [3, 4, 5]])
