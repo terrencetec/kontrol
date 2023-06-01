@@ -401,18 +401,32 @@ class DMD:
         """complex_frequencies.setter"""
         self._complex_frequencies = _complex_frequencies
 
-    def predict(self, t):
+    def predict(self, t, t_constant=None, i_constant=0):
         """Predict the future states given a time array
         
         Parameters
         ----------
         t : array
             The time array
+        t_constant : float, optional
+            Time at which the constant vector is calculated.
+            Defaults to be ``t[0]`` if not given.
+        i_constant : int, optional
+            Index of the ``snapshot_1`` at which the
+            constant vector is calculated.
+            Defaults 0.
 
         Returns
         -------
         prediction : array
             Predicted states.
+
+        Notes
+        -----
+        The constant vector is the vector that evolves and is
+        evaluated using the initial/boundary values.
+        Set ``t_constant`` and ``i_constant`` to where the
+        prediction of the time series begins.
         """
         # Make complex frequencies into a diagonal matrix.
         diag_complex_frequencies = np.diag(self.complex_frequencies)
@@ -434,12 +448,15 @@ class DMD:
         
         # Compute the constant vector.
         # Assume t=0 at snapshot[:, 0].
-        v_constant, _, _, _ = np.linalg.lstsq(
-            self.dmd_modes, self.snapshot_1[:, 0], rcond=None)
-        # Assume t=t[0] at snapshot[:, 0].
         # v_constant, _, _, _ = np.linalg.lstsq(
-        #     self.dmd_modes @ np.diag(np.exp(self.complex_frequencies*t[0])),
-        #     self.snapshot_1[:, 0], rcond=None)
+        #     self.dmd_modes, self.snapshot_1[:, 0], rcond=None)
+
+        if t_constant is None:
+            t_constant = t[0]
+        v_constant, _, _, _ = np.linalg.lstsq(
+            self.dmd_modes\
+                @ np.diag(np.exp(self.complex_frequencies*t_constant)),
+            self.snapshot_1[:, i_constant], rcond=None)
         self.v_constant = v_constant
         
         # Compute time dynamics exp(omega*t) @ b
