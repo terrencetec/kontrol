@@ -1,4 +1,4 @@
-name: Kontrol
+name: Kontrol Tests
 
 on: [push]
 
@@ -18,8 +18,15 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
+          # Install dependencies for python-slycot
+          sudo apt-get update -qq;
+          sudo apt-get -y install gfortran cmake --fix-missing;
+          sudo apt-get -y install liblapack-dev libblas-dev;
+          # sudo apt-get -y install gfortran;
           python -m pip install --upgrade pip
-          pip install ruff pytest
+          pip install -U scikit-build numpy
+          pip install slycot
+          # Dependencies for Kontrol
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       # - name: Lint with ruff
       #   run: |
@@ -29,4 +36,5 @@ jobs:
       #     ruff --fotmat=github --target-version=py37
       - name: Test with pytest
         run: |
-          pytest
+          pip install pytest-cov pytest
+          py.test --cov-report term --cov=kontrol
