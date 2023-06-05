@@ -117,9 +117,9 @@ def test_tf_order_split():
     assert np.allclose(tf(1j*2*np.pi*f), tf_combined(1j*2*np.pi*f))
     
     for tf_ in tf_split_list:
-        if len(tf_.pole()) > max_order or len(tf_.zero()) > max_order:
-            print(tf_.pole())
-            print(tf_.zero())
+        if len(tf_.poles()) > max_order or len(tf_.zeros()) > max_order:
+            print(tf_.poles())
+            print(tf_.zeros())
             assert False
 
 
@@ -157,8 +157,8 @@ def test_clean_tf3():
 
 
 def check_tf_equal(tf1, tf2):
-    zeros_close = np.allclose(tf1.zero(), tf2.zero())
-    poles_close = np.allclose(tf1.pole(), tf2.pole())
+    zeros_close = np.allclose(tf1.zeros(), tf2.zeros())
+    poles_close = np.allclose(tf1.poles(), tf2.poles())
     gain_close = np.allclose(tf1.dcgain(), tf2.dcgain())
     return all([zeros_close, poles_close, gain_close])
 
