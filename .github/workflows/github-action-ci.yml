@@ -1,4 +1,4 @@
-name: Kontrol Tests
+name: Build and Tests
 
 on: [push]
 

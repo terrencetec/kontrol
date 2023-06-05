@@ -2,7 +2,7 @@
 
 **A dedicated Python control system library for control system optimization and utilities in KAGRA**
 
-|website| |release| |rtd| |license| |travis-ci| |codecov|
+|website| |release| |rtd| |license| |build_and_tests| |codecov|
 
 Kontrol
 =======
@@ -180,6 +180,10 @@ Pending
 .. |travis-ci| image:: https://travis-ci.com/terrencetec/kontrol.svg?branch=master
     :alt: travis-ci
     :target: https://app.travis-ci.com/github/terrencetec/kontrol
+
+.. |build_and_tests| image:: https://github.com/terrencetec/kontrol/actions/workflows/github-action-ci.yml/badge.svg
+   :alt: built and tests
+   :target: https://github.com/terrencetec/kontrol/actions/workflows/github-action-ci.yml
 
 .. |codecov| image:: https://codecov.io/gh/terrencetec/kontrol/branch/master/graph/badge.svg?token=CI5TW1L81H
     :alt: codecov
