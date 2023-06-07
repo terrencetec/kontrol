@@ -6,24 +6,6 @@ Be sure to check out :ref:`Tutorials` for example usages of these utilities!
    :maxdepth: 3
 
 
-Complementary Filter Synthesis
-------------------------------
-Optimal complementary filter synthesis using :math:`\mathcal{H}_\infty` methods.
-
-.. autoclass:: kontrol.ComplementaryFilter
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Frequency Series Class
-----------------------
-Frequency domain and transfer function data modeling
-
-.. autoclass:: kontrol.FrequencySeries
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Sensors and Actuators Utilities
 -------------------------------
 
@@ -73,29 +55,11 @@ Functions for calibrating sensor readouts.
    :show-inheritance:
 
 
-Spectral Analysis Functions
----------------------------
-Spectral analysis related functions library.
+Curve Fitting, Spectrum and Transfer Function Modeling
+------------------------------------------------------
+Curve Fitting, Spectrum and Transfer Function Modeling
 
-.. automodule:: kontrol.core.spectral
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Foton Utilities
----------------
-KAGRA/LIGO Foton related utilities.
-
-.. automodule:: kontrol.core.foton
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Curve Fitting
--------------
-Curve fitting
-
-Curve fitting class
+Curve Fitting Class
 ^^^^^^^^^^^^^^^^^^^
 Base class for general curve fitting.
 
@@ -104,7 +68,7 @@ Base class for general curve fitting.
    :undoc-members:
    :show-inheritance:
 
-Transfer function fitting class
+Transfer Function Fitting Class
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Curve fitting class for transfer function fitting.
 
@@ -112,6 +76,13 @@ Curve fitting class for transfer function fitting.
    :members:
    :undoc-members:
    :show-inheritance:
+
+Spectrum fitting (as transfer functions)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Spectrum fitting (particularly useful for H-infinity synthesis)
+
+.. autofunction:: kontrol.curvefit.spectrum_fit.spectrum_fit
+
 
 Models for Curve Fitting
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -158,9 +129,9 @@ These classes are designed to use with ``kontrol.curvefit``
    :show-inheritance:
 
 
-Control Regulator Design
-------------------------
-Functions for algorithmic design of control regulators
+Control Filter Design
+---------------------
+Functions for algorithmic design of control regulators and filters
 
 Feedback Control
 ^^^^^^^^^^^^^^^^
@@ -194,23 +165,63 @@ Predefined Filters
    :undoc-members:
    :show-inheritance:
 
+Complementary Filter Synthesis
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Optimal complementary filter synthesis using :math:`\mathcal{H}_\infty` methods.
+
+.. autoclass:: kontrol.ComplementaryFilter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+Miscellaneous
+-------------
+Spectral Analysis Functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Spectral analysis related functions library.
+
+.. automodule:: kontrol.core.spectral
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Foton Utilities
+^^^^^^^^^^^^^^^
+KAGRA/LIGO Foton related utilities.
+
+.. automodule:: kontrol.core.foton
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Math Utilities
+^^^^^^^^^^^^^^
+Math utilities
+
+.. automodule:: kontrol.core.math
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Dynamic Mode Decomposition
 --------------------------
 Dynamic mode decomposition algorithm
 
-Dynamic mode decomposition main class
+Dynamic Mode Decomposition Main Class
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: kontrol.dmd.dmd
+.. autoclass:: kontrol.dmd.DMD
    :members:
    :undoc-members:
    :show-inheritance:
 
-Dynamic mode decomposition utilities
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Time-series forecasting using DMD
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: kontrol.dmd.utils
+.. autofunction:: kontrol.dmd.dmd.dmd_forecast
    :members:
    :undoc-members:
    :show-inheritance:

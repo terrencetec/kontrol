@@ -12,6 +12,12 @@ kontrol.dmd.dmd module
    :undoc-members:
    :show-inheritance:
 
+kontrol.dmd.forecast module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: kontrol.dmd.forecast
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Secondary modules
 -----------------
