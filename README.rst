@@ -1,69 +1,60 @@
 |logo|
 
-**A dedicated Python control system library for control system optimization and utilities in KAGRA**
+**Python package for KAGRA suspension and seismic isolation control.**
 
 |website| |release| |rtd| |license| |build_and_tests| |codecov|
 
 Kontrol
 =======
-Kontrol (also pronounced "control") is a python package for KAGRA control system
-related work. It is intented for both offline and real-time (via Ezca and maybe
-diaggui and nds2 later) usage. In principle, it should cover all control related topics
-ranging from sensor/actuator diagonalization to system identification and
-control filter design.
+The name "Kontrol" is a blend word combining KAGRA,
+the gravitational-wave detector in Japan, and control, as in control system.
+The package contains necessary features for commissioning
+a KAGRA suspension.
+These features include:
 
-Features
---------
-* Complementary filter synthesis using :math:`\mathcal{H}_\infty` methods [1]_.
+* Sensor and actuation utilities (``kontrol.sensact``): 
+  Calibration and Sensing/Actuation Matrices
+* System Modeling (``kontrol.curvefit``): Fitting frequency response data
+  using Transfer function model.
+* Basic suspension controller design (``kontrol.regulator``):
+  Damping and position controller
+  with stabilizing post filters such as low-pass and notch filters.
 
-  * Synthesize optimal complementary filters in a 2-sensor configuration.
+To interface the results generated from the above functionalities to 
+the KAGRA control system, Kontrol also provides:
 
-* Curve fitting
+* Foton utilities (``kontrol.foton``): converting transfer function to/from
+  Foton strings.
+* Ezca wrapper (``kontrol.ezca``): Fetch/put control matrices to/from
+  the digital system.
 
-  * Fit transfer functions, spectral densities, etc.
+The above features form a control design flow for commissioning
+KAGRA suspension with basic functionality.
 
-* Frequency series modeling (Soon deprecating. See Curve fitting).
+Besides the basic functionalities, Kontrol also contains
+advanced features are being continuously developed in order to
+further enhance seismic isolation performance.
+Currently, Kontrol contains:
 
-  * Model-based empirical fitting.
-  * Model frequency series as zero-pole-gain and transfer function models.
+* H-infinity optimal complementary filters (``kontrol.ComplementaryFilter``):
+  Solves complementary control problems, optimizing control filters for
+  sensor fusion, sensor correction, and vibration isolation control
+  problems [1]_ [2]_.
+* Dynamic mode decomposition (``kontrol.dmd``): Dynamic mode decomposition
+  for time-series forecasting and modeling. For future model predictive
+  control work.
 
-* Sensing/Actuation Matrices.
+While Kontrol was initially created for optimizing KAGRA control systems,
+the package is also suitable for other gravitational-wave detectors,
+including LIGO, Virgo, and future detectors, such as the Einstein Telescope
+due to their similarities.
 
-  * Sensing/Actuation Matrices diagonalization with given coupling matrix.
-  * General optical lever, horizontal and vertical optical lever sensing matrices,
-    using parameters defined in `kagra-optical-lever <https://www.github.com/terrencetec/kagra-optical-lever>`_.
-
-* Spectral analysis
-
-  * Noise spectral density estimation using 2-channel method [2]_
-  * Noise spectral density estimation using 3-channel method [3]_
-  * Time series simulation of a given spectral density.
-
-* Foton utilities.
-
-  * Convert Python transfer function objects to Foton expressions
-  * Support for translating transfer functions with higher than 20 order (the
-    Foton limit).
-
-* Easy Channel Access (EZCA) utilities (wrapper)
-
-  * Read and write matrices to EPICS record.
-
-* Transfer Function
-  
-  * Export transfer functions to foton expressions.
-  * Save TransferFunction objects to pickle files.
-
-* Controller design
-
-  * Auto-design of PID controller for oscillatory systems (like pendulum suspensions)
-  * Auto-design of post-filters such as notch filters and low-pass filters.
-
-* Dynamic mode decomposition
-
-  * Time series modeling using dynamic mode decomposition
-
-Don't hesitate to check out the `tutorials <https://kontrol.readthedocs.io/en/latest/tutorial.html>`_!
+To help users to get familiar with the package, 
+step-by-step
+`tutorials <https://kontrol.readthedocs.io/en/latest/tutorial.html>`_
+are provided. Upon finishing the tutorials, the users should
+be able to convert the scripts into usable ones interfacing real data that
+can be used for the physical systems.
 
 - **Documentation:** https://kontrol.readthedocs.io/
 - **Repository:** https://github.com/terrencetec/kontrol.git
@@ -84,8 +75,11 @@ Required
 
 Optional
 ^^^^^^^^
-* ezca (Needed for accessing EPICs records/real-time model process variables. Use conda to install it.)
-* `vishack <https://github.com/gw-vis/vishack>`_ or `dttxml <https://github.com/mccullerlp/dttxml>`_ (For extracting data from diaggui xml files.)
+* ezca (Needed for accessing EPICs records/real-time model process variables.
+  Use conda to install it.)
+* `vishack <https://github.com/gw-vis/vishack>`_
+  or `dttxml <https://github.com/mccullerlp/dttxml>`_
+  (For extracting data from diaggui xml files.)
 
 If you would like to install Kontrol on your local machine with, then pip
 should install the required dependencies automatically for you. However, if
@@ -95,6 +89,18 @@ before installing Kontrol to avoid using pip. In Conda environment, simply type
 .. code-block:: bash
 
   conda install -c conda-forge numpy scipy matplotlib control ezca
+
+Using **Conda** is strongly recommended because ``control``
+depends on ``slycot`` which can be cumbersome to install without conda.
+Check `this issue <https://github.com/terrencetec/kontrol/issues/19>`_ out
+if you wish to install ``slycot`` on a Linux machine.
+
+Install from PyPI
+-----------------
+
+.. code-block:: bash
+   
+   pip install kontrol
 
 Install from source
 -------------------
@@ -141,21 +147,6 @@ Documentation
 - **Read The Docs**: https://readthedocs.org/
 - **Documenting Python Code: A Complete Guide**: https://realpython.com/documenting-python-code/
 
-How to Contribute
------------------
-Just do it.
-
-Pending
-^^^^^^^
-- Documentation.
-- tests!
-- Model reference sensor/actuator diagonalization
-- Add support for reading Shoda-san's SUMCON simulations.
-- Controller optimization
-- Optimal controller synthesis
-- python-foton interface.
-- Diaggui support.
-- **Issues**: https://github.com/terrencetec/kontrol/issues
 
 .. |logo| image:: /docs/source/_static/kontrol_logo_256x128.svg
     :alt: Logo
@@ -196,12 +187,18 @@ Pending
     https://arxiv.org/pdf/2111.14355.pdf
 
 .. [2]
+   Terrence Tak Lun Tsang. Optimizing Active Vibration Isolation Systems in
+   Ground-Based Interferometric Gravitational-Wave Detectors.
+   https://gwdoc.icrr.u-tokyo.ac.jp/cgi-bin/DocDB/ShowDocument?docid=14296
+
+
+.. [3]
     Aaron Barzilai, Tom VanZandt, and Tom Kenny.
     Technique for measurement of the noise of a sensor in the
     presence of large background signals. Review of Scientific Instruments,
     69:2767–2772, 07 1998.
 
-.. [3]
+.. [4]
     R. Sleeman, A. Wettum, and J. Trampert.
     Three-channel correlation analysis: A new technique to measure
     instrumental noise of digitizers and seismic sensors.
