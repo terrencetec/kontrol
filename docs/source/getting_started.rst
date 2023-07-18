@@ -29,6 +29,18 @@ before installing Kontrol to avoid using pip. In Conda environment, simply type
 
   conda install -c conda-forge numpy scipy matplotlib control ezca
 
+Using **Conda** is strongly recommended because ``control``
+depends on ``slycot`` which can be cumbersome to install without conda.
+Check `this issue <https://github.com/terrencetec/kontrol/issues/19>`_ out
+if you wish to install ``slycot`` on a Linux machine.
+
+Install from PyPI
+-----------------
+
+.. code-block:: bash
+   
+   pip install kontrol
+
 Install from source
 -------------------
 
@@ -43,8 +55,9 @@ For local usage, type
 For k1ctr workstations, make sure a virtual environment is enabled before
 installing any packages.
 
-Tutorials
----------
+Concept and Tutorials
+---------------------
 
-Do check out :ref:`Tutorials` for some example usages inlcuding how to
-make very good complementary filters.
+Check out :ref:`Concept` and :ref:`Tutorials` to see how this package
+can be utilized for setting up and optimizing
+seismic isolation control systems.

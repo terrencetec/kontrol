@@ -50,7 +50,7 @@ the package is also suitable for other gravitational-wave detectors,
 including LIGO, Virgo, and future detectors, such as the Einstein Telescope
 due to their similarities.
 
-To help users familiarize with the package, 
+To familiarize users with the package, 
 step-by-step
 `tutorials <https://kontrol.readthedocs.io/en/latest/tutorial.html>`_
 are provided. Upon finishing the tutorials, the users should
@@ -195,17 +195,3 @@ Documentation
    Terrence Tak Lun Tsang. Optimizing Active Vibration Isolation Systems in
    Ground-Based Interferometric Gravitational-Wave Detectors.
    https://gwdoc.icrr.u-tokyo.ac.jp/cgi-bin/DocDB/ShowDocument?docid=14296
-
-
-.. [3]
-    Aaron Barzilai, Tom VanZandt, and Tom Kenny.
-    Technique for measurement of the noise of a sensor in the
-    presence of large background signals. Review of Scientific Instruments,
-    69:2767–2772, 07 1998.
-
-.. [4]
-    R. Sleeman, A. Wettum, and J. Trampert.
-    Three-channel correlation analysis: A new technique to measure
-    instrumental noise of digitizers and seismic sensors.
-    Bulletin of the Seismological Society of America, 96:258–271, 2006.
-

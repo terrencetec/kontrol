@@ -15,6 +15,11 @@ jobs, including
 And, other utilities interfacing Python and KAGRA digital systems, such as
 ``kontrol.ezca``, are provided.
 
+In :ref:`Tutorials`, these tools in Kontrol will be demonstrated
+by setting up a virtual single stage suspension.
+For advanced usage, refer to :ref:`Main Utilities` and :ref:`Kontrol API`
+for detailed documentation of the package.
+
 Basic control systems setup
 ---------------------------
 A typical complete control systems setup workflow would be the following:
@@ -24,7 +29,7 @@ A typical complete control systems setup workflow would be the following:
   a. Obtain sensor calibration data.
 
     * For linear sensors, obtain a 2-array consisting of physical quantity (e.g. displacement) and readout (e.g. voltage or digital counts).
-    * For sensors requiring calibration filters, it is necessary to do an inter-calibration between the sensor and another calibrated sensor. In this case, obtain atransfer function between the readouts of the calibrated sensor and the sensor of interest.
+    * For sensors requiring calibration filters, it is necessary to do an inter-calibration between the sensor and another calibrated sensor. In this case, obtain a frequency response between the readouts of the calibrated sensor and the sensor of interest.
 
   b. Obtain calibration factor/filter
     * For linear sensors, use ``kontrol.sensact.calibrate()``.
