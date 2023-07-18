@@ -2,7 +2,7 @@
 
 **Python package for KAGRA suspension and seismic isolation control.**
 
-|website| |release| |rtd| |license| |build_and_tests| |codecov|
+|website| |release| |pypi| |rtd| |license| |build_and_tests| |codecov|
 
 Kontrol
 =======
@@ -180,6 +180,10 @@ Documentation
 .. |codecov| image:: https://codecov.io/gh/terrencetec/kontrol/branch/master/graph/badge.svg?token=CI5TW1L81H
     :alt: codecov
     :target: https://codecov.io/gh/terrencetec/kontrol
+
+.. |pypi| image:: https://badge.fury.io/py/kontrol.svg
+    :target: https://badge.fury.io/py/kontrol
+
 
 .. [1]
     T. T. L. Tsang, T. G. F. Li, T. Dehaeze, C. Collette.
