@@ -12,23 +12,24 @@ The package contains necessary features for commissioning
 a KAGRA suspension.
 These features include:
 
-* Sensor and actuation utilities (``kontrol.sensact``): 
+* **Sensor and actuation utilities** (``kontrol.sensact``): 
   Calibration and Sensing/Actuation Matrices
-* System Modeling (``kontrol.curvefit``): Fitting frequency response data
+* **System Modeling** (``kontrol.curvefit``): Fitting frequency response data
   using Transfer function model.
-* Basic suspension controller design (``kontrol.regulator``):
+* **Basic suspension controller design** (``kontrol.regulator``):
   Damping and position controller
   with stabilizing post filters such as low-pass and notch filters.
 
 To interface the results generated from the above functionalities to 
 the KAGRA control system, Kontrol also provides:
 
-* Foton utilities (``kontrol.foton``): converting transfer function to/from
+* **Foton utilities** (``kontrol.foton``): converting transfer function to/from
   Foton strings.
-* Ezca wrapper (``kontrol.ezca``): Fetch/put control matrices to/from
+* **Ezca wrapper** (``kontrol.ezca``): Fetch/put control matrices to/from
   the digital system.
 
-The above features form a control design flow for commissioning
+The above features form a control design pipeline from calibration
+to controller design for commissioning
 KAGRA suspension with basic functionality.
 
 Besides the basic functionalities, Kontrol also contains
@@ -36,11 +37,11 @@ advanced features are being continuously developed in order to
 further enhance seismic isolation performance.
 Currently, Kontrol contains:
 
-* H-infinity optimal complementary filters (``kontrol.ComplementaryFilter``):
+* **H-infinity optimal complementary filters** (``kontrol.ComplementaryFilter``):
   Solves complementary control problems, optimizing control filters for
   sensor fusion, sensor correction, and vibration isolation control
   problems [1]_ [2]_.
-* Dynamic mode decomposition (``kontrol.dmd``): Dynamic mode decomposition
+* **Dynamic mode decomposition** (``kontrol.dmd``): Dynamic mode decomposition
   for time-series forecasting and modeling. For future model predictive
   control work.
 
@@ -49,7 +50,7 @@ the package is also suitable for other gravitational-wave detectors,
 including LIGO, Virgo, and future detectors, such as the Einstein Telescope
 due to their similarities.
 
-To help users to get familiar with the package, 
+To help users familiarize with the package, 
 step-by-step
 `tutorials <https://kontrol.readthedocs.io/en/latest/tutorial.html>`_
 are provided. Upon finishing the tutorials, the users should
