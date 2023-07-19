@@ -104,7 +104,7 @@ factor.
 .. toctree::
    :maxdepth: 1
 
-   tutorials/sensors_and_actuators/calibration_of_linear_a_linear_sensor
+   tutorials/sensors_and_actuators/calibration_of_a_linear_sensor
 
 The calibration factor turned out to be 0.1195 microns per ADC count.
 
