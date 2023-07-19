@@ -65,16 +65,18 @@ and that in the rotational direction :math:`x_3` reads
 
    P_r(s) = k_4\frac{\omega_4^2}{s^2+\frac{\omega_4}{Q_4}s+\omega_4^2}\,.
  
-The transfer function for `x_2` has the same form as that of `x_1` but
-with different frequencies and Q values.
+The transfer function for :math:`x_2` has the same form as that of :math:`x_1`
+but with different frequencies and Q values.
 
 The objective here is to achieve a resonable damping and position control
 for these three degress of freedom.
 
 Sensors and actuators
 ^^^^^^^^^^^^^^^^^^^^^
-Calibration
-***********
+Linear sensor calibration
+*************************
+TOO Tedious:
+
 A relative sensor outputs a voltage corresponding to the measured displacement
 The voltage is converted into an integer number ranging from
 , say -32768 to 32768, via a 16-bit analog-to-digital converter.
@@ -87,13 +89,72 @@ sensor. We eventually obtained
 
 .. code:: Python
 
-   Displacement = [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
--1, 2, 3, 4, 5, 6, 8, 9, 10]
+   displacement = [-10., -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 8, 9, 10]  # millimeters
 
 and 
 
-Output = [-32765, -32760, -32741, -32680, -32504, -32060, -31068, -29109,
--25691, -20421, -13241, -4596, 4598, 13243, 20423, 25693, 29111, 31070, 32062, 32506, 32682]
+.. code:: Python
+
+   output = [-32765., -32760, -32741, -32680, -32504, -32060, -31068, -29109, -25691, -20421, -13241, -4596, 4598, 13243, 20423, 25693, 29111, 31070, 32062, 32506, 32682]
+
+The following notebook shows how we can use
+``kontrol.sensact.calibrate()`` to obtain the calibration
+factor.
+
+.. toctree::
+   :maxdepth: 1
+
+   tutorials/sensors_and_actuators/calibration_of_linear_a_linear_sensor
+
+The calibration factor turned out to be 0.1195 microns per ADC count.
+
+
+Calibration of an inertial sensor
+*********************************
+Pending
+
+Sensing matrices
+****************
+The sensor vector :math:`\vec{y}=(y_1, y_2, y_3)` does not necessarily
+align with the displacement vector :math:`\vec{x}=(x_1, x_2, x_3)`,
+which is the control basis.
+To align the sensor vector with the displacement vector,
+We seek a mapping
+
+.. math::
+
+   \vec{x} = \mathbf{A}\vec{y}\,,
+
+where :math:`\mathbf{A}` is the sensing matrix that transforms
+the sensing basis to the control basis.
+
+The sensing matrix :math:`\mathbf{A}` can be approached by
+a geometrical method followed by a decoupling method.
+The geometrical method uses the placement of the sensors to
+derive the relationship between the readouts and the displacements.
+This gives a geometric sensing matrix :math:`\mathbf{A}_\mathrm{geometric}`,
+which transforms the sensing matrix geometrically to the
+control basis.
+But, this is not enough.
+The decoupling method minimizes any observable residual couplings
+after applying the geometric sensing matrix.
+The decoupling method gives a decoupling sensing matrix
+:math:`mathbf{A}_\mathrm{decoupling}`, which can be combined
+with the geometric sensing matrix,
+
+.. math::
+
+   \mathbf{A} = \mathbf{A}_\mathrm{decoupling}\mathbf{A}_\mathrm{geometric}\,,
+
+to form a sensing matrix.
+
+To use the decoupling method, we need to measure the residual coupling
+and form a coupling matrix.
+Note that
+the residual coupling is only measurable if the particular degree of freedom
+is not part of the resonance mode containing another degree of freedom.
+
+In this example, we assume a 
 
 
 
