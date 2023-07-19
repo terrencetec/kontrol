@@ -45,17 +45,20 @@ Currently, Kontrol contains:
   for time-series forecasting and modeling. For future model predictive
   control work.
 
-While Kontrol was initially created for optimizing KAGRA control systems,
-the package is also suitable for other gravitational-wave detectors,
-including LIGO, Virgo, and future detectors, such as the Einstein Telescope
-due to their similarities.
-
 To familiarize users with the package, 
 step-by-step
 `tutorials <https://kontrol.readthedocs.io/en/latest/tutorial.html>`_
 are provided. Upon finishing the tutorials, the users should
 be able to convert the scripts into usable ones interfacing real data that
 can be used for the physical systems.
+
+While Kontrol was created for setting up active isolation systems for
+systems in gravitational-wave detectors, it is not exclusive for
+usage in gravitaional-wave detectors or suspensions.
+The setup of an active isolation system is similar to many control systems.
+Kontrol is coded with no presumption of the system in question.
+So users outside the gravitational-wave and active isolation community
+may also find this tutorial/package useful.
 
 - **Documentation:** https://kontrol.readthedocs.io/
 - **Repository:** https://github.com/terrencetec/kontrol.git
