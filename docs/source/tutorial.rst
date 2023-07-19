@@ -104,7 +104,7 @@ factor.
 .. toctree::
    :maxdepth: 1
 
-   tutorials/sensors_and_actuators/calibration_of_a_linear_sensor
+   tutorials/complementary_filter_synthesis_using_h-infinity_methods
 
 The calibration factor turned out to be 0.1195 microns per ADC count.
 
