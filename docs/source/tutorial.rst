@@ -93,8 +93,8 @@ and
    output = [-32765., -32760, -32741, -32680, -32504, -32060, -31068, -29109, -25691, -20421, -13241, -4596, 4598, 13243, 20423, 25693, 29111, 31070, 32062, 32506, 32682]
 
 The goal is to obtain a value that converts the output to displacement.
-And we can use
-``kontrol.sensact.calibrate()`` to obtain the calibration
+Click the link below to see how we can use the
+``kontrol.sensact.calibrate()`` function to obtain the calibration
 factor.
 
 .. toctree::
@@ -113,12 +113,38 @@ it has a frequency response.
 The transfer function (from velocity to output) of a geophone is given by
 
 .. math::
-   H(s) = G\frac{\omega_n^2s^2}{s^2+\frac{\omega_n}{Q}s+\omega_n^2}\,,
+   H(s) = G\frac{s^2}{s^2+\frac{\omega_n}{Q}s+\omega_n^2}\,,
 
-where :math:`G`, :math:`\omega_n`, :math:`Q`, are the values we need to
-obtain.
+where :math:`G`, :math:`\omega_n`, :math:`Q`, are the calibration
+values we need to obtain.
 
-We happened to have a 
+We happened to have a spare calibrated seismometer so we can measure the
+ground velocity.
+We placed the geophone next to the seismometer and took a measurement
+simultaneously.
+The ratio between the geophone output and the seismometer output
+happens to be the frequency response of :math:`H(s)`, which we can use
+to obtain the calibration values.
+
+The goal is to fit the frequency response with the transfer function model
+:math:`H(s)` and click the link below to see how we can use
+``kontrol.curvefit.TransferfunctionFit`` class to obtain the fit.
+
+.. toctree::
+   :maxdepth: 1
+
+   tutorials/sensors_and_actuators/calibration_of_an_inertial_sensor.
+
+And we obtained a Foton string of the calibration filter
+using the ``kontrol.TransferFunction`` class:
+
+.. code:: Python
+
+   zpk([0.705852+i*0.707336;0.705852+i*-0.707336],[-0;-0],0.667203,"n")
+
+With this filter, we can start measure velocity with the geophone.
+If we want displacement instead, we can simply add an integrator.
+
 
 Sensing matrices
 ****************
