@@ -100,14 +100,25 @@ factor.
 .. toctree::
    :maxdepth: 1
 
-   tutorials/calibration_of_a_linear_sensor
+   tutorials/sensors_and_actuators/calibration_of_a_linear_sensor
 
 The calibration factor turned out to be 0.1195 microns per ADC count.
 
 
 Calibration of an inertial sensor
 *********************************
-Pending
+We were told to calibrate an inertial sensor: the geophone.
+The inertial sensor is different from a relative sensor because
+it has a frequency response.
+The transfer function (from velocity to output) of a geophone is given by
+
+.. math::
+   H(s) = G\frac{\omega_n^2s^2}{s^2+\frac{\omega_n}{Q}s+\omega_n^2}\,,
+
+where :math:`G`, :math:`\omega_n`, :math:`Q`, are the values we need to
+obtain.
+
+We happened to have a 
 
 Sensing matrices
 ****************
