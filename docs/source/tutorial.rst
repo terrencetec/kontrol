@@ -133,7 +133,7 @@ The goal is to fit the frequency response with the transfer function model
 .. toctree::
    :maxdepth: 1
 
-   tutorials/sensors_and_actuators/calibration_of_an_inertial_sensor.
+   tutorials/sensors_and_actuators/calibration_of_an_inertial_sensor
 
 And we obtained a Foton string of the calibration filter
 using the ``kontrol.TransferFunction`` class:
