@@ -75,17 +75,12 @@ Sensors and actuators
 ^^^^^^^^^^^^^^^^^^^^^
 Linear sensor calibration
 *************************
-TOO Tedious:
-
-A relative sensor outputs a voltage corresponding to the measured displacement
-The voltage is converted into an integer number ranging from
-, say -32768 to 32768, via a 16-bit analog-to-digital converter.
-The sensor is linear about the operating range and we need
-to obtain a calibration factor which converts the number into displacement.
-
-Suppose we have a caliper so we can measure the displacement, we record
-both the displacement and the sensor output as we scan the full range of the
-sensor. We eventually obtained
+We were told to calibrate a relative displacement sensor for the
+suspension.
+We took a caliper and measured the actual displacement while recording
+the sensor output.
+We scanned the displacement from -10 to 10 mm with 1 mm interval and
+data below is what we got.
 
 .. code:: Python
 
@@ -97,7 +92,8 @@ and
 
    output = [-32765., -32760, -32741, -32680, -32504, -32060, -31068, -29109, -25691, -20421, -13241, -4596, 4598, 13243, 20423, 25693, 29111, 31070, 32062, 32506, 32682]
 
-The following notebook shows how we can use
+The goal is to obtain a value that converts the output to displacement.
+And we can use
 ``kontrol.sensact.calibrate()`` to obtain the calibration
 factor.
 
