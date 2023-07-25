@@ -73,6 +73,18 @@ for these three degress of freedom.
 
 Sensors and actuators
 ^^^^^^^^^^^^^^^^^^^^^
+The first step is to set up the sensors and actuators for the
+active isolation system.
+Without sensors and actuators, there's no control.
+The goal here is to set up the sensors and actuators such that
+we can use them to obtain a measurement of the frequency response of the
+system that we want to control.
+To achieve this, we need to
+
+1. Calibrate the sensors so they meausre physical units.
+2. Align the sensors (and actuators, using control matrices)
+   so we get a readout in the control basis.
+
 Linear sensor calibration
 *************************
 We were told to calibrate a relative displacement sensor for the
@@ -105,8 +117,8 @@ factor.
 The calibration factor turned out to be 0.1195 microns per ADC count.
 
 
-Calibration of an inertial sensor
-*********************************
+Inertial sensor calibration
+***************************
 We were told to calibrate an inertial sensor: the geophone.
 The inertial sensor is different from a relative sensor because
 it has a frequency response.
@@ -148,48 +160,71 @@ If we want displacement instead, we can simply add an integrator.
 
 Sensing matrices
 ****************
-The sensor vector :math:`\vec{y}=(y_1, y_2, y_3)` does not necessarily
-align with the displacement vector :math:`\vec{x}=(x_1, x_2, x_3)`,
-which is the control basis.
-To align the sensor vector with the displacement vector,
-We seek a mapping
+With all the sensors calibrated, we can now read the motion of the
+suspension.
+However, the sensors are usually not placed in a way they aligned
+perfectly with the basis that we are interested in.
+As in, we get 3 readouts, :math:`\vec{y}=(y_1, y_2, y_3)`,
+but we want to control in some basis :math:`\vec{x}={x_1, x_2, x_3}`,
+which is typically the Cartesian/Euler angle basis.
+
+With some geometry and linear algebra, we were able to obtain
+a (geometric) sensing matrix
 
 .. math::
 
-   \vec{x} = \mathbf{A}\vec{y}\,,
+   \mathbf{A} =
+   \begin{pmatrix}
+   -0.33333333 & -0.33333333 &  0.66666667\\
+   0.57735027 & -0.57735027 & 0.\\
+   0.33333333 &  0.33333333 &  0.33333333
+   \end{pmatrix}\,,
 
-where :math:`\mathbf{A}` is the sensing matrix that transforms
-the sensing basis to the control basis.
+such that :math:`\vec{x} \approx \mathbf{A}\vec{y}`.
+With high hopes we installed this matrix into the digital system,
+hoping to measure the crisp distinguishable 0.06, 0.1, 0.2 Hz resonances
+in the :math:`\vec{x}={x_1, x_2, x_3}` degrees of freedom measurement.
+However, you inspect the readouts and discovered cross-coupling between
+the three degrees of freedom, i.e. sensing matrix is not perfect.
 
-The sensing matrix :math:`\mathbf{A}` can be approached by
-a geometrical method followed by a decoupling method.
-The geometrical method uses the placement of the sensors to
-derive the relationship between the readouts and the displacements.
-This gives a geometric sensing matrix :math:`\mathbf{A}_\mathrm{geometric}`,
-which transforms the sensing matrix geometrically to the
-control basis.
-But, this is not enough.
-The decoupling method minimizes any observable residual couplings
-after applying the geometric sensing matrix.
-The decoupling method gives a decoupling sensing matrix
-:math:`mathbf{A}_\mathrm{decoupling}`, which can be combined
-with the geometric sensing matrix,
+The goal is to fine tune the sensing matrix to
+reduce the observable cross-couplings so the sensors are
+aligned with the control basis.
+Click the link below to see how we can use ``kontrol.sensact.SensingMatrix``
+to obtain a new sensing matrix that aligns the sensors.
+
+.. toctree::
+   :maxdepth: 1
+
+   tutorials/sensors_and_actuators/sensing_matrix_diagonalization
+
+By identifying the cross-couplings between sensor channels,
+we were able to obtain a new sensing matrix,
 
 .. math::
 
-   \mathbf{A} = \mathbf{A}_\mathrm{decoupling}\mathbf{A}_\mathrm{geometric}\,,
+   \mathbf(A)_\mathrm{new} =
+   \begin{pmatrix}
+   -0.34648554 & -0.30189757 &  0.67664218\\
+   0.56999299 & -0.58521291 & -0.00830399\\
+   0.31314695 &  0.33465657 &  0.35344143
+   \end{pmatrix}\,,
 
-to form a sensing matrix.
+that aligns the sensors to the control basis.
 
-To use the decoupling method, we need to measure the residual coupling
-and form a coupling matrix.
-Note that
-the residual coupling is only measurable if the particular degree of freedom
-is not part of the resonance mode containing another degree of freedom.
-
-In this example, we assume a 
+To obtain or install the matrix to the digital system,
+we can define a ``kontrol.ezca.Ezca`` instance and
+use the ``get_matrix()`` or ``put_matrix()`` methods.
 
 
+**Caveats:**
+
+- Sensor cross-coupling is only true when the phase is close to
+  0 or 180 degrees.
+
+
+Actuation matrices
+******************
 
 
 
