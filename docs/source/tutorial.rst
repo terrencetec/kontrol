@@ -22,6 +22,12 @@ Kontrol has more than what's covered in the tutorials.
 Be sure to check out the :ref:`Main Utilities` and :ref:`Kontrol API`
 sections for detailed documentation.
 
+.. toctree::
+   :maxdepth: 4
+
+   Basic Suspension Commissioning
+   Advanced Control Methods
+
 Basic Suspension Commissioning
 ------------------------------
 We were asking to set up the active control system for a stage,
@@ -357,97 +363,35 @@ response of the system.
 We also modeled the frequency response of the system and contructed
 2 types of controllers for it.
 
-But, we're not satisfied. In :ref:`Advanced Control Method` section,
-we will continue on advanced techniques to further improve the
+But, we're not satisfied. In the :ref:`Advanced Control Method` section,
+we will continue working on  advanced techniques to further improve the
 active control performance.
 
 
 Advanced Control Method
 -----------------------
 
-..
+Sensor fusion
+^^^^^^^^^^^^^
+There're two types of sensors that are used to measure the motion
+of the inverted pendulum, relative sensor and inertial sensor.
+The two sensors have different noise characteristics, one has better noise
+performance at some frequencies and the other one is better at other
+frequencies.
+We were asked to design a set of complementary filters which can be
+use to combine the two sensors so we can "select" which sensor to use
+at different frequencies.
 
-   Complementary Filter
-   --------------------
+Estimating inertial sensor noise using correlation methods
+**********************************************************
 
-   .. toctree::
-      :maxdepth: 1
+Sensor noise modeling
+*********************
 
-      tutorials/complementary_filter_synthesis_using_h-infinity_methods
-      tutorials/complementary_filter_synthesis_for_typical_lvdt_and_geophone
+Complementary filter synthesis using H-infinity methods
+*******************************************************
 
-   ..
-      Noise Spectrum Modeling
-      -----------------------
 
-      .. toctree::
-         :maxdepth: 1
+General Utilities
+-----------------
 
-         tutorials/frequency_series_fitting_with_empirical_model
-         tutorials/frequency_series_fitting_with_transfer_function
-         tutorials/frequency_series_fitting_with_transfer_function_part2
-         tutorials/noise_spectrum_modeling_with_optimization
-
-   Spectral Analysis
-   -----------------
-
-   .. toctree::
-      :maxdepth: 1
-
-      tutorials/noise_estimation_using_correlation_methods
-      tutorials/spectral_time_series_simulation
-
-   Sensing Matrices
-   ----------------
-
-   .. toctree::
-      :maxdepth: 1
-
-      tutorials/sensing_matrix_diagonalization
-      tutorials/optical_lever_sensing_matrices
-
-   Foton Utilities
-   ---------------
-
-   .. toctree::
-      :maxdepth: 1
-
-      tutorials/tf2foton
-
-   Ezca Utilities
-   --------------
-
-   .. toctree::
-      :maxdepth: 1
-
-      tutorials/ezca_get_put_matrices
-
-   Curve Fitting
-   -------------
-
-   .. toctree::
-      :maxdepth: 1
-
-      tutorials/curve_fitting
-      tutorials/curve_fitting_transfer_function
-      tutorials/curve_fitting_simple_zpk
-      tutorials/curve_fitting_complex_zpk
-      tutorials/curve_fitting_lvdt_and_geophone_noise
-
-   Control Regulator Design
-   ------------------------
-
-   .. toctree::
-      :maxdepth: 1
-
-      tutorials/regulator_feedback_critical_damping
-      tutorials/regulator_algorithmic_oscillator_control
-      tutorials/regulator_post_filtering
-
-   Dynamic Mode Decomposition
-   --------------------------
-
-   .. toctree::
-      :maxdepth: 1
-
-      tutorials/dmd_time_series_prediction
