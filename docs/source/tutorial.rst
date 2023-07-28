@@ -22,54 +22,16 @@ Kontrol has more than what's covered in the tutorials.
 Be sure to check out the :ref:`Main Utilities` and :ref:`Kontrol API`
 sections for detailed documentation.
 
-Basic suspension commissioning
+Basic Suspension Commissioning
 ------------------------------
-In this section, we demonstrate the use of the Kontrol package
-to obtain necessary components for setting up a stage of a multistage
-pendulum suspension. The stage here simulates an inverted pendulum stage
-of the KAGRA Type-A and Type-B suspension.
+We were asking to set up the active control system for a stage,
+particularly, the inverted pendulum stage, of the suspension in KAGRA.
+Ultimately, the goal is to obtain a controller that can be used
+for active damping and positon control.
+We'll go through the necessary steps to achieve so using the
+``Kontrol`` package.
+Information about the suspension will be given along the way as necessary.
 
-The inverted pendulum is
-constrained on a horizontal plane so there're 2 translational degrees of
-freedom and 1 rotational degree of freedom.
-Without loss of generality, the three degrees of freedom are named
-:math:`x_1`, :math:`x_2`, and :math:`x_3`.
-
-To measure the motion of the inverted pendulum, 3 relative sensors
-and 3 inertial sensors are available. The relative sensors measure
-the relative displacement between the inverted pendulum while the inertial
-sensors measure an inertial motion which can be used to achieve active
-isolation.
-To achieve basic damping and position control, the inertial sensors are
-not required.
-For simplicity, let's assume we have access to three sensor readout
-:math:`y_1`, :math:`y_2`, and :math:`y_3`.
-
-The inverted pendulum has three distinct resonances at 0.06, 0.1, and 0.2 Hz
-in :math:`x_1`, :math:`x_2`, and :math:`x_3`, respectively.
-The horizontal degrees of freedom also each coupled to two other modes,
-at 0.5 and 0.8 Hz,
-corresponding to the resonances of the multiple pendulum chain.
-The transfer function from actuation to displacement in the :math:`x_1`
-direction reads
-
-.. math::
-
-   P_h(s) = k_1\frac{\omega_1^2}{s^2+\frac{\omega_1}{Q_1}s+\omega_1^2}
-          + k_2\frac{\omega_2^2}{s^2+\frac{\omega_2}{Q_2}s+\omega_2^2}
-          + k_3\frac{\omega_3^2}{s^2+\frac{\omega_3}{Q_3}s+\omega_3^2}\,.
-
-and that in the rotational direction :math:`x_3` reads
-
-.. math::
-
-   P_r(s) = k_4\frac{\omega_4^2}{s^2+\frac{\omega_4}{Q_4}s+\omega_4^2}\,.
- 
-The transfer function for :math:`x_2` has the same form as that of :math:`x_1`
-but with different frequencies and Q values.
-
-The objective here is to achieve a resonable damping and position control
-for these three degress of freedom.
 
 Sensors and actuators
 ^^^^^^^^^^^^^^^^^^^^^
@@ -254,7 +216,7 @@ the system that we'd like to control.
 The goal is to obtain a model of the system so we can eventually design
 a controller for it.
 
-Transfer Function modeling
+Transfer function modeling
 **************************
 Using the actuation in the :math:`x_1` direction, we excite
 the system across all frequencies (using a white noise or sweep sine signal).
@@ -285,99 +247,207 @@ Click the links below to see how the frequency response can be fitted.
    ./tutorials/system_modeling/transfer_function_modeling_without_guess
    ./tutorials/system_modeling/transfer_function_modeling_with_guess
 
-Without guess easier to use
-with guess hard to use but can be more accurate.
+Using kontrol, we obtained a transfer function of the system:
+
+.. math::
+
+   \frac{0.635s^4+0.1785s^3+14.91s^2+1.626s+56.65}{s^6+0.5719s^5+49.55s^4+11.48s^3+396.7s^2+17.01s+55.2}\,
+
+and we've used ``kontrol.TransferFunction.save()`` method to export the
+transfer function object for future purposes.
+
+Hint:
+
+- Without the initial guess, the parameter space must be bounded.
+  There's no guarantee that the solution coverged to a global optimum.
+  We've to use a differnt random number seed and many trials to obtain
+  satisfactory results.
+- With the initial guess, the fit refines the initial parameters without
+  iterations. However, it could require experience to obtain an initial guess.
 
 
+Controller design
+^^^^^^^^^^^^^^^^^
+With the transfer function of the system identified,
+we can start designing a controller for damping and position control
+purposes.
+In this section, we will use the plant identified in
+:ref:`Transfer function modeling` and create controllers around it.
+
+Damping control
+***************
+We were asked to design a damping controller for the suspension.
+The resonances of the system are annoying since they amplify ground motion.
+And, when responding to an impulse input, the oscilaltion takes a long time
+to be naturally damped.
+
+The goal is to design a damping controller to suppress the suspension motion
+quickly after being hit by an impulse.
+We also need an additional 4th-order low-pass filter to reduce the noise
+being injected at high frequency and maybe notch filters maintain stability.
+Click the link below to see how we can use the ``kontrol.regulator``
+module to design the appropriate controllers.
+
+.. toctree::
+   :maxdepth: 1
+
+   ../tutorials/controller_design/damping_control
+
+We've used ``kontrol.load_transfer_function()`` to import the transfer
+function we've saved before.
+Using ``kontrol.regulator.oscillator.pid()`` and
+``kontrol.regulator.post_filter.post_low_pass()`` functions, we obtained
+a damping controller
+
+.. math::
+   K(s) = \frac{1.018\times 10^7s}{s^4+149.8s^3+2.102\times 10^5s + 1.968\times 10^6}\,,
+
+which critically damps the system.
+
+The controller seems to be able to damp the system reasonable well and
+we decided to export the Foton string by converting the controller
+into a ``kontrol.TransferFunction`` object and use
+``kontrol.TransferFunction.foton()`` method to export the Foton string.
+
+.. code:: Python
+
+   zpk([-0],[5.960099+i*0.001106;5.960099+i*-0.001106;5.962312+i*0.001107;5.962312+i*-0.001107],32.5136,"n")
 
 
+Position control
+****************
+While the suspension is being actively damped, this is not enough.
+For some degrees of freedom, we want be able to control the system to
+follow a setpoint.
+After all, the suspension hangs the mirror and provides coarse alignment
+control.
+We were ask to design another controller that provides both position
+and damping control.
+In addition, we received complaints from others saying that the damping
+control inject too much noise at high frequencies.
+We were also told that we don't need to damp the higher-frequency modes
+so the cut-off frequency of the low-pass can be lowered so we can reduce
+injected noise.
+Click the link below to see how can use the ``kontrol.regulator`` module
+to achieve all the above.
+
+.. toctree::
+   :maxdepth: 1
+   
+   ../tutorials/controller_design/position_control
+
+And we eventually obtained a controller.
+The open-loop transfer function has a unit gain frequency of 0.128 Hz and
+phase margin of 45 degrees.
+The gain at 10 Hz is 2 orders of magnitude than the one we obtained in
+:ref:`Damping control`.
+It follows that the noise injected is also that much lower.
+From simulation, the system is able to trace a unit step input without
+excess oscillation.
+We're happy with the results and exported the final controller.
+
+.. code:: Python
+
+   zpk([0.012454+i*0.024317;0.012454+i*-0.024317;0.012652+i*0.499616;0.012652+i*-0.499616;0.025355+i*0.999705;0.025355+i*-0.999705],[-0;0.249888+i*0.432819;0.249888+i*-0.432819;0.500013+i*0.866048;0.500013+i*-0.866048;1.887186+i*0.000255;1.887186+i*-0.000255;1.887697+i*0.000256;1.887697+i*-0.000256],0.024269,"n")
+
+
+And, this concludes the basic suspension commissioning section:
+We're able to setup the sensors and actuators to measure the frequency
+response of the system.
+We also modeled the frequency response of the system and contructed
+2 types of controllers for it.
+
+But, we're not satisfied. In :ref:`Advanced Control Method` section,
+we will continue on advanced techniques to further improve the
+active control performance.
 
 
 Advanced Control Method
 -----------------------
 
-
-Complementary Filter
---------------------
-
-.. toctree::
-   :maxdepth: 1
-
-   tutorials/complementary_filter_synthesis_using_h-infinity_methods
-   tutorials/complementary_filter_synthesis_for_typical_lvdt_and_geophone
-
 ..
-   Noise Spectrum Modeling
-   -----------------------
+
+   Complementary Filter
+   --------------------
 
    .. toctree::
       :maxdepth: 1
 
-      tutorials/frequency_series_fitting_with_empirical_model
-      tutorials/frequency_series_fitting_with_transfer_function
-      tutorials/frequency_series_fitting_with_transfer_function_part2
-      tutorials/noise_spectrum_modeling_with_optimization
+      tutorials/complementary_filter_synthesis_using_h-infinity_methods
+      tutorials/complementary_filter_synthesis_for_typical_lvdt_and_geophone
 
-Spectral Analysis
------------------
+   ..
+      Noise Spectrum Modeling
+      -----------------------
 
-.. toctree::
-   :maxdepth: 1
+      .. toctree::
+         :maxdepth: 1
 
-   tutorials/noise_estimation_using_correlation_methods
-   tutorials/spectral_time_series_simulation
+         tutorials/frequency_series_fitting_with_empirical_model
+         tutorials/frequency_series_fitting_with_transfer_function
+         tutorials/frequency_series_fitting_with_transfer_function_part2
+         tutorials/noise_spectrum_modeling_with_optimization
 
-Sensing Matrices
-----------------
+   Spectral Analysis
+   -----------------
 
-.. toctree::
-   :maxdepth: 1
+   .. toctree::
+      :maxdepth: 1
 
-   tutorials/sensing_matrix_diagonalization
-   tutorials/optical_lever_sensing_matrices
+      tutorials/noise_estimation_using_correlation_methods
+      tutorials/spectral_time_series_simulation
 
-Foton Utilities
----------------
+   Sensing Matrices
+   ----------------
 
-.. toctree::
-   :maxdepth: 1
+   .. toctree::
+      :maxdepth: 1
 
-   tutorials/tf2foton
+      tutorials/sensing_matrix_diagonalization
+      tutorials/optical_lever_sensing_matrices
 
-Ezca Utilities
---------------
+   Foton Utilities
+   ---------------
 
-.. toctree::
-   :maxdepth: 1
+   .. toctree::
+      :maxdepth: 1
 
-   tutorials/ezca_get_put_matrices
+      tutorials/tf2foton
 
-Curve Fitting
--------------
+   Ezca Utilities
+   --------------
 
-.. toctree::
-   :maxdepth: 1
+   .. toctree::
+      :maxdepth: 1
 
-   tutorials/curve_fitting
-   tutorials/curve_fitting_transfer_function
-   tutorials/curve_fitting_simple_zpk
-   tutorials/curve_fitting_complex_zpk
-   tutorials/curve_fitting_lvdt_and_geophone_noise
+      tutorials/ezca_get_put_matrices
 
-Control Regulator Design
-------------------------
+   Curve Fitting
+   -------------
 
-.. toctree::
-   :maxdepth: 1
+   .. toctree::
+      :maxdepth: 1
 
-   tutorials/regulator_feedback_critical_damping
-   tutorials/regulator_algorithmic_oscillator_control
-   tutorials/regulator_post_filtering
+      tutorials/curve_fitting
+      tutorials/curve_fitting_transfer_function
+      tutorials/curve_fitting_simple_zpk
+      tutorials/curve_fitting_complex_zpk
+      tutorials/curve_fitting_lvdt_and_geophone_noise
 
-Dynamic Mode Decomposition
---------------------------
+   Control Regulator Design
+   ------------------------
 
-.. toctree::
-   :maxdepth: 1
+   .. toctree::
+      :maxdepth: 1
 
-   tutorials/dmd_time_series_prediction
+      tutorials/regulator_feedback_critical_damping
+      tutorials/regulator_algorithmic_oscillator_control
+      tutorials/regulator_post_filtering
+
+   Dynamic Mode Decomposition
+   --------------------------
+
+   .. toctree::
+      :maxdepth: 1
+
+      tutorials/dmd_time_series_prediction
