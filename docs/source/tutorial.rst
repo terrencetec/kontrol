@@ -117,8 +117,6 @@ factor.
 The calibration factor turned out to be 0.1195 microns per ADC count.
 
 
-.. _inertial_sensor_calibration:
-
 Inertial sensor calibration
 ***************************
 We were told to calibrate an inertial sensor: the geophone.
@@ -275,7 +273,7 @@ This can be used as an initial guess for a local optimization.
 The goal is to obtain a transfer function, which has frequency response
 that matches the data that we obtained. We can use
 ``kontrol.curvefit.TransferFunctionFit`` class, like what we did in
-:ref:`Inertial Sensor Calibration <inertial_sensor_calibration>`_.
+:ref:`Inertial Sensor Calibration`.
 Here, instead of defining the model, we can use the predefined
 ``kontrol.curvefit.ComplexZPK`` class as the model.
 We can fit the frequency response 2 ways, with or without an initial guess.
