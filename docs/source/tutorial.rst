@@ -117,6 +117,8 @@ factor.
 The calibration factor turned out to be 0.1195 microns per ADC count.
 
 
+.. _inertial_sensor_calibration:
+
 Inertial sensor calibration
 ***************************
 We were told to calibrate an inertial sensor: the geophone.
@@ -165,7 +167,7 @@ suspension.
 However, the sensors are usually not placed in a way they aligned
 perfectly with the basis that we are interested in.
 As in, we get 3 readouts, :math:`\vec{y}=(y_1, y_2, y_3)`,
-but we want to control in some basis :math:`\vec{x}={x_1, x_2, x_3}`,
+but we want to control in some basis :math:`\vec{x}=(x_1, x_2, x_3)`,
 which is typically the Cartesian/Euler angle basis.
 
 With some geometry and linear algebra, we were able to obtain
@@ -183,7 +185,7 @@ a (geometric) sensing matrix
 such that :math:`\vec{x} \approx \mathbf{A}\vec{y}`.
 With high hopes we installed this matrix into the digital system,
 hoping to measure the crisp distinguishable 0.06, 0.1, 0.2 Hz resonances
-in the :math:`\vec{x}={x_1, x_2, x_3}` degrees of freedom measurement.
+in the :math:`\vec{x}=(x_1, x_2, x_3)` degrees of freedom measurement.
 However, you inspect the readouts and discovered cross-coupling between
 the three degrees of freedom, i.e. sensing matrix is not perfect.
 
@@ -203,7 +205,7 @@ we were able to obtain a new sensing matrix,
 
 .. math::
 
-   \mathbf(A)_\mathrm{new} =
+   \mathbf{A}_\mathrm{new} =
    \begin{pmatrix}
    -0.34648554 & -0.30189757 &  0.67664218\\
    0.56999299 & -0.58521291 & -0.00830399\\
@@ -225,6 +227,71 @@ use the ``get_matrix()`` or ``put_matrix()`` methods.
 
 Actuation matrices
 ******************
+Like sensing matrices, the initial actuation matrices are obtained from
+first principles using geometry.
+However, the diagonalization of an actuation matrix is not as simple.
+Ideally, we want the actuation in one degree of freedom to move the system
+in that degree of freedom only.
+However, most of the time, this won't happen with a diagonalization of
+a scalar actuation matrix.
+This is because the actuation cross-coupling is frequency dependent,
+meaning that it would require a transfer matrix
+(a matrix of transfer functions)
+to fully decouple all degrees of freedom.
+
+The proper way to approach this is to measure all non-diagonal
+frequency responses from actuation to output, put them into matrix
+form, invert it, and fit them using transfer functions.
+This can be extremely tedious and fortunately unneccessary.
+If all degrees of freedom are under the action of feedback control,
+then the actuation cross-coupling will be suppressed.
+If a diagonalization is required, refer to the transfer function modeling
+section below.
+
+
+System modeling
+^^^^^^^^^^^^^^^
+Now with the sensors and actuators set up, we can start characterizing
+the system that we'd like to control.
+The goal is to obtain a model of the system so we can eventually design
+a controller for it.
+
+Transfer Function modeling
+**************************
+Using the actuation in the :math:`x_1` direction, we excite
+the system across all frequencies (using a white noise or sweep sine signal).
+The suspension responded by moving in that direction at all frequencies.
+We measured the magnitude and phase relative to the actuation signal.
+This gives us the frequency response of the system,
+which is simply the transfer function evaluated along the imaginary axis.
+
+Modeling frequency with a transfer function can be challenging
+due to numerical instability and large dynamic range.
+Luckily, with a few assumptions, we can obtain a fit easily.
+Experienced user can even obtain a reasonable fit without the use of
+optimization.
+This can be used as an initial guess for a local optimization.
+
+The goal is to obtain a transfer function, which has frequency response
+that matches the data that we obtained. We can use
+``kontrol.curvefit.TransferFunctionFit`` class, like what we did in
+:ref:`Inertial Sensor Calibration <_inertial_sensor_calibration>`_.
+Here, instead of defining the model, we can use the predefined
+``kontrol.curvefit.ComplexZPK`` class as the model.
+We can fit the frequency response 2 ways, with or without an initial guess.
+Click the links below to see how the frequency response can be fitted.
+
+.. toctree::
+   :maxdepth: 1
+
+   ./tutorials/system_modeling/transfer_function_modeling_without_guess
+   ./tutorials/system_modeling/transfer_function_modeling_with_guess
+
+Without guess easier to use
+with guess hard to use but can be more accurate.
+
+
+
 
 
 
