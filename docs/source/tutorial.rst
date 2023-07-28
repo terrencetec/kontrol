@@ -22,11 +22,6 @@ Kontrol has more than what's covered in the tutorials.
 Be sure to check out the :ref:`Main Utilities` and :ref:`Kontrol API`
 sections for detailed documentation.
 
-.. toctree::
-   :maxdepth: 4
-
-   Basic Suspension Commissioning
-   Advanced Control Methods
 
 Basic Suspension Commissioning
 ------------------------------
