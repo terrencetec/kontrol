@@ -335,7 +335,7 @@ to achieve all the above.
 .. toctree::
    :maxdepth: 1
    
-   ../tutorials/controller_design/position_control
+   ./tutorials/controller_design/position_control
 
 And we eventually obtained a controller.
 The open-loop transfer function has a unit gain frequency of 0.128 Hz and
@@ -374,11 +374,31 @@ The two sensors have different noise characteristics, one has better noise
 performance at some frequencies and the other one is better at other
 frequencies.
 We were asked to design a set of complementary filters which can be
-use to combine the two sensors so we can "select" which sensor to use
+used to combine the two sensors so we can "select" which sensor to use
 at different frequencies.
 
 Estimating inertial sensor noise using correlation methods
 **********************************************************
+In order to design comeplementary filters for sensor fusion, we must
+know what are the sensor noises of the sensors that we are trying to combine.
+Sensor noise of an inertial sensor cannot be measured individually.
+However, if we have multiple sensors measuring a common signal,
+we can use the 3-channel correlation method to estimate all individual
+sensor noises of the 3 sensors.
+
+We placed 3 inertial sensors on the ground and aligned them so they
+measure the ground motion in the same direction.
+Click the link below to see how we can use the
+``kontrol.spectral.three_channel_correlation()`` function to
+estimate the sensor noises from the spectrums.
+
+.. toctree::
+   :maxdepth: 1
+
+   ./tutorials/sensor_fusion/three_channel_correlation_method
+
+And, we were able to generate an estimation of the inertial sensor noise
+spectrum.
 
 Sensor noise modeling
 *********************
