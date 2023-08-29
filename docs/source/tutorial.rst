@@ -22,13 +22,17 @@ Content
 
 #. :ref:`Basic Suspension Commissioning`
 
-   #. :ref:`Sensor and actuators`
+   #. :ref:`Sensors and actuators`
    
    #. :ref:`System modeling`
 
    #. :ref:`Controller design`
 
 #. :ref:`Advanced Control Methods`
+
+   #. :ref:`Sensor fusion`
+
+   #. :ref:`Sensor correction`
 
 Kontrol has more than what's covered in the tutorials.
 Be sure to check out the :ref:`Main Utilities` and :ref:`Kontrol API`

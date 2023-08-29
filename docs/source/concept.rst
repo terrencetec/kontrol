@@ -67,8 +67,8 @@ A typical complete control systems setup workflow would be the following:
    #. Again, use ``kontrol.TransferFunction`` to extract their Foton expressions for implementation.
 
 
-Advanced control methods
-------------------------
+More advanced control methods
+-----------------------------
 * ``kontrol.complementary_filter.ComplementaryFilter`` class provides an option use H-infinity synthesis to optimize complementary filters according to modeled sensor noises.
   
   * The same method can be used to optimize sensor correction filters and feedback controllers.
