@@ -18,6 +18,18 @@ This section is not compulsory for suspension commissioning.
 The content in this section is everchanging and being updated
 as new methods are being developed and coded into Kontrol.
 
+Content
+
+#. :ref:`Basic Suspension Commissioning`
+
+   #. :ref:`Sensor and actuators`
+   
+   #. :ref:`System modeling`
+
+   #. :ref:`Controller design`
+
+#. :ref:`Advanced Control Methods`
+
 Kontrol has more than what's covered in the tutorials.
 Be sure to check out the :ref:`Main Utilities` and :ref:`Kontrol API`
 sections for detailed documentation.
@@ -257,7 +269,7 @@ Using kontrol, we obtained a transfer function of the system:
 and we've used ``kontrol.TransferFunction.save()`` method to export the
 transfer function object for future purposes.
 
-Hint:
+Tips:
 
 - Without the initial guess, the parameter space must be bounded.
   There's no guarantee that the solution coverged to a global optimum.
@@ -358,13 +370,13 @@ response of the system.
 We also modeled the frequency response of the system and contructed
 2 types of controllers for it.
 
-But, we're not satisfied. In the :ref:`Advanced Control Method` section,
+But, we're not satisfied. In the :ref:`Advanced Control Methods` section,
 we will continue working on  advanced techniques to further improve the
 active control performance.
 
 
-Advanced Control Method
------------------------
+Advanced Control Methods
+-----------------------_
 
 Sensor fusion
 ^^^^^^^^^^^^^
@@ -377,11 +389,24 @@ We were asked to design a set of complementary filters which can be
 used to combine the two sensors so we can "select" which sensor to use
 at different frequencies.
 
+Kontrol provides an H-infinity approach to optimize complementary filters.
+To use this, we'll need 2 things.
+
+1. Spectrums of the sensor noises.
+2. Transfer functions that have magnitude responses matching the spectrums
+   of the noises.
+
+In this section, we'll demonstrate how we can use Kontrol to optimize
+complementary filters using the H-infinity method.
+The first two subsections show how we can obtain the necessary materials
+mentioned above and the last subsection shows how we can obtain
+the optimal complementary filters given those materials.
+
+
 Estimating inertial sensor noise using correlation methods
 **********************************************************
-In order to design comeplementary filters for sensor fusion, we must
-know what are the sensor noises of the sensors that we are trying to combine.
-Sensor noise of an inertial sensor cannot be measured individually.
+Sensor noise of an inertial sensor cannot be measured individually
+because there's always some signal that is present in the readout.
 However, if we have multiple sensors measuring a common signal,
 we can use the 3-channel correlation method to estimate all individual
 sensor noises of the 3 sensors.
@@ -399,13 +424,92 @@ estimate the sensor noises from the spectrums.
 
 And, we were able to generate an estimation of the inertial sensor noise
 spectrum.
+And we've exported the noise spectrums for future usages.
+
 
 Sensor noise modeling
 *********************
+Now that the sensor noises are identified, we can construct transfer function
+models for them.
+The ``kontrol.curvefit.TransferFunctionFit`` class that we used earlier
+for modeling frequency response data can be used for this purpose.
+But, there's a wrapper function that is
+better fitted for our purpose as it's not nearly as tedious.
+See the notebook below to see how we can use
+the ``kontrol.curvefit.spectrum_fit()`` function to model spectrums as the
+magnitude responses of transfer functions.
+
+.. toctree::
+   :maxdepth: 1
+   ./tutorials/sensor_fusion/sensor_noise_modeling
+
+In the tutorial, we have fitted empirical models to the noise data
+as an optional intermediate step.
+With the empirical models obtained, we can rescale the frequency axis to
+logspace with fewer data, which helped speeding up the final modeling.
+It also allows us to flatten the spectrums at both ends, which is necessary
+for the H-infinity method.
+In the end, we've obtained 2 ``kontrol.TransferFunction`` objects
+which have magnitude responses matching the relative and inertial sensor noise
+spectrums.
+We've also exported those transfer function models for future usages.
+
+Tips:
+
+- ``kontrol.curvefit.spectrum_fit()`` requires user to specify the number
+  of zeros and poles, or the order of the transfer function.
+  To obtain a reasonable number, a general rule of thumb is to run it
+  multiple times with increasing order until there's pole-zero cancellation
+  or when excess poles and zeros leak out of the frequency band of interest.
+
 
 Complementary filter synthesis using H-infinity methods
 *******************************************************
+With the transfer function models of the noise spectrums obtained,
+we can finally create complementary filters using the
+``kontrol.ComplementaryFilter`` class.
+The transfer function models we obtained are specified as
+``kontrol.ComplementaryFilter.noise1`` and
+``kontrol.ComplementaryFilter.noise2`` attributes.
+And, to make the optimization meaningful, we need to specify
+the inverse of the target attenuation of the noises as
+``kontrol.ComplementaryFilter.weight1`` and
+``kontrol.ComplementaryFilter.weight2`` attributes.
+Conveniently, we don't need to do extra work because the noise models
+themselves can be used.
+Click the link below to see what it means exactly.
 
+.. toctree::
+   :maxdepth: 1
+   ./tutorials/sensor_fusion/complementary_filter_synthesis
+
+And, we've obtained 2 complementary filters which solve the sensor fusion
+problem in such a way the super sensor noise are minimum at
+all frequencies with respect to the lower boundary.
+We've also exported the Foton string using the
+``kontrol.TransferFunction.foton()`` method so we can implement the filters
+into the digital control system.
+We've also encountered some practical issues that might occur and
+they are listed below as tips.
+
+Tips
+
+- Complementary filters generated by the
+  ``kontrol.ComplementaryFilter.hinfsynthesis()`` method may contain
+  meaningless coefficients. It's important to get rid of them as they
+  will show as astronomically high-frequecy zeros/poles,
+  that cannot be implemented in a digital system.
+- Because of the way H-infinty method (or rather, most methods) works,
+  the noise models we specified have flat ends. This means the filters
+  do no have the necessary features to properly roll-off the noises beyond
+  the frequency band of interest. We can add prefilters to fix the problem
+  but this may require some tweaking.
+
+
+
+
+Sensor correction
+^^^^^^^^^^^^^^^^^
 
 General Utilities
 -----------------
