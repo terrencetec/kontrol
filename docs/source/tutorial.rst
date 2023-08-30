@@ -1,7 +1,9 @@
 Tutorials
 =========
-This tutorial is divided into two parts, basic suspension
-commissioning and advanced control methods.
+This tutorial is mainly divided into two parts,
+:ref:`Basic Suspension Commissioning` and :ref:`Advanced Control Methods`.
+There's an extra section called :ref:`General Utilites` and there you will
+find miscellaneous tools that are generally useful.
 
 In the first part, the commissioning of the active control system for
 a stage of a virtual suspension with 3 degrees of freedom is demonstrated.
@@ -11,28 +13,76 @@ By the end of the first part, users should be able
 to commission suspensions to achieve basic damping and position control
 with appropriate filtering.
 
-The second part of the tutorial, advanced control methods, covers
+The second part of the tutorial covers
 specialized frontier control topics for seismic isolation that
 are not considered standard.
 This section is not compulsory for suspension commissioning.
 The content in this section is everchanging and being updated
 as new methods are being developed and coded into Kontrol.
 
+Each subsection solves a small problem and contributes to a small step
+towards solving the bigger problem, e.g. suspension commissioning and
+control optimization.
+You will find a general description giving context for
+the small problem in each subsection.
+And you will find a link to the Jupyter notebook containing
+the solution for the problem.
+
+The Jupyter notebooks are structured similarly as follows.
+The first blocks are used to prepare and visualize the mock measurements
+that we will be processing.
+In reality, this is not required as data will be collected by other means.
+With the measurement data obtained, we will proceed to demonstrate
+the use of the ``Kontrol`` package to solve the problem according to the data.
+At last, we will export the results in some way for further usages, e.g.
+for further processes or implementation.
+This way, the notebooks can be thought as a process in a data pipeline.
+
+The content in this tutorial is inspired from the actual commissioning
+of a KAGRA suspension.
+As in, these are all the necessary steps that we need to go through
+when setting up the active isolation systems.
+Therefore, the notebooks can be easily modified for actual usage
+simply by replacing the data.
+
+
 Content
 
 #. :ref:`Basic Suspension Commissioning`
 
    #. :ref:`Sensors and actuators`
+
+      #. :ref:`Linear sensor calibration`
+
+      #. :ref:`Inertial sensor calibration`
+
+      #. :ref:`Sensing matrices`
+
+      #. :ref:`Actuation matrices`
    
    #. :ref:`System modeling`
 
+      #. :ref:`Transfer function modeling`
+
    #. :ref:`Controller design`
+
+      #. :ref:`Damping control`
+
+      #. :ref:`Position control`
 
 #. :ref:`Advanced Control Methods`
 
-   #. :ref:`Sensor fusion`
+   #. :ref:`H-infinity sensor fusion`
 
-   #. :ref:`Sensor correction`
+      #. :ref:`Estimating inertial sensor noise`
+
+      #. :ref:`Sensor noise modeling`
+
+      #. :ref:`Complementary filter synthesis`
+
+   #. :ref:`H-infinity sensor correction`
+
+#. :ref:`General Utilities`
 
 Kontrol has more than what's covered in the tutorials.
 Be sure to check out the :ref:`Main Utilities` and :ref:`Kontrol API`
@@ -48,6 +98,16 @@ for active damping and positon control.
 We'll go through the necessary steps to achieve so using the
 ``Kontrol`` package.
 Information about the suspension will be given along the way as necessary.
+
+This section closely follows Chapter 6 in Ref. [1]_.
+Check the reference out if you wish to understand what the
+functions/methods are actually doing in the background.
+
+
+.. [1]
+   Terrence Tak Lun Tsang. Optimizing Active Vibration Isolation Systems in
+   Ground-Based Interferometric Gravitational-Wave Detectors.
+   https://gwdoc.icrr.u-tokyo.ac.jp/cgi-bin/DocDB/ShowDocument?docid=14296
 
 
 Sensors and actuators
@@ -380,20 +440,52 @@ active control performance.
 
 
 Advanced Control Methods
------------------------_
+------------------------
 
-Sensor fusion
-^^^^^^^^^^^^^
+**H-infinity method**
+
+We were asked to improve the seismic isolation performance.
+The system that we set up using the methods above don't help mitigating seismic
+noise since we were only using relative sensors.
+We cannot achieve active seismic isolation without utilizing inertial sensors.
+
+There are several things that we can do to achieve active isolation and
+in some sense optimize it.
+Chapter 7 and 8 in Ref. [1]_ describe several concepts in seismic isolation:
+sensor fusion, sensor correction, and feedback control,
+and propose an H-infinity method to optimize these subsystems in a
+seismic isolation system.
+
+We will firstly use the H-infinity method to solve a sensor fusion problem.
+However, we must note that the problem presented here is not realistic
+since we will be ignoring the seismic noise coupling in relative sensors
+for the sake of simplicity.
+In reality, we should use a sensor correction scheme to reduce that
+coupling before solving the sensor fusion problem.
+But, because all filter design problems presented can be generalized
+to a sensor fusion problem, it is perhaps beneficial to show how a
+sensor fusion problem is solved before going into other problems.
+And, this is why we begin by solving a senor fusion problem.
+
+
+.. [1]
+   Terrence Tak Lun Tsang. Optimizing Active Vibration Isolation Systems in
+   Ground-Based Interferometric Gravitational-Wave Detectors.
+   https://gwdoc.icrr.u-tokyo.ac.jp/cgi-bin/DocDB/ShowDocument?docid=14296
+
+
+H-infinity sensor fusion
+^^^^^^^^^^^^^^^^^^^^^^^^
 There're two types of sensors that are used to measure the motion
 of the inverted pendulum, relative sensor and inertial sensor.
 The two sensors have different noise characteristics, one has better noise
 performance at some frequencies and the other one is better at other
 frequencies.
 We were asked to design a set of complementary filters which can be
-used to combine the two sensors so we can "select" which sensor to use
-at different frequencies.
+used to combine the two sensors into a "super sensor" that has the
+advantages of both sensors.
 
-Kontrol provides an H-infinity approach to optimize complementary filters.
+``Kontrol`` provides an H-infinity approach to optimize complementary filters.
 To use this, we'll need 2 things.
 
 1. Spectrums of the sensor noises.
@@ -407,8 +499,8 @@ mentioned above and the last subsection shows how we can obtain
 the optimal complementary filters given those materials.
 
 
-Estimating inertial sensor noise using correlation methods
-**********************************************************
+Estimating inertial sensor noise
+********************************
 Sensor noise of an inertial sensor cannot be measured individually
 because there's always some signal that is present in the readout.
 However, if we have multiple sensors measuring a common signal,
@@ -445,6 +537,7 @@ magnitude responses of transfer functions.
 
 .. toctree::
    :maxdepth: 1
+
    ./tutorials/sensor_fusion/sensor_noise_modeling
 
 In the tutorial, we have fitted empirical models to the noise data
@@ -467,8 +560,8 @@ Tips:
   or when excess poles and zeros leak out of the frequency band of interest.
 
 
-Complementary filter synthesis using H-infinity methods
-*******************************************************
+Complementary filter synthesis
+******************************
 With the transfer function models of the noise spectrums obtained,
 we can finally create complementary filters using the
 ``kontrol.ComplementaryFilter`` class.
@@ -485,6 +578,7 @@ Click the link below to see what it means exactly.
 
 .. toctree::
    :maxdepth: 1
+
    ./tutorials/sensor_fusion/complementary_filter_synthesis
 
 And, we've obtained 2 complementary filters which solve the sensor fusion
@@ -512,8 +606,8 @@ Tips
 
 
 
-Sensor correction
-^^^^^^^^^^^^^^^^^
+H-infinity sensor correction
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 General Utilities
 -----------------
