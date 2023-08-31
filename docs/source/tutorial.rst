@@ -28,17 +28,17 @@ the small problem in each subsection.
 And you will find a link to the Jupyter notebook containing
 the solution for the problem.
 
-The Jupyter notebooks are structured similarly as follows.
-The first blocks are used to prepare and visualize the mock measurements
+Each Jupyter notebook is structured similarly as follows.
+All notebooks begins with  preparing and visualizing the mock measurements
 that we will be processing.
-In reality, this is not required as data will be collected by other means.
+In reality, the data will be measured instead of generated.
 With the measurement data obtained, we will proceed to demonstrate
-the use of the ``Kontrol`` package to solve the problem according to the data.
+the use of the ``Kontrol`` package to solve the underlying problems.
 At last, we will export the results in some way for further usages, e.g.
 for further processes or implementation.
 This way, the notebooks can be thought as a process in a data pipeline.
 
-The content in this tutorial is inspired from the actual commissioning
+The style of this tutorial is inspired from the actual commissioning
 of a KAGRA suspension.
 As in, these are all the necessary steps that we need to go through
 when setting up the active isolation systems.
@@ -82,6 +82,10 @@ Content
 
    #. :ref:`H-infinity sensor correction`
 
+      #. :ref:`Seismic noise spectrum modification and modeling`
+               
+      #. :ref:`Sensor correction filter synthesis`
+
 #. :ref:`General Utilities`
 
 Kontrol has more than what's covered in the tutorials.
@@ -104,12 +108,6 @@ Check the reference out if you wish to understand what the
 functions/methods are actually doing in the background.
 
 
-.. [1]
-   Terrence Tak Lun Tsang. Optimizing Active Vibration Isolation Systems in
-   Ground-Based Interferometric Gravitational-Wave Detectors.
-   https://gwdoc.icrr.u-tokyo.ac.jp/cgi-bin/DocDB/ShowDocument?docid=14296
-
-
 Sensors and actuators
 ^^^^^^^^^^^^^^^^^^^^^
 The first step is to set up the sensors and actuators for the
@@ -123,6 +121,7 @@ To achieve this, we need to
 1. Calibrate the sensors so they meausre physical units.
 2. Align the sensors (and actuators, using control matrices)
    so we get a readout in the control basis.
+
 
 Linear sensor calibration
 *************************
@@ -293,6 +292,7 @@ the system that we'd like to control.
 The goal is to obtain a model of the system so we can eventually design
 a controller for it.
 
+
 Transfer function modeling
 **************************
 Using the actuation in the :math:`x_1` direction, we excite
@@ -416,7 +416,7 @@ to achieve all the above.
 And we eventually obtained a controller.
 The open-loop transfer function has a unit gain frequency of 0.128 Hz and
 phase margin of 45 degrees.
-The gain at 10 Hz is 2 orders of magnitude than the one we obtained in
+The gain at 10 Hz is 2 orders of magnitude lower than the one we obtained in
 :ref:`Damping control`.
 It follows that the noise injected is also that much lower.
 From simulation, the system is able to trace a unit step input without
@@ -456,23 +456,6 @@ sensor fusion, sensor correction, and feedback control,
 and propose an H-infinity method to optimize these subsystems in a
 seismic isolation system.
 
-We will firstly use the H-infinity method to solve a sensor fusion problem.
-However, we must note that the problem presented here is not realistic
-since we will be ignoring the seismic noise coupling in relative sensors
-for the sake of simplicity.
-In reality, we should use a sensor correction scheme to reduce that
-coupling before solving the sensor fusion problem.
-But, because all filter design problems presented can be generalized
-to a sensor fusion problem, it is perhaps beneficial to show how a
-sensor fusion problem is solved before going into other problems.
-And, this is why we begin by solving a senor fusion problem.
-
-
-.. [1]
-   Terrence Tak Lun Tsang. Optimizing Active Vibration Isolation Systems in
-   Ground-Based Interferometric Gravitational-Wave Detectors.
-   https://gwdoc.icrr.u-tokyo.ac.jp/cgi-bin/DocDB/ShowDocument?docid=14296
-
 
 H-infinity sensor fusion
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -497,6 +480,42 @@ complementary filters using the H-infinity method.
 The first two subsections show how we can obtain the necessary materials
 mentioned above and the last subsection shows how we can obtain
 the optimal complementary filters given those materials.
+
+We also assume that the relative sensor and the inertial sensor are
+aligned and inter-calibrated so they read the same signal.
+**This is extremely important**.
+
+
+*Caveat*
+
+This section solves the sensor fusion problem using the H-infinity method.
+The case presented is a hypothetical scenario as we only take the intrinsic
+sensor noises of the relative and inertial sensors into account, whereas
+there're more noises involved in reality.
+Doing so allows the demonstration to be simplified without much complications.
+So, please keep in mind that this section only serves the purpose of laying
+down the necessary procedures to use the method.
+Therefore, if you wish to use this method, do take into account all necessary
+noise sources in the sensors.
+
+In some systems, the relative sensors are "corrected" via a control scheme
+called "sensor correction" and it is the corrected relative sensor that
+is combined with the inertial sensor.
+The corrected sensor has a noise profile depending on the sensor correction
+filter that we will be optimizing in the next section
+:ref:`H-infinity sensor correction`.
+But because the sensor correction and other problems can be treated
+as a sensor fusion problem, it is beneficial to show how a
+sensor fusion problem is solved before going into other problems.
+This is why we begin with a hypotheical sensor fusion scenario.
+
+The way to go is to
+
+#. Firstly optimize a sensor correction filter.
+
+#. Evalute the effective noise presence in the corrected relative readout.
+
+#. Model and use that to optimize the complementary filters instead.
 
 
 Estimating inertial sensor noise
@@ -543,7 +562,7 @@ magnitude responses of transfer functions.
 In the tutorial, we have fitted empirical models to the noise data
 as an optional intermediate step.
 With the empirical models obtained, we can rescale the frequency axis to
-logspace with fewer data, which helped speeding up the final modeling.
+logspace with fewer data points, which helped speeding up the final modeling.
 It also allows us to flatten the spectrums at both ends, which is necessary
 for the H-infinity method.
 In the end, we've obtained 2 ``kontrol.TransferFunction`` objects
@@ -602,13 +621,125 @@ Tips
   do no have the necessary features to properly roll-off the noises beyond
   the frequency band of interest. We can add prefilters to fix the problem
   but this may require some tweaking.
-
-
+- Sometimes the synthesis method can produce filters that make no sense.
+  Interchanging the relative and inertial sensor noises (and weights) may
+  solve the issue.
 
 
 H-infinity sensor correction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Relative sensors are seismic noise-coupled so they inject seismic noise
+to the isolation platform under feedback control.
+We have a seismometer on the ground that measures the ground motion
+close to the isolation platform and we can use that to reduce the
+seismic noise coupling in the relative sensors.
+This is simply done by subtracting the seismometer readout from the
+relative readout, thereby "correcting" the relative sensors.
+However, doing so injects seismometer noise to the relative readout.
+Therefore, we have to design a "sensor correction filter" to filter
+excessive noise while retaining seismic signal for sensor correction.
+
+In :ref:`H-infinity sensor fusion`, we have used
+the ``kontrol.ComplementaryFilter`` class to optimize complementary filters
+and we've successfully obtain a pair of complementary filters that can be
+implemented.
+It turns out that the sensor correction problem can be solved using the
+very same class and methods.
+Instead of complementary low-pass and high-pass filters, we'd be obtaining
+a seismic transmissivity and a sensor correction filter, which are also
+complementary.
+
+The required procedure to optimize a sensor correction filter is very similar
+to that already presented in section :ref:`H-infinity sensor fusion` so we
+will not repeat what's already demonstrated.
+Instead, we assume that we have already obtained
+
+#. The transfer function model with magnitude response matching
+   the noise spectrum of the relative sensor.
+
+#. The same for the seismometer.
+
+We will also need the seismic noise model but it turned out to be more
+involved so we will demonstrate what needs to be done.
+There's another notible difference between the sensor correction and the
+sensor fusion problem.
+The noise performance of the super sensor in a sensor fusion problem is
+completely dependent on the filtered sensor noises.
+In sensor correction, the corrected relative sensor is dependent on the
+filtered seismometer noise and filtered the seismic noise but is also
+dependent on the unfiltered intrinsic relative sensor noise.
+The intrinsic relative sensor noise acts as an ambient noise and we shall
+see how this can be utilized in the optimization.
+
+
+Seismic noise spectrum modification and modeling
+************************************************
+We read Chapter 8.3.3 in Ref. [1]_ and realized we need to modify the seismic
+noise spectrum before modeling it.
+Otherwise the sensor correction filter might actually amplifies the
+seismometer noise and the seismic noise, instead of attenuating them.
+Click the link below to see how we can obtain a proper seismic noise model
+for the optimization purpose.
+
+.. toctree::
+   :maxdepth: 1
+
+   ./tutorials/sensor_correction/seismic_noise_spectrum_modification_and_modeling
+
+And we've obtained a seismic noise model that has a flat spectrum above
+the secondary microseism.
+The main reasons we had to do this are because
+
+#. Make the sensor correction filter a high-pass filter.
+#. So the sensor correction filter won't amplify any seismometer and seismic
+   noise below the relative sensor noise level.
+
+Again, this model is not a representation for the seismic noise.
+It is created for the sole purpose of H-infinity optimization.
+
+
+Sensor correction filter synthesis
+**********************************
+With all the necessary components obtained, we can use
+``kontrol.ComplementaryFilter`` again to optimize, not complementary filters,
+but the sensor correction filter.
+Instead of specifying two sensor noise models to the ``ComplementaryFilter``
+instance, we specify the seismic noise model and the seismometer noise model.
+The prescense of the relative sensor noise changes how we specify the
+target attenuation (weights) as the lower boundary of the 
+corrected sensor noise depends on it.
+Click the link below to see how we cope with that and optimize
+a sensor correction filter.
+
+.. toctree::
+   :maxdepth: 1
+
+   ./tutorials/sensor_correction/sensor_correction_filter_synthesis
+
+Using the ``kontrol.ComplementaryFilter.hinfsynthesis()`` method,
+we were able to obtain a sensor correction filter.
+We have also computed the expected noise spectrum of the corrected relative
+sensor.
+It has suppressed seismic coupling, particularly around the secondary
+microseism.
+However, seismometer noise is injected at lower frequencies, which is expected.
+To justify the tradeoff, we compared the noise RMS of the seismic noise
+(uncorrected relative sensor) and the corrected relative sensor.
+And, we found that we've indeed reduced the noise RMS of the relative sensor
+with the sensor correction scheme and the H-infinity optimal filter.
+
+For here, to finally complete the job, the next step would be to model the
+noise of the corrected relative sensor and use that to optimize a 
+set of complementary filter for combining the corrected relative sensor
+and the inertial sensor in a sensor fusion configuration.
+But we'll just leave it here since this would be a repetition of 
+the :ref:``H-infinity sensor fusion`` section.
+
 
 General Utilities
 -----------------
 
+.. [1]
+   Terrence Tak Lun Tsang. Optimizing Active Vibration Isolation Systems in
+   Ground-Based Interferometric Gravitational-Wave Detectors.
+   https://gwdoc.icrr.u-tokyo.ac.jp/cgi-bin/DocDB/ShowDocument?docid=14296
