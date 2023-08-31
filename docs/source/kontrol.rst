@@ -11,7 +11,6 @@ Subpackages
    kontrol.complementary_filter
    kontrol.curvefit
    kontrol.dmd
-   kontrol.frequency_series
    kontrol.sensact
    kontrol.regulator
    kontrol.transfer_function

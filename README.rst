@@ -152,7 +152,7 @@ Documentation
 - **Documenting Python Code: A Complete Guide**: https://realpython.com/documenting-python-code/
 
 
-.. |logo| image:: /docs/source/_static/kontrol_logo_256x128.svg
+.. |logo| image:: https://raw.githubusercontent.com/terrencetec/kontrol/master/images/kontrol_logo_256x128.svg
     :alt: Logo
     :target: https://github.com/terrencetec/kontrol
 

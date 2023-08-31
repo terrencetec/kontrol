@@ -14,6 +14,6 @@ omit =
     examples/*
     archive/*
     dev/*
-    kontrol/unused/*
     kontrol/logger.py
+    kontrol/ezca.py
     setup.py
