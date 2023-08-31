@@ -728,16 +728,39 @@ To justify the tradeoff, we compared the noise RMS of the seismic noise
 And, we found that we've indeed reduced the noise RMS of the relative sensor
 with the sensor correction scheme and the H-infinity optimal filter.
 
+
+Sensor fusion and optimal controller (just words)
+*************************************************
 For here, to finally complete the job, the next step would be to model the
-noise of the corrected relative sensor and use that to optimize a 
-set of complementary filter for combining the corrected relative sensor
-and the inertial sensor in a sensor fusion configuration.
-But we'll just leave it here since this would be a repetition of 
-the :ref:``H-infinity sensor fusion`` section.
+noise of the corrected relative sensor and use what we've learnt in
+:ref:`H-infinity sensor fusion` to optimize the sensor fusion of
+the corrected relative sensor and the inertial sensor.
+We'll just leave it here so we don't repeat.
+
+The controller that we designed in the :ref:`Controller design` section
+utilizes concepts like critical damping and phase margins to design a
+controller to achieve position and damping control.
+However, this is not optimal for active seismic noise isolation.
+In principle, we want a controller that has higher gain where
+the seismic disturbnce is high, and lower gain where control noise becomes
+dominated.
+This turns out to be also a sensor fusion problem as disturbance and noise
+couplings are also complementary.
+The controller can be easily optimized for active isolation using
+a ``kontrol.ComplementaryFilter`` instance.
+The optimized result would be the sensitivity function and the
+complementary sensitivity function, which can be used
+to derive the optimal controller.
+Chapter 8.2.3 and 8.3.6 in Ref. [1]_ provides examples of how feedback
+controllers can be optimized for seismic isolation so check it out if
+you're interested.
 
 
 General Utilities
 -----------------
+
+References
+----------
 
 .. [1]
    Terrence Tak Lun Tsang. Optimizing Active Vibration Isolation Systems in
