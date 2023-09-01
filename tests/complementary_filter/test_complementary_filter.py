@@ -5,7 +5,6 @@ import numpy as np
 
 import kontrol
 import kontrol.core.controlutils
-import kontrol.frequency_series.noise_models
 
 
 def test_complementary_filter():
