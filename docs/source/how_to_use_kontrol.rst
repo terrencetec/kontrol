@@ -49,7 +49,7 @@ systems.
 
    #. Optimizes feedback controller with known disturbance and noise.
 
-All aforementioned funtionalities are detailed in Chapter 6 and 8 in Ref. [1].
+All aforementioned funtionalities are detailed in Chapter 6 and 8 in Ref. [1]_.
 These methods solve the static optimal control problem for
 a seismic isolation system they you can find example usages of them in
 the :ref:`Tutorials`.

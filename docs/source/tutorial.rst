@@ -1,10 +1,5 @@
 Tutorials
 =========
-
-.. toctree::
-   :maxdepth: 4
-
-
 This tutorial is mainly divided into two parts,
 :ref:`Basic Suspension Commissioning` and :ref:`Advanced Control Methods`.
 There's an extra section called :ref:`General Utilites` and there you will
@@ -764,8 +759,7 @@ you're interested.
 General Utilities
 -----------------
 
-References
-----------
+**References**
 
 .. [1]
    Terrence Tak Lun Tsang. Optimizing Active Vibration Isolation Systems in
