@@ -58,6 +58,6 @@ installing any packages.
 Concept and Tutorials
 ---------------------
 
-Check out :ref:`Concept` and :ref:`Tutorials` to see how this package
+Check out :ref:`How to use Kontrol` and :ref:`Tutorials` to see how this package
 can be utilized for setting up and optimizing
 seismic isolation control systems.

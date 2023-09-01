@@ -62,12 +62,12 @@ can be used for the physical systems.
 - **Repository:** https://github.com/terrencetec/kontrol.git
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 2
    :caption: Contents:
 
    self
-   concept
    getting_started
+   how_to_use_kontrol
    tutorial
    main_utilities
    kontrol

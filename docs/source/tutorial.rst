@@ -1,5 +1,10 @@
 Tutorials
 =========
+
+.. toctree::
+   :maxdepth: 4
+
+
 This tutorial is mainly divided into two parts,
 :ref:`Basic Suspension Commissioning` and :ref:`Advanced Control Methods`.
 There's an extra section called :ref:`General Utilites` and there you will
@@ -192,7 +197,7 @@ using the ``kontrol.TransferFunction`` class:
 
    zpk([0.705852+i*0.707336;0.705852+i*-0.707336],[-0;-0],0.667203,"n")
 
-With this filter, we can start measure velocity with the geophone.
+With this filter, we can start measuring velocity with the geophone.
 If we want displacement instead, we can simply add an integrator.
 
 
@@ -225,7 +230,7 @@ in the :math:`\vec{x}=(x_1, x_2, x_3)` degrees of freedom measurement.
 However, you inspect the readouts and discovered cross-coupling between
 the three degrees of freedom, i.e. sensing matrix is not perfect.
 
-The goal is to fine tune the sensing matrix to
+The goal is to refine the sensing matrix to
 reduce the observable cross-couplings so the sensors are
 aligned with the control basis.
 Click the link below to see how we can use ``kontrol.sensact.SensingMatrix``
@@ -255,7 +260,7 @@ we can define a ``kontrol.ezca.Ezca`` instance and
 use the ``get_matrix()`` or ``put_matrix()`` methods.
 
 
-**Caveats:**
+*Caveats*
 
 - Sensor cross-coupling is only true when the phase is close to
   0 or 180 degrees.
@@ -486,7 +491,7 @@ aligned and inter-calibrated so they read the same signal.
 **This is extremely important**.
 
 
-*Caveat*
+*Caveats*
 
 This section solves the sensor fusion problem using the H-infinity method.
 The case presented is a hypothetical scenario as we only take the intrinsic
