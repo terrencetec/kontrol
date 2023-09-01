@@ -42,14 +42,14 @@ class SpectrumZPKFit(CurveFit):
     model_kwargs : ``dict`` or ``None``, optional
         Keyword arguments passed to the model.
         Defaults to ``None``.
-    cost : ``kontrol.curvefit.Cost`` or ``func(args, model, xdata, ydata)``\
-            -> ``array``, optional
+    cost : kontrol.curvefit.Cost or callable
         Cost function.
-        The cost function to be used to fit the data.
+        The callable has a signature of
+        func(args, model, xdata, ydata) -> array.
         First argument is a list of parameters that will be passed to
         the model.
         This must be pickleable if multiprocessing is to be used.
-        Defaults to ``None``.
+        Defaults to None.
     weight : ``array`` or ``None``, optional
         Weighting function.
         Defaults ``None``.
@@ -81,23 +81,24 @@ class SpectrumZPKFit(CurveFit):
         ydata : ``array`` or ``None``, optional
             Transfer function frequency response in complex numbers.
             Defaults to ``None``.
-        model : ``func(x: ``array``, args: ``array``, **kwargs)`` ->\
-                ``array``, or ``None``, optional
+        model : callable or None, optional
             The model used to fit the data.
-            ``args`` in model is an ``array`` of parameters that
+            The callable has a signature of
+            func(x: array, args: array, **kwargs) -> array.
+            ``args`` in model is an array of parameters that
             define the model.
-            Defaults to ``None``
+            Defaults to None
         model_kwargs : ``dict`` or ``None``, optional
             Keyword arguments passed to the model.
             Defaults to ``None``.
-        cost : ``kontrol.curvefit.Cost`` or ``func(args, model, xdata, ydata)``\
-                -> ``array``, optional
+        cost : kontrol.curvefit.Cost or callable
             Cost function.
-            The cost function to be used to fit the data.
+            The callable has a signature of
+            func(args, model, xdata, ydata) -> array.
             First argument is a list of parameters that will be passed to
             the model.
             This must be pickleable if multiprocessing is to be used.
-            Defaults to ``None``.
+            Defaults to None.
         weight : ``array`` or ``None``, optional
             Weighting function.
             Defaults ``None``.
@@ -105,8 +106,7 @@ class SpectrumZPKFit(CurveFit):
             Keyword arguments the will be passed to ``error_func``,
             which is passed to the construct the cost function.
             Defaults to ``None``.
-        optimizer : ``func(func, **kwargs)`` -> ``OptimizeResult``, or ``None``,\
-                    optional
+        optimizer : func(func, **kwargs) -> OptimizeResult, or None, optional
             The optimization algorithm use for minimizing the cost function.
         optimizer_kwargs : ``dict`` or ``None``, optional
             Keyword arguments passed to the optimizer function.
@@ -129,9 +129,9 @@ class SpectrumZPKFit(CurveFit):
         if optimizer is None:
             optimizer = scipy.optimize.differential_evolution
 
-        if (model is not None and xdata is not None and ydata is not None) :
+        if (model is not None and xdata is not None and ydata is not None):
             n_zero_pole_bounds = model.nzero + model.npole
-            if model.log_args: 
+            if model.log_args:
                 bound = (np.log10(min(xdata)), np.log10(max(xdata)))
                 bounds = [bound] * n_zero_pole_bounds
                 bounds.append((np.log10(min(ydata)), np.log10(max(ydata))))
@@ -143,7 +143,7 @@ class SpectrumZPKFit(CurveFit):
             bounds = None
 
         default_optimizer_kwargs = {
-            "workers": -1, "updating": "deferred", "bounds": bounds}    
+            "workers": -1, "updating": "deferred", "bounds": bounds}
         if optimizer_kwargs is None:
             optimizer_kwargs = default_optimizer_kwargs
         else:
@@ -187,7 +187,7 @@ class SpectrumZPKFit(CurveFit):
     def xdata(self):
         """xdata"""
         return self._xdata
-    
+
     @xdata.setter
     def xdata(self, _xdata):
         """xdata setter"""
@@ -198,7 +198,7 @@ class SpectrumZPKFit(CurveFit):
     def ydata(self):
         """ydata"""
         return self._ydata
-    
+
     @ydata.setter
     def ydata(self, _ydata):
         """ydata setter"""
@@ -209,7 +209,7 @@ class SpectrumZPKFit(CurveFit):
     def model(self):
         """The ZPK model used to fit the spectrum"""
         return self._model
-    
+
     @model.setter
     def model(self, _model):
         """model setter"""
@@ -219,10 +219,10 @@ class SpectrumZPKFit(CurveFit):
     def _get_bounds(self):
         """Get bounds for scipy.optimize.differential_evolution"""
         if (self.model is not None and self.xdata is not None
-            and self.ydata is not None):
-            # 
+           and self.ydata is not None):
+            #
             n_zero_pole_bounds = self.model.nzero + self.model.npole
-            if self.model.log_args: 
+            if self.model.log_args:
                 bound = (np.log10(min(self.xdata)), np.log10(max(self.xdata)))
                 bounds = [bound] * n_zero_pole_bounds
                 bounds.append(
@@ -270,23 +270,24 @@ class SpectrumTFFit(CurveFit):
     ydata : ``array`` or ``None``, optional
         Transfer function frequency response in complex numbers.
         Defaults to ``None``.
-    model : ``func(x: ``array``, args: ``array``, **kwargs)`` ->\
-            ``array``, or ``None``, optional
+    model : callable or None, optional
         The model used to fit the data.
-        ``args`` in model is an ``array`` of parameters that
+        The callable has a signature of
+        func(x: array, args: array, **kwargs) -> array.
+        ``args`` in model is an array of parameters that
         define the model.
-        Defaults to ``None``
+        Defaults to None
     model_kwargs : ``dict`` or ``None``, optional
         Keyword arguments passed to the model.
         Defaults to ``None``.
-    cost : ``kontrol.curvefit.Cost`` or ``func(args, model, xdata, ydata)``\
-            -> ``array``, optional
+    cost : kontrol.curvefit.Cost or callable
         Cost function.
-        The cost function to be used to fit the data.
+        The callable has a signature of
+        func(args, model, xdata, ydata) -> array.
         First argument is a list of parameters that will be passed to
         the model.
         This must be pickleable if multiprocessing is to be used.
-        Defaults to ``None``.
+        Defaults to None.
     weight : ``array`` or ``None``, optional
         Weighting function.
         Defaults ``None``.
@@ -324,23 +325,24 @@ class SpectrumTFFit(CurveFit):
         ydata : ``array`` or ``None``, optional
             Transfer function frequency response in complex numbers.
             Defaults to ``None``.
-        model : ``func(x: ``array``, args: ``array``, **kwargs)`` ->\
-                ``array``, or ``None``, optional
+        model : callable or None, optional
             The model used to fit the data.
-            ``args`` in model is an ``array`` of parameters that
+            The callable has a signature of
+            func(x: array, args: array, **kwargs) -> array.
+            ``args`` in model is an array of parameters that
             define the model.
-            Defaults to ``None``
+            Defaults to None
         model_kwargs : ``dict`` or ``None``, optional
             Keyword arguments passed to the model.
             Defaults to ``None``.
-        cost : ``kontrol.curvefit.Cost`` or ``func(args, model, xdata, ydata)``\
-                -> ``array``, optional
+        cost : kontrol.curvefit.Cost or callable
             Cost function.
-            The cost function to be used to fit the data.
+            The callable has a signature of
+            func(args, model, xdata, ydata) -> array.
             First argument is a list of parameters that will be passed to
             the model.
             This must be pickleable if multiprocessing is to be used.
-            Defaults to ``None``.
+            Defaults to None.
         weight : ``array`` or ``None``, optional
             Weighting function.
             Defaults ``None``.
@@ -348,8 +350,7 @@ class SpectrumTFFit(CurveFit):
             Keyword arguments the will be passed to ``error_func``,
             which is passed to the construct the cost function.
             Defaults to ``None``.
-        optimizer : ``func(func, **kwargs)`` -> ``OptimizeResult``, or ``None``,\
-                    optional
+        optimizer : func(func, **kwargs) -> OptimizeResult, or None, optional
             The optimization algorithm use for minimizing the cost function.
         optimizer_kwargs : ``dict`` or ``None``, optional
             Keyword arguments passed to the optimizer function.
@@ -383,8 +384,8 @@ class SpectrumTFFit(CurveFit):
         else:
             x0 = np.append(num0, den0)
             maxiter = len(x0)*1000
-             
-        default_options = {"adaptive": True, "maxiter": maxiter}    
+
+        default_options = {"adaptive": True, "maxiter": maxiter}
         if options is None:
             options = default_options
         else:
@@ -433,7 +434,7 @@ class SpectrumTFFit(CurveFit):
     def options(self):
         """Option arguments passed to optimizer"""
         return self._options
-    
+
     @options.setter
     def options(self, _options):
         """options.setter"""
@@ -466,12 +467,12 @@ class SpectrumTFFit(CurveFit):
         self._den0 = _den0
         if self.num0 is not None and self.den0 is not None:
             self.x0 = np.append(self.num0, self.den0)
-        
+
     @property
     def x0(self):
         """Initial guess"""
         return self._x0
-    
+
     @x0.setter
     def x0(self, _x0):
         """x0.setter"""
@@ -493,14 +494,14 @@ class SpectrumTFFit(CurveFit):
             self.optimizer_kwargs = dict(
                 self.optimizer_kwargs, **update_optimizer_kwargs)
         self._update_options()
-    
+
     def _update_options(self):
         """Update optimizer options"""
         maxiter = self._get_maxiter()
-        update_options = {"maxiter": maxiter}    
+        update_options = {"maxiter": maxiter}
         if "options" not in self.optimizer_kwargs:
             options = update_options
-        else: 
+        else:
             options = dict(self.optimizer_kwargs["options"], **update_options)
         options = dict(options, **self.options)  # self.options have priority
         self.optimizer_kwargs["options"] = options
@@ -573,7 +574,7 @@ def spectrum_fit(f, spectrum, nzero, npole, log_args=True,
         num0 = np.log10(num0)
         den0 = np.log10(den0)
 
-    # Fit a transfer function model using the fitted ZPK as an initial guess 
+    # Fit a transfer function model using the fitted ZPK as an initial guess
     tf_model = kontrol.curvefit.model.TransferFunctionModel(
         nzero=nzero, npole=npole, log_args=log_args)
     tf_fit = SpectrumTFFit()
@@ -593,7 +594,7 @@ def spectrum_fit(f, spectrum, nzero, npole, log_args=True,
     if minreal:
         # minreal returns a control.TransferFunction object...
         tf = kontrol.TransferFunction(tf.minreal())
-    
+
     # Return
     if return_zpk_fit and return_tf_fit:
         return tf, zpk_fit, tf_fit
@@ -603,5 +604,3 @@ def spectrum_fit(f, spectrum, nzero, npole, log_args=True,
         return tf, tf_fit
     else:
         return tf
-
-    

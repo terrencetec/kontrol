@@ -31,7 +31,7 @@ def bisection_method(
     x1 : float
         The first endpoint.
     x2 : float
-        The second endpoint. 
+        The second endpoint.
     val : float
         The target value.
     ftol : float, optional,
@@ -87,6 +87,3 @@ def bisection_method(
                 x2 = xm
     kontrol.logger.logger.error("Maximum number of iteration reached")
     return None
-
-
-    

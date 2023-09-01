@@ -9,7 +9,8 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 
 # create formatter
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)-8s: %(message)s', datefmt='%H:%M')
+formatter = logging.Formatter(
+    '%(asctime)s %(name)s %(levelname)-8s: %(message)s', datefmt='%H:%M')
 
 # add formatter to ch
 ch.setFormatter(formatter)

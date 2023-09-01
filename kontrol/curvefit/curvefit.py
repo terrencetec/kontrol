@@ -1,6 +1,5 @@
 """Base class for curve fitting
 """
-import numpy as np
 
 
 class CurveFit:
@@ -14,18 +13,20 @@ class CurveFit:
     ydata : array or None, optional
         The dependent variable data / data on the y axis.
         Defaults to None.
-    model : func(x: array, args: array, **kwargs) -> array, or None, optional
+    model : callable or None, optional
         The model used to fit the data.
+        The callable has a signature of
+        func(x: array, args: array, **kwargs) -> array.
         ``args`` in model is an array of parameters that
         define the model.
         Defaults to None
     model_kwargs : dict or None, optional
         Keyword arguments passed to the model.
         Defaults to None.
-    cost : kontrol.curvefit.Cost or func(args, model, xdata, ydata) -> array
+    cost : kontrol.curvefit.Cost or callable
         Cost function.
-    xdata: array, ydata: array) -> float
-        The cost function to be used to fit the data.
+        The callable has a signature of
+        func(args, model, xdata, ydata) -> array.
         First argument is a list of parameters that will be passed to
         the model.
         This must be pickleable if multiprocessing is to be used.
@@ -49,17 +50,20 @@ class CurveFit:
         ydata : array or None, optional
             The dependent variable data / data on the y axis.
             Defaults to None.
-        model : func(x: array, args: array, **kwargs) -> array, or None, optional
+        model : callable or None, optional
             The model used to fit the data.
+            The callable has a signature of
+            func(x: array, args: array, **kwargs) -> array.
             ``args`` in model is an array of parameters that
             define the model.
             Defaults to None
         model_kwargs : dict or None, optional
             Keyword arguments passed to the model.
             Defaults to None.
-        cost : kontrol.curvefit.Cost or func(args, model, xdata, ydata) -> array
+        cost : kontrol.curvefit.Cost or callable
             Cost function.
-            The cost function to be used to fit the data.
+            The callable has a signature of
+            func(args, model, xdata, ydata) -> array.
             First argument is a list of parameters that will be passed to
             the model.
             This must be pickleable if multiprocessing is to be used.

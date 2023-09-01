@@ -3,10 +3,9 @@ Wrapper around control.TransferFunction
 to provide custom functionality related to KAGRA.
 """
 import os
+import pickle
 
 import control
-import numpy as np
-import pickle
 
 import kontrol.core.controlutils
 
@@ -77,7 +76,6 @@ class TransferFunction(control.TransferFunction):
             self, tol_order=tol_order)
         super().__init__(tf_cleaned)
 
-
     def stabilize(self):
         """Convert unstable zeros and poles to stable ones.
         """
@@ -88,7 +86,7 @@ class TransferFunction(control.TransferFunction):
             self, expression="zpk", root_location="s", significant_figures=6,
             itol=1e-25, epsilon=1e-25):
         """Foton expression of this transfer function
-        
+
         Calls kontrol.core.foton.tf2foton and returns a foton expression
         of this transfer function
 
@@ -122,12 +120,12 @@ class TransferFunction(control.TransferFunction):
         foton_expression : str
             The foton expression in selected format.
         """
-        ## TODO add MIMO support
+        # TODO add MIMO support
         return kontrol.core.foton.tf2foton(
             tf=self, expression=expression, root_location=root_location,
             significant_figures=significant_figures,
             itol=itol, epsilon=epsilon)
-    
+
     def save(self, path, overwrite=True):
         """Save the transfer function to a specified path.
 
@@ -169,4 +167,3 @@ def load_transfer_function(path):
     with open(path, "rb") as f:
         tf = pickle.load(f)
     return tf
-

@@ -7,7 +7,7 @@ import kontrol.core.controlutils
 
 def generalized_plant(noise1, noise2, weight1, weight2):
     """Return the generalized plant of a 2 complementary filter system
-    
+
     Parameters
     ----------
     noise1 : TransferFunction
@@ -45,7 +45,7 @@ def generalized_plant(noise1, noise2, weight1, weight2):
 #          [tf([1],[1]), tf([0],[1])]]
     p = kontrol.core.controlutils.tfmatrix2tf(p)
     return p
-    
+
 
 def h2complementary(noise1, noise2, weight1=None, weight2=None):
     """H2 optimal complementary filter synthesis

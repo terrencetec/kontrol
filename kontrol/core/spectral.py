@@ -261,13 +261,13 @@ def asd2rms(asd, f=None, df=1., return_series=True):
         The integrated RMS series, if ``return_series==True``.
     float
         The integrated RMS value, if ``return_series==False``.
-    
+
     Notes
     -----
     The integrated RMS series is defined as
 
     .. math::
-    
+
        x_\mathrm{RMS}(f) = \int_\infty^{f}\,x(f')^2\,df'\,,
 
     where :math:`x(f)` is the amplitude spectral density.
@@ -393,4 +393,3 @@ def pad_above_maxima(series, pad_index=-1, **kwargs):
     series_padded = series.copy()
     series_padded[i_max:] = series[i_max]
     return series_padded
-

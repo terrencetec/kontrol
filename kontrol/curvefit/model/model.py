@@ -60,26 +60,6 @@ class Model:
                              "arg argument or by setting self.arg.")
         return self._x2y(x, **kwargs)
 
-   # def __add__(self, model2):
-   #      """Summing the model by another model, returns a CompositeModel.
-        
-   #      Parameters
-   #      ----------
-   #      model2 : kontrol.curvefit.model.Model
-   #          The other model to be summed.
-
-   #      Returns
-   #      -------
-   #      kontrol.curvefit.model.CompositeModel
-   #          The sum of two models.
-   #      """
-   #      if self.nargs is None or model2.nargs None:
-   #          raise ValueError("The number of arguments must be defined "
-   #                           "before the models can be combined.")
-   #      split_index = self.nargs
-   #      return CompositeModel(
-   #          model1=self, model2=model2, split_index=split_index, operator="+")
-
     def _x2y(self, x, **kwargs):
         """Convert independent variables to dependent variables.
 
@@ -118,9 +98,8 @@ class Model:
     def nargs(self):
         """Number of model parameters"""
         return self._nargs
-    
+
     @nargs.setter
     def nargs(self, _nargs):
         """nargs.setter"""
         self._nargs = _nargs
-        

@@ -1,5 +1,7 @@
 """Cost function base class
 """
+
+
 class Cost:
     """Cost function base class.
     """

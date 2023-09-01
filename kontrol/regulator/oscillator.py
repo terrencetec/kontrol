@@ -1,16 +1,13 @@
 """Control regulators designs for oscillator-like systems"""
-import control
-import numpy as np
-
 import kontrol.regulator.feedback
 import kontrol.regulator.predefined
 
 
-#FIXME find a better name
+# FIXME find a better name
 def pid(
     plant, regulator_type="PID", dcgain=None,
     integrator_ugf=None, integrator_time_constant=None,
-    return_gain=False, **kwargs):
+        return_gain=False, **kwargs):
     """PID-like controller design for oscillator-like systems
 
     Parameters
@@ -27,7 +24,7 @@ def pid(
         The DC gain of the OLTF of the proportional control.
         If set to None, it will be set automatically
         depending on the type of the controller.
-        If ``regulator_type=="PI"``, then dcgain will be set such that 
+        If ``regulator_type=="PI"``, then dcgain will be set such that
         the proportional control UGF matches that of the integral control.
         If ``regulator_type=="PD" or "PID"``, then the dcgain will be set
         such that it matches the UGF of the derivative control.
@@ -47,7 +44,7 @@ def pid(
         Defaults to None.
     return_gain : boolean, optional
         Return the PID gain instead.
-    
+
     Returns
     -------
     regulator : TransferFunction, optional
@@ -63,7 +60,6 @@ def pid(
         Derivative gain.
         Return only if return_gain is ``True``.
     """
-    s = control.tf("s")
     kp = 0
     ki = 0
     kd = 0

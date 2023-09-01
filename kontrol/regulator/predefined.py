@@ -7,7 +7,7 @@ import kontrol
 
 def proportional_integral_derivative(kp=0, ki=0, kd=0):
     r"""PID control build on proportional_derivative().
-    
+
     Parameters
     ----------
     kp : float, optional
@@ -23,13 +23,13 @@ def proportional_integral_derivative(kp=0, ki=0, kd=0):
     -------
     TransferFunction
         The PID controller.
-        
+
     Notes
     -----
     The PID controller is defined as
 
     .. math::
-       
+
        K_\mathrm{PID}(s) = K_p + K_i/s + K_d s\,.
     """
     s = control.tf("s")
@@ -53,7 +53,7 @@ def low_pass(cutoff, order=1, **kwargs):
         Defaults to be 1.
     **kwargs
         Keyword arguments holder. Not passed to anywhere.
-    
+
     Returns
     -------
     TransferFunction
@@ -64,7 +64,7 @@ def low_pass(cutoff, order=1, **kwargs):
     The low-pass filter is defined as
 
     .. math::
-       
+
        L(s) = \left(\frac{2\pi f_c}{s+2\pi f_c}\right)^n\,,
 
     where :math:`f_c` is the cutoff frequency (Hz), :math:`n` is the order
@@ -101,9 +101,9 @@ def notch(frequency, q, depth=None, depth_db=None, **kwargs):
     Notes
     -----
     The notch filter is defined by Foton, as
-    
+
     .. math::
-       
+
        N(s) = \frac{s^2 + (2\pi f_n)/(dQ/2)s + (2\pi f_n)^2}
        {s^2 + (2\pi f_n)/(Q/2)s + (2\pi f_n)^2}\,,
 
@@ -120,4 +120,4 @@ def notch(frequency, q, depth=None, depth_db=None, **kwargs):
     qp = q/2
     qz = qp*depth
     n = (s**2 + wn/qz*s + wn**2) / (s**2 + wn/qp*s + wn**2)
-    return kontrol.TransferFunction(n) 
+    return kontrol.TransferFunction(n)

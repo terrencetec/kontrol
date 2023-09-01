@@ -126,7 +126,6 @@ class Ezca(ezca.Ezca):
                 self.write("{}_{}_{}".format(matrix, i+1, j+1),
                            numpy_array[i, j])
 
-
     def _get_row_column(self, matrix):
         """Get the number of rows and columns of a matrix.
 

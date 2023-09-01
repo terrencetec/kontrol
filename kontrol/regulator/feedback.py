@@ -13,7 +13,7 @@ def critical_damping(plant, method="calculated", **kwargs):
     ``kontrol.regulator.feedback.critical_damp_calculated()`` or
     ``kontrol.regulator.feedback.cricical_damp_optimized()`` and
     returns the derivative control gain.
-    
+
     Parameters
     ----------
     plant : TransferFunction
@@ -31,14 +31,14 @@ def critical_damping(plant, method="calculated", **kwargs):
         where :math:`\omega_n` is the resonance frequency in rad/s
         of the mode to be damped, and :math:`K_{DC}` is the sum of DC gains
         of the mode and that of the other high-frequency modes.
-        
+
         Both method assumes that the plant has at least one pair of complex
         poles.
 
         Defaults to "calculated".
     **kwargs : dict
         Method specific keyword arguments.
-        
+
         See:
 
         - "optimized": kontrol.regulator.feedback.critical_damp_optimized
@@ -61,7 +61,7 @@ def critical_damping(plant, method="calculated", **kwargs):
     else:
         raise ValueError('Invalid method. '
                          'Methods avavilable from ["optimized", "calculated"]')
-    return kd 
+    return kd
 
 
 def critical_damp_calculated(plant, nmode=1, **kwargs):
@@ -98,7 +98,7 @@ def critical_damp_calculated(plant, nmode=1, **kwargs):
     and :math:`K_\mathrm{DC}` is the sum of DC gains of the mode
     and that of the other higher-frequency modes..
     """
-    ## Decompose into frequencies, quality factors, and DC gains
+    # Decompose into frequencies, quality factors, and DC gains
     wn, q, k = kontrol.regulator.feedback.mode_decomposition(plant)
     peak_gain = q*k  # Gain at the resonances.
 
@@ -107,21 +107,21 @@ def critical_damp_calculated(plant, nmode=1, **kwargs):
     # The index of the mode that we want to damp
     mode_index = dominant_indexes[nmode-1]
 
-    # Sum all the DC gains of the modes that has higher 
+    # Sum all the DC gains of the modes that has higher
     # or equal frequency than the mode (including the mode itself).
     dcgain = np.sum(k[:mode_index+1])
     dominant_wn = wn[mode_index]
 
     kd = 2/dominant_wn/dcgain  # Estimate critical damping gain.
 
-    return kd 
+    return kd
 
 
 def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6, **kwargs):
     r"""Optimize derivative damping gain and returns the critical regulator
-    
+
     Parameters
-    ---------- 
+    ----------
     plant : TransferFunction
         The transfer function representation of the system to be feedback
         controlled.
@@ -142,7 +142,7 @@ def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6, **kwargs):
     kd : float
         The derivative gain for critically damping the
         dominant mode.
- 
+
     Notes
     -----
     Update on 2021-12-04: Use carefully. It only critically damps
@@ -161,7 +161,7 @@ def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6, **kwargs):
     at unity gain frequency.
 
     2. Iterate ``i``: ``k_i=k_min*i*gain_step`` for i=1,2,3...
-    
+
     3. Terminate when ``1/(1+k_i*s*plant)`` has less complex pole pairs than
     the ``plant`` itself, i.e. one mode has been overdamped. Then, define
     ``k_max=k_i``.
@@ -182,9 +182,6 @@ def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6, **kwargs):
     f_pole = abs(plant.poles())/2/np.pi
     kd_min = 1/max(abs((s*plant)(1j*2*np.pi*f_pole)))
 
-    k_min = kd_min * s
-    oltf_min = k_min * plant
-
     n_complex_pole = _count_complex_poles(plant)
 
     # Find overdamp gain
@@ -196,7 +193,7 @@ def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6, **kwargs):
         oltf = kd * s * plant
         sensitivity = plant / (1+oltf)
         damped_complex_poles = _count_complex_poles(sensitivity.minreal())
-        if n_complex_pole  > damped_complex_poles:
+        if n_complex_pole > damped_complex_poles:
             kd_max = kd
             break
 
@@ -205,19 +202,18 @@ def critical_damp_optimize(plant, gain_step=1.1, ktol=1e-6, **kwargs):
     # Keep tighting the bounds until convergence condition is met.
     while 1:
         kd_mid = 10**((np.log10(kd_max)-np.log10(kd_min))/2 + np.log10(kd_min))
-        oltf_mid = kd_mid * s *plant
+        oltf_mid = kd_mid * s * plant
         sensitivity = plant / (1+oltf_mid)
         damped_complex_poles = _count_complex_poles(sensitivity.minreal())
-        if n_complex_pole  > damped_complex_poles:
+        if n_complex_pole > damped_complex_poles:
             # Mid gain still overdamps
             kd_max = kd_mid
         else:
             # Mid gain underdamps.
             kd_min = kd_mid
-        
+
         if (kd_max-kd_min)/kd_min < ktol:
             # Convergence.
-            kd_critical = kd_mid
             break
 
     kd = kd_mid
@@ -232,7 +228,7 @@ def _count_complex_poles(plant):
         if p.imag != 0:
             n_complex_pole += 1
     return n_complex_pole
-    
+
 
 def _find_dominant_mode(plant):
     """Returns the frequency (rad/s) of the dominant mode."""
@@ -266,7 +262,7 @@ def _count_overdamp_modes(plant):
 
 
 # IDK where to put this function
-# FIXME Put this function in a proper module. 
+# FIXME Put this function in a proper module.
 def mode_decomposition(plant):
     """Returns a list of single mode transfer functions
 
@@ -297,7 +293,7 @@ def mode_decomposition(plant):
 
 def mode_composition(wn, q, k):
     """Create a plant composed of many modes.
-    
+
     Parameters
     ----------
     wn : array
@@ -306,7 +302,7 @@ def mode_composition(wn, q, k):
         Q factors.
     k : array
         Dcgains of the modes.
-        
+
     Returns
     -------
     TransferFunction
@@ -320,7 +316,7 @@ def mode_composition(wn, q, k):
         plant = plant + k_ * wn_**2 / (s**2 + wn_/q_*s + wn_**2)
     return plant
 
-    
+
 def add_proportional_control(plant, regulator=None, dcgain=None, **kwargs):
     """Match and returns proportional gain.
 
@@ -404,7 +400,7 @@ def add_integral_control(
         The integral control gain.
     """
     s = control.tf("s")
-    oltf_int = 1/s * plant.dcgain() 
+    oltf_int = 1/s * plant.dcgain()
     if integrator_time_constant is not None:
         integrator_ugf = 1/integrator_time_constant
         ki = 1 / abs(oltf_int(1j*2*np.pi*integrator_ugf))

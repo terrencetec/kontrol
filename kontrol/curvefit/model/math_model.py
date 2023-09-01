@@ -27,14 +27,14 @@ class StraightLine(Model):
     The straight line is defined as
 
     .. math::
-    
+
        y(x; m, c) = mx + c\,,
 
     where :math:`m` is the slope and :math:`c` is the y-intercept.
     """
     def __init__(self, args=None):
         """Constructor
-        
+
         Parameters
         ----------
         args : array, optional
@@ -50,17 +50,16 @@ class StraightLine(Model):
     def slope(self):
         """The slope of the line"""
         return self.args[0]
-    
+
     @slope.setter
     def slope(self, _slope):
         """slope.setter"""
         self.args[0] = _slope
-    
+
     @property
     def intercept(self):
         """The y-intercept of the line"""
         return self.args[1]
-
 
     @intercept.setter
     def intercept(self, _intercept):
@@ -86,11 +85,11 @@ class Erf(Model):
     Notes
     -----
     The function is defined as
-    
+
     .. math::
 
        f(x; a, m, x_0, y_0) = a\,\mathrm{erf}(m(x-x_0)) + y_0\,,
-    
+
     where :math:`\mathrm{erf}(x)` is the error function [1]_,
     :math:`a` is the peak to peak amplitude, :math:`m` is the
     slope at the inflection point, :math:`x_0` is the :math:`x` offset
@@ -103,7 +102,7 @@ class Erf(Model):
     """
     def __init__(self, args=None):
         """Constructor
-        
+
         Parameters
         ----------
         args : array, optional
@@ -127,7 +126,7 @@ class Erf(Model):
     def amplitude(self):
         """Peak to Peak amplitude of the error function."""
         return self.args[0]
-    
+
     @amplitude.setter
     def amplitude(self, _amplitude):
         """amplitude.setter"""
@@ -137,7 +136,7 @@ class Erf(Model):
     def slope(self):
         """Slope at the inflection point."""
         return self.args[1]
-    
+
     @slope.setter
     def slope(self, _slope):
         """slope.setter"""
@@ -147,7 +146,7 @@ class Erf(Model):
     def x_offset(self):
         """x offset"""
         return self.args[2]
-    
+
     @x_offset.setter
     def x_offset(self, _x_offset):
         """x_offset.setter"""
@@ -157,12 +156,8 @@ class Erf(Model):
     def y_offset(self):
         """y offset"""
         return self.args[3]
-    
+
     @y_offset.setter
     def y_offset(self, _y_offset):
         """y_offset.setter"""
         self.args[3] = _y_offset
-
-
-
-

@@ -76,7 +76,7 @@ def calibrate_linear(
     return_model : boolean, optional
         Return a kontrol.curvefit.model.Model object with the fitted
         parameters.
-    
+
     Returns
     -------
     slope : float
@@ -98,7 +98,7 @@ def calibrate_linear(
         full_range = max(ydata) - min(ydata)
     if start_index is None:
         mid_range = np.mean([max(ydata), min(ydata)])
-        ## Find the element closest to the mid_range
+        # Find the element closest to the mid_range
         error = None
         for i in range(len(ydata)):
             if error is None:
@@ -115,11 +115,11 @@ def calibrate_linear(
     curvefit.cost = cost
     curvefit.optimizer = optimizer
 
-    mask = np.zeros_like(xdata)==1
+    mask = np.zeros_like(xdata) == 1
     for i in range(len(mask)):
         if (
             i == start_index or i-1 == start_index
-            or i+1 == start_index):
+                or i+1 == start_index):
             # Set the mask such the the middle points are true.
             mask[i] = True
     # Starting from 3 points in the middle, fit a straight line
@@ -142,10 +142,10 @@ def calibrate_linear(
         if len(xdata[mask]) == len(curvefit.xdata):
             # terminate when dataset didn't increase
             break
-    
+
     slope = curvefit.model.slope
     intercept = curvefit.model.intercept
-    
+
     returns = (slope, intercept)
     if return_linear_range:
         linear_range = max(curvefit.ydata) - min(curvefit.ydata)
@@ -176,7 +176,7 @@ def calibrate_erf(
     return_model : boolean, optional
         Return a kontrol.curvefit.model.Model object with the fitted
         parameters.
-    
+
     Returns
     -------
     slope : float
@@ -191,7 +191,7 @@ def calibrate_erf(
     Credits to Kouseki Miyo, the inventor of this method.
 
     We fit the following function
-    
+
     .. math::
        f(x; a, m, x_0, y_0) = a\,\mathrm{erf}(m(x-x_0)) + y_0\,\,
 
@@ -240,7 +240,7 @@ def calibrate_erf(
     x0_amplitude = (max(ydata)-min(ydata)) / 2
     x0_slope = ((ydata[-1] - ydata[0]) / (xdata[-1] - xdata[0]))
     mid_range = np.mean([max(ydata), min(ydata)])
-    ## Find the element closest to the mid_range
+    # Find the element closest to the mid_range
     error = None
     for i in range(len(ydata)):
         if error is None:
@@ -256,7 +256,7 @@ def calibrate_erf(
     curvefit.optimizer_kwargs = optimizer_kwargs
     res = curvefit.fit()
 
-    ## Unscaling
+    # Unscaling
     curvefit.model.amplitude *= y_scale
     curvefit.model.slope /= x_scale
     curvefit.model.x_offset *= x_scale
@@ -278,7 +278,7 @@ def calibrate_erf(
         y = kontrol.curvefit.model.StraightLine(args=[slope, intercept])
         full_range = max(curvefit.model(xdata)) - min(curvefit.model(xdata))
         nonlinearity_mask = (abs(y(xdata) - curvefit.model(xdata))
-                             /full_range
+                             / full_range
                              * 100)
         mask = nonlinearity_mask < nonlinearity
         y_linear = ydata[mask]

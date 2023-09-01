@@ -41,15 +41,6 @@ def sekiguchi(coefs):
 
     blend_freq = coefs[0]
     _coefs = [blend_freq]*4
-    # hpf_numerator = [
-    #     1,
-    #     7*blend_freq,
-    #     21*blend_freq**2,
-    #     35*blend_freq**3,
-    #     0, 0, 0, 0,
-    # ]
-    # hpf = control.tf(hpf_numerator, [1]) * control.tf([1], [1, blend_freq])**7
-    # lpf = 1 - hpf
     return modified_sekiguchi(_coefs)
 
 
@@ -94,7 +85,7 @@ def modified_sekiguchi(coefs):
 
 def generalized_sekiguchi(fb, order_low_pass, order_high_pass):
     """Generalized Sekiguchi Filter
-    
+
     Parameters
     ----------
     fb : float
@@ -103,7 +94,7 @@ def generalized_sekiguchi(fb, order_low_pass, order_high_pass):
         Order of roll-off of the low-pass filter
     order_high_pass : int
         Order of roll-off of the high-pass filter
-    
+
     Returns
     -------
     lpf : kontrol.TransferFunction
@@ -114,7 +105,7 @@ def generalized_sekiguchi(fb, order_low_pass, order_high_pass):
     nl = order_low_pass
     nh = order_high_pass
     den = (scipy.special.comb(nl+nh-1, np.arange(0, nl+nh))
-           *(2*np.pi*fb)**np.arange(0, nl+nh))
+           * (2*np.pi*fb)**np.arange(0, nl+nh))
     lpf_num = den[nl:]
     lpf = kontrol.TransferFunction(lpf_num, den)
     return lpf, 1-lpf
@@ -150,8 +141,9 @@ def lucia(coefs):
     p1, p2, z1, w1, q1, w2, q2 = coefs
     hpf = control.tf([1], [1/p1, 1])**5 * control.tf([1], [1/p2, 1])**3
     hpf *= control.tf([1/z1, 1], [1])
-    hpf *= control.tf([1, w1/q1, w1**2], [w1**2]) * control.tf([1, w2/q2, w2**2], [w2**2])
-    hpf *= control.tf([1, 0],[1])**3
+    hpf *= control.tf(
+        [1, w1/q1, w1**2], [w1**2]) * control.tf([1, w2/q2, w2**2], [w2**2])
+    hpf *= control.tf([1, 0], [1])**3
     hpf *= hpf.den[0][0][0]/hpf.num[0][0][0]
     lpf = 1 - hpf
     return (lpf, hpf)

@@ -146,7 +146,7 @@ class DMD:
     def snapshot_1(self, _snapshot_1):
         """snapshot_1.setter"""
         self._snapshot_1 = _snapshot_1
-        
+
     @property
     def snapshot_2(self):
         """Snapshot 1"""
@@ -156,10 +156,10 @@ class DMD:
     def snapshot_2(self, _snapshot_2):
         """snapshot_2.setter"""
         self._snapshot_2 = _snapshot_2
-        
+
     def svd(self):
         """Decompose the snapshot 1
-        
+
         Returns
         -------
         u : array
@@ -207,14 +207,14 @@ class DMD:
 
     def low_rank_approximation(self, truncation_value=None):
         """Truncate the svd.
-        
+
         Paramters
         ---------
         truncation_value : int, optional
             The truncation value (order/rank) of the system.
             Specify as self.truncation_value or via the constuctor option.
             Defaults None.
-        
+
         Returns
         -------
         u_truncated : array
@@ -230,7 +230,7 @@ class DMD:
             truncation_value = self.truncation_value
         else:
             self.truncation_value = truncation_value
-        #TODO Add option to automatically select truncation value
+        # TODO Add option to automatically select truncation value
 
         if self.u is None or self.sigma is None or self.vh is None:
             self.svd()
@@ -244,7 +244,7 @@ class DMD:
         self.sigma_truncated = sigma_truncated  # This is a square matrix
         self.vh_truncated = vh_truncated
         return u_truncated, sigma_truncated, vh_truncated
-    
+
     @property
     def truncation_value(self):
         """Truncation value (order/rank) of the system"""
@@ -287,7 +287,7 @@ class DMD:
 
     def compute_reduced_model(self):
         """Compute the reduced-order model
-        
+
         Returns
         -------
         A_reduced : array
@@ -314,7 +314,7 @@ class DMD:
     def A_reduced(self, _A_reduced):
         """A_reduced.setter"""
         self._A_reduced = _A_reduced
-    
+
     def eig_reduced_model(self):
         """Eigen decomposition of the reduced-order model
 
@@ -335,7 +335,7 @@ class DMD:
 
     def compute_dmd_modes(self):
         """Compute the DMD modes
-        
+
         Returns
         -------
         dmd_modes : array
@@ -376,7 +376,7 @@ class DMD:
             self.dt = dt
         if self.w_reduced is None:
             self.eig_reduced_model()
-            
+
         complex_frequencies = np.log(self.w_reduced) / self.dt
         self.complex_frequencies = complex_frequencies
         return complex_frequencies
@@ -403,7 +403,7 @@ class DMD:
 
     def predict(self, t, t_constant=None, i_constant=0):
         """Predict the future states given a time array
-        
+
         Parameters
         ----------
         t : array
@@ -430,11 +430,11 @@ class DMD:
         """
         # Make complex frequencies into a diagonal matrix.
         diag_complex_frequencies = np.diag(self.complex_frequencies)
-        
+
         # Expand the array into another dimension as time series.
         complex_frequencies_series = np.repeat(
             diag_complex_frequencies[:, :, np.newaxis], len(t), axis=2)
-        
+
         # Compute the exponentials.
         exponentials = np.exp(complex_frequencies_series * t)
 
@@ -445,7 +445,7 @@ class DMD:
         exponentials[...] = 0
         diag[...] = save
         # exponentials is diagonalized.
-        
+
         # Compute the constant vector.
         # Assume t=0 at snapshot[:, 0].
         # v_constant, _, _, _ = np.linalg.lstsq(
@@ -454,11 +454,11 @@ class DMD:
         if t_constant is None:
             t_constant = t[0]
         v_constant, _, _, _ = np.linalg.lstsq(
-            self.dmd_modes\
-                @ np.diag(np.exp(self.complex_frequencies*t_constant)),
+            self.dmd_modes
+            @ np.diag(np.exp(self.complex_frequencies*t_constant)),
             self.snapshot_1[:, i_constant], rcond=None)
         self.v_constant = v_constant
-        
+
         # Compute time dynamics exp(omega*t) @ b
         time_dynamics = np.einsum("ijk,j->ik", exponentials, v_constant)
         self.time_dynamics = time_dynamics
@@ -498,4 +498,3 @@ class DMD:
     def prediction(self, _prediction):
         """prediction.setter"""
         self._prediction = _prediction
-

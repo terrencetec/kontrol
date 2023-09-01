@@ -81,7 +81,7 @@ def zpk(zeros, poles, gain, unit='f', negate=True):
         for i in range(len(poles)):
             poles[i] = -poles[i]
 
-    zpk_tf = control.tf([gain],[1])
+    zpk_tf = control.tf([gain], [1])
     for z in zeros:
         zpk_tf *= control.tf([1/z, 1], [1])
     for p in poles:
@@ -283,7 +283,7 @@ def generic_tf(zeros=None, poles=None,
         poles_wn = []
     if poles_q is None:
         poles_q = []
-    
+
     zeros = np.array(zeros)
     poles = np.array(poles)
     zeros_wn = np.array(zeros_wn)
@@ -392,13 +392,7 @@ def tf_order_split(tf, max_order=20):
     zeros = tf.zeros()
     poles = tf.poles()
     gain = tf.minreal().num[0][0][0]
-    # for i in range(len(zeros)):
-        # if zeros[i]
-    nzero = len(zeros)
-    npole = len(poles)
-    niter_zero = int(np.ceil(nzero/max_order))
-    niter_pole = int(np.ceil(npole/max_order))
-    
+
     global order_running
     global zero_running
     global tf_zero_list
@@ -409,7 +403,7 @@ def tf_order_split(tf, max_order=20):
     tf_zero_list = []
     pole_running = []
     tf_pole_list = []
-    
+
     def put_tf_zeros_into_list():
         """Use zeros in zero_running to create an all zero transfer function
         and put store them into tf_zero_list, and reset order_running to 0.
@@ -497,11 +491,11 @@ def tf_order_split(tf, max_order=20):
             order_running += 2
             zero_running += [zeros[i]]
         else:
-            pass  ## Ignore negative part of the complex pair.
-   
-    ## Add the reminders
+            pass  # Ignore negative part of the complex pair.
+
+    # Add the reminders
     put_tf_zeros_into_list()
-            
+
     for i in range(len(poles)):
         if poles[i].imag == 0:
             if order_running+1 > max_order:
@@ -514,8 +508,8 @@ def tf_order_split(tf, max_order=20):
             order_running += 2
             pole_running += [poles[i]]
         else:
-            pass  ## Ignore negative part of the complex pair.
-    
+            pass  # Ignore negative part of the complex pair.
+
     put_tf_poles_into_list()
 
     n_tf = max(len(tf_pole_list), len(tf_zero_list))
@@ -613,7 +607,7 @@ def clean_tf2(tf, tol_order=5, small_number=1e-25):
             tf_cleaned *= (s+abs(zero))/abs(zero)
         elif zero == 0:
             tf_cleaned *= s
-        
+
     for i, pole in enumerate(poles):
         if mask_poles[i]:  # Remove outliers
             continue
@@ -639,7 +633,7 @@ def clean_tf2(tf, tol_order=5, small_number=1e-25):
 
 def clean_tf3(tf, tol_order=5, small_number=1e-25):
     """Remove first coefficient if it is much smaller than the second
-    
+
     Parameters
     ----------
     tf : TransferFunction
@@ -651,7 +645,7 @@ def clean_tf3(tf, tol_order=5, small_number=1e-25):
         numerator and denominator.
     small_number : float, optional
         A small number to be added to the log10() in case 0 is encountered.
-    
+
     Returns
     -------
     tf_cleaned : TransferFunction
@@ -660,7 +654,7 @@ def clean_tf3(tf, tol_order=5, small_number=1e-25):
     num = tf.num[0][0].copy()
     den = tf.den[0][0].copy()
     if (abs(np.log10(num[0]) - np.log10(num[1])) > tol_order
-        and abs(np.log10(den[0]) - np.log10(den[1])) > tol_order):
+       and abs(np.log10(den[0]) - np.log10(den[1])) > tol_order):
         #
         tf_cleaned = control.tf(tf.num[0][0][1:], tf.den[0][0][1:])
     else:

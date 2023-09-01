@@ -1,6 +1,5 @@
 """Complementary filter class for sythesis
 """
-import control
 import numpy as np
 
 
@@ -53,7 +52,7 @@ class ComplementaryFilter():
         :math:`\mathcal{H}_\infty`-norm
         of the super sensor noise. The noise must be specified
         before using this method.
-    
+
     Notes
     -----
     This is a utility class for complementary filter synthesis,
@@ -120,7 +119,7 @@ class ComplementaryFilter():
 
     def h2synthesis(self, clean_filter=True, **kwargs):
         """Synthesize complementary filters using H2 synthesis.
-        
+
         Returns
         -------
         filter1 : TransferFunction
@@ -138,7 +137,7 @@ class ComplementaryFilter():
 
     def hinfsynthesis(self, clean_filter=True, **kwargs):
         """Synthesize complementary filters using H-inifinity synthesis.
-        
+
         Returns
         -------
         filter1 : TransferFunction
@@ -242,7 +241,7 @@ class ComplementaryFilter():
             The complementary filter for filtering noise1
             Use self.filter2 if not specified.
             Defaults None
-        
+
         Returns
         -------
         array

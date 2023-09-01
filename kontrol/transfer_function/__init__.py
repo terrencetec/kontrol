@@ -1,2 +1,2 @@
 from .transfer_function import *
-from .notch import * 
+from .notch import *

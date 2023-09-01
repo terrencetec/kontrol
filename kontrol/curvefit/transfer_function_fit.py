@@ -39,14 +39,14 @@ class TransferFunctionFit(CurveFit):
     model_kwargs : ``dict`` or ``None``, optional
         Keyword arguments passed to the model.
         Defaults to ``None``.
-    cost : ``kontrol.curvefit.Cost`` or ``func(args, model, xdata, ydata)``\
-            -> ``array``, optional
+    cost : kontrol.curvefit.Cost or callable
         Cost function.
-        The cost function to be used to fit the data.
+        The callable has a signature of
+        func(args, model, xdata, ydata) -> array.
         First argument is a list of parameters that will be passed to
         the model.
         This must be pickleable if multiprocessing is to be used.
-        Defaults to ``None``.
+        Defaults to None.
     weight : ``array`` or ``None``, optional
         Weighting function.
         Defaults ``None``.
@@ -81,23 +81,24 @@ class TransferFunctionFit(CurveFit):
         ydata : ``array`` or ``None``, optional
             Transfer function frequency response in complex numbers.
             Defaults to ``None``.
-        model : ``func(x: ``array``, args: ``array``, **kwargs)`` ->\
-                ``array``, or ``None``, optional
+        model : callable or None, optional
             The model used to fit the data.
-            ``args`` in model is an ``array`` of parameters that
+            The callable has a signature of
+            func(x: array, args: array, **kwargs) -> array.
+            ``args`` in model is an array of parameters that
             define the model.
-            Defaults to ``None``
+            Defaults to None
         model_kwargs : ``dict`` or ``None``, optional
             Keyword arguments passed to the model.
             Defaults to ``None``.
-        cost : ``kontrol.curvefit.Cost`` or ``func(args, model, xdata, ydata)``\
-                -> ``array``, optional
+        cost : kontrol.curvefit.Cost or callable
             Cost function.
-            The cost function to be used to fit the data.
+            The callable has a signature of
+            func(args, model, xdata, ydata) -> array.
             First argument is a list of parameters that will be passed to
             the model.
             This must be pickleable if multiprocessing is to be used.
-            Defaults to ``None``.
+            Defaults to None.
         weight : ``array`` or ``None``, optional
             Weighting function.
             Defaults ``None``.
@@ -105,8 +106,7 @@ class TransferFunctionFit(CurveFit):
             Keyword arguments the will be passed to ``error_func``,
             which is passed to the construct the cost function.
             Defaults to ``None``.
-        optimizer : ``func(func, **kwargs)`` -> ``OptimizeResult``, or ``None``,\
-                    optional
+        optimizer : func(func, **kwargs) -> OptimizeResult, or None, optional
             The optimization algorithm use for minimizing the cost function.
         optimizer_kwargs : ``dict`` or ``None``, optional
             Keyword arguments passed to the optimizer function.
@@ -135,7 +135,7 @@ class TransferFunctionFit(CurveFit):
             maxiter = None
         else:
             maxiter = len(x0)*1000
-        default_options = {"adaptive": True, "maxiter": maxiter}    
+        default_options = {"adaptive": True, "maxiter": maxiter}
         if options is None:
             options = default_options
         else:
@@ -180,7 +180,7 @@ class TransferFunctionFit(CurveFit):
     def options(self):
         """Option arguments passed to optimizer"""
         return self._options
-    
+
     @options.setter
     def options(self, _options):
         """options.setter"""
@@ -189,12 +189,12 @@ class TransferFunctionFit(CurveFit):
         else:
             self._options = _options
         self._update_optimizer_kwargs()
-        
+
     @property
     def x0(self):
         """Initial guess"""
         return self._x0
-    
+
     @x0.setter
     def x0(self, _x0):
         """x0.setter"""
@@ -216,15 +216,14 @@ class TransferFunctionFit(CurveFit):
             self.optimizer_kwargs = dict(
                 self.optimizer_kwargs, **update_optimizer_kwargs)
         self._update_options()
-    
+
     def _update_options(self):
         """Update optimizer options"""
         maxiter = self._get_maxiter()
-        update_options = {"maxiter": maxiter}    
+        update_options = {"maxiter": maxiter}
         if "options" not in self.optimizer_kwargs:
             options = update_options
-        else: 
+        else:
             options = dict(self.optimizer_kwargs["options"], **update_options)
         options = dict(options, **self.options)  # self.options have priority
         self.optimizer_kwargs["options"] = options
-

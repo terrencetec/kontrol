@@ -4,20 +4,20 @@ import numpy as np
 
 def hankel(array, order):
     """Hankelize an array
-    
+
     Parameters
     ----------
     array : array
         Array with rows as channels and columns as samples
-    
+
     order : int
         The number of rows of the hankelized matrix.
-    
+
     Returns
     -------
     hankel_array : array
         The hankelized array
-    
+
     Examples
     --------
     .. code-block: python
@@ -35,7 +35,7 @@ def hankel(array, order):
 
 def auto_truncate(sigma, threshold=0.99):
     """Automatically get truncation value
-    
+
     Parameters
     ----------
     sigma : array
@@ -44,7 +44,7 @@ def auto_truncate(sigma, threshold=0.99):
         Only include singular values so their sum is
         ``threshold`` of the original sum.
         Defaults 0.99.
-        
+
     Returns
     -------
     truncation_value : int

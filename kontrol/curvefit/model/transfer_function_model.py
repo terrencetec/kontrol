@@ -240,7 +240,7 @@ class SimpleZPK(Model):
         Number of simple poles.
     args : array, optional
          The model parameters defined as
-         ``args = [z1, z2,..., p1, p2,..., k]`` 
+         ``args = [z1, z2,..., p1, p2,..., k]``
          where ``z`` are the locations of the zeros in Hz,
          ``p`` are the locations of the pole in Hz, and
          ``k`` is the static gain,
@@ -251,7 +251,7 @@ class SimpleZPK(Model):
         So, when the real parameters will be assumed to be
         10**args instead.
         Defaults to False.
-    
+
     Attributes
     ----------
     zero : array
@@ -283,7 +283,7 @@ class SimpleZPK(Model):
             Number of simple poles.
         args : array, optional
              The model parameters defined as
-             ``args = [z1, z2,..., p1, p2,..., k]`` 
+             ``args = [z1, z2,..., p1, p2,..., k]``
              where ``z`` are the locations of the zeros in Hz,
              ``p`` are the locations of the pole in Hz, and
              ``k`` is the static gain,
@@ -300,22 +300,22 @@ class SimpleZPK(Model):
         self.nzero = nzero
         self.npole = npole
         super().__init__(args=args, log_args=log_args)
-    
+
     def _x2y(self, x, xunit="Hz"):
         """ZPK model frequency response."""
         s = _x2s(x, xunit)
-        tf = np.ones_like(s) * self.gain 
+        tf = np.ones_like(s) * self.gain
         for i in range(len(self.zero)):
             tf *= s/(2*np.pi*self.zero[i]) + 1
         for i in range(len(self.pole)):
-            tf /= s/(2*np.pi*self.pole[i]) + 1  
+            tf /= s/(2*np.pi*self.pole[i]) + 1
         return tf
-                
+
     @property
     def nzero(self):
         """Number of simple zeros"""
         return self._nzero
-    
+
     @nzero.setter
     def nzero(self, _nzero):
         """nzero.setter"""
@@ -325,7 +325,7 @@ class SimpleZPK(Model):
     def npole(self):
         """Number of complex pole pairs"""
         return self._npole
-    
+
     @npole.setter
     def npole(self, _npole):
         """npole.setter"""
@@ -347,9 +347,9 @@ class SimpleZPK(Model):
             if self.log_args:
                 _args = 10**_args
             self._args = _args
-    
-    #TODO Maybe I should consider setter for zero, pole and gain.
-    #These can be used to change the args as well but could be tedious.
+
+    # TODO Maybe I should consider setter for zero, pole and gain.
+    # These can be used to change the args as well but could be tedious.
     @property
     def zero(self):
         """List of zeros"""
@@ -373,13 +373,13 @@ class SimpleZPK(Model):
         for i in range(len(self.zero)):
             tf *= s/(2*np.pi*self.zero[i]) + 1
         for i in range(len(self.pole)):
-            tf /= s/(2*np.pi*self.pole[i]) + 1  
+            tf /= s/(2*np.pi*self.pole[i]) + 1
         return kontrol.TransferFunction(tf)
 
 
 class ComplexZPK(Model):
     r"""ZPK model with complex poles and zeros.
-    
+
     Parameters
     ----------
     nzero_pairs : int
@@ -452,9 +452,9 @@ class ComplexZPK(Model):
         -------
         with ``nzero_pairs = 1``, ``npole_pairs = 2``,
         args = [1, 2, 3, 4, 5, 6, 7] refers to a transfer function
-        
+
         .. math::
-           
+
            G(s) = 7\frac{\frac{1}{(1\times 2\pi)^2}s^2
            + \frac{1}{2\times 1 \ times 2\pi}s + 1}
            {\left(\frac{1}{(3\times 2\pi)^2}s^2
@@ -472,7 +472,7 @@ class ComplexZPK(Model):
         self.nzero_pairs = nzero_pairs
         self.npole_pairs = npole_pairs  # self.npole_pairs is not used.
         super().__init__(args=args, log_args=log_args)
-    
+
     def _x2y(self, x, xunit="Hz"):
         """ZPK model (complex) frequency response."""
         s = _x2s(x, xunit)
@@ -491,12 +491,12 @@ class ComplexZPK(Model):
                     + 1 / (2*np.pi*fn_pole[i]*q_pole[i]) * s
                     + 1)
         return num/den
-        
+
     @property
     def nzero_pairs(self):
         """Number of complex zero pairs"""
         return self._nzero_pairs
-    
+
     @nzero_pairs.setter
     def nzero_pairs(self, _nzero_pairs):
         """nzero_pairs.setter"""
@@ -506,12 +506,12 @@ class ComplexZPK(Model):
     def npole_pairs(self):
         """Number of complex pole pairs"""
         return self._npole_pairs
-    
+
     @npole_pairs.setter
     def npole_pairs(self, _npole_pairs):
         """npole_pairs.setter"""
         self._npole_pairs = _npole_pairs
-    
+
     @property
     def args(self):
         """Model parameters in ZPK [f1, q1, f2, q2,..., fn, qn, k] format"""
@@ -533,7 +533,7 @@ class ComplexZPK(Model):
             if self.log_args:
                 _args = 10**_args
             self._args = _args
-    
+
     @property
     def fn_zero(self):
         """List of resonance frequencies of complex zeros."""
@@ -558,7 +558,7 @@ class ComplexZPK(Model):
     def gain(self):
         """Static gain."""
         return self.args[-1]
-    
+
     @property
     def tf(self):
         """Returns a TransferFunction object of this ZPK model"""
@@ -581,9 +581,8 @@ class ComplexZPK(Model):
         return kontrol.TransferFunction(num/den)
 
 
-#TODO add support for a generic ZPK model
+# TODO add support for a generic ZPK model
 
-        
 def _x2s(x, xunit):
     """Converts the independent variable to the complex variable s.
 
@@ -610,5 +609,3 @@ def _x2s(x, xunit):
         raise ValueError("Invalid specification for xunit."
                          "Please choose xunit from 'Hz', 'rad/s', or 's'.")
     return s
-
-

@@ -48,9 +48,9 @@ def tf2foton(
         raise ValueError("expression {} not available."
                          "Please select expression from [\"zpk\", \"rpoly\"."
                          "".format(expression))
-    ## Divide tf into tfs with less than 20 order.
-    ## Do tf conversion.
-    ## Stack the string
+    # Divide tf into tfs with less than 20 order.
+    # Do tf conversion.
+    # Stack the string
     foton_expression = ""
     tf_list = kontrol.core.controlutils.tf_order_split(tf, max_order=20)
     if len(tf_list) > 1:
@@ -123,7 +123,7 @@ def tf2zpk(tf, root_location="s", significant_figures=6,
     str_zeros = ""  # String of list of zeros (placeholder)
     str_poles = ""  # String of list of poles (placeholder)
 
-    ## get zeros and poles.
+    # get zeros and poles.
     if root_location in ["f", "n"]:
         zeros /= 2*np.pi
         poles /= 2*np.pi
@@ -131,7 +131,7 @@ def tf2zpk(tf, root_location="s", significant_figures=6,
         zeros = -zeros.conjugate()
         poles = -poles.conjugate()
 
-    ## get zeros and poles list, and sort.
+    # get zeros and poles list, and sort.
     z_wn = np.sqrt(tf.zeros().real**2 + tf.zeros().imag**2)
     p_wn = np.sqrt(tf.poles().real**2 + tf.poles().imag**2)
     z_sort_arg = z_wn.argsort()
@@ -139,7 +139,7 @@ def tf2zpk(tf, root_location="s", significant_figures=6,
     z_wn.sort()
     p_wn.sort()
 
-    ## get gain
+    # get gain
     gain = tf.minreal().num[0][0][0]
     if root_location in ["n"]:
         for wn in p_wn:
@@ -153,7 +153,7 @@ def tf2zpk(tf, root_location="s", significant_figures=6,
             else:
                 gain *= 2*np.pi
 
-    ## Convert to zpk expressing string
+    # Convert to zpk expressing string
     for zero in zeros[z_sort_arg]:
         if abs(zero.imag)/abs(zero.real+epsilon) < itol:
             str_zeros += "{:.{}g}".format(zero.real, significant_figures)
@@ -201,8 +201,8 @@ def tf2rpoly(tf, significant_figures=6):
 
     num = tf.minreal().num[0][0]
     den = tf.minreal().den[0][0]
-    str_num = ""  ## String of numerator coefficients
-    str_den = ""  ## String of numerator coefficients
+    str_num = ""  # String of numerator coefficients
+    str_den = ""  # String of numerator coefficients
     gain = num[0]
     num /= num[0]
 
@@ -260,12 +260,12 @@ def _order_gt(tf, order):
 
 def foton2tf(foton_string):
     """Convert a Foton string to TransferFunction
-    
+
     Parameters
     ----------
     foton_string : str
         The Foton string, e.g. zpk([0], [1; 1], 1, "n").
-    
+
     Returns
     -------
     tf : TransferFunction
@@ -283,7 +283,7 @@ def foton2tf(foton_string):
 
 def zpk2tf(foton_string):
     """Convert a Foton ZPK string to TransferFunction
-    
+
     Paramters
     ---------
     foton_string : str
@@ -311,7 +311,7 @@ def zpk2tf(foton_string):
         if zp_string == [""]:
             return np.array(zp)
         for string in zp_string:
-            #split real and imaginary
+            # split real and imaginary
             split = string.split("i*")
             if len(split) == 2:
                 real_string, imag_string = split
@@ -322,7 +322,7 @@ def zpk2tf(foton_string):
                 sign = "+"
             real_string = real_string.rstrip("+")
             real_string = real_string.rstrip("-")
-            
+
             zp_complex = f"{real_string}{sign}{imag_string}j"
             zp.append(complex(zp_complex))
         zp = np.array(zp)
@@ -346,7 +346,7 @@ def zpk2tf(foton_string):
         zeros = -zeros
         poles = -poles
 
-    tf = control.tf([1],[1])
+    tf = control.tf([1], [1])
     s = control.tf("s")
 
     for zero in zeros:
@@ -379,7 +379,7 @@ def zpk2tf(foton_string):
         tf *= gain
     elif root_location in "sf":
         tf *= gain / (tf.num[0][0][0]/tf.den[0][0][0])
-    
+
     return kontrol.TransferFunction(tf)
 
 
@@ -396,6 +396,7 @@ def rpoly2tf(foton_string):
     foton_string = foton_string.replace("(", "")
     foton_string = foton_string.replace(")", "")
     num_string, den_string, gain_string = foton_string.split(",")
+
     def string2floatarray(string):
         """Convert a string of float array to array"""
         string = string.replace("[", "")
@@ -403,7 +404,7 @@ def rpoly2tf(foton_string):
         string = string.split(";")
         float_array = []
         if string == [""]:
-            return np.array(float_array) 
+            return np.array(float_array)
         for value in string:
             float_array.append(float(value))
         return np.array(float_array)
@@ -417,7 +418,7 @@ def rpoly2tf(foton_string):
 
 def notch(frequency, q, depth, significant_figures=6):
     """Returns the foton expression of a notch filter.
-    
+
     Parameters
     ----------
     frequency : float

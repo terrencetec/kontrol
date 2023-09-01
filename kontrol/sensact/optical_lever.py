@@ -1,7 +1,6 @@
 """Optical lever sensing matrix
 """
 import numpy as np
-import scipy
 
 import kontrol
 
@@ -972,7 +971,7 @@ def c_align(r_h, r_v, alpha_h, alpha_v,
             [2*np.sin(alpha_v)*(1-d_v/f_v), 2*((1-d_v/f_v)*r_lens_v + d_v), 0]
         ])
     if (f_h == np.inf or f_v == np.inf
-        or (d_h == 0 and d_v == 0) or (r_lens_h == 0 and r_lens_v == 0)):
+       or (d_h == 0 and d_v == 0) or (r_lens_h == 0 and r_lens_v == 0)):
         # If the length-sensing optical lever doesn't exist.
         c_align_inv[2:] = np.zeros_like(c_align_inv[2:])
         c_align_inv[:, 0] = np.zeros_like(c_align_inv[:, 0])
@@ -1019,6 +1018,7 @@ def c_rotation(phi_tilt, phi_len):
             [0, 0, -np.sin(phi_len), np.cos(phi_len)]
         ])
     return _c_rotation
+
 
 def c_miscenter(delta_x, delta_y):
     """Returns the matrix for correcting miscentered optical lever beam.

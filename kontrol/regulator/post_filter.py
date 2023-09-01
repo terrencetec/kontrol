@@ -98,13 +98,13 @@ def post_low_pass(
     regulator *= post_filter
     oltf = plant * regulator
     _, pms, _, _, ugfs, _ = control.stability_margins(oltf, returnall=True)
- 
+
     if ignore_ugf_above is None:
         ignore_ugf_above = max(ugfs)/2/np.pi * 10**decades_after_ugf
     if f_start is None:
         f_start = max(ugfs)/2/np.pi * 10**decades_after_ugf
 
-    ## Make initial guesses for the low-pass filter cutoff frequency.
+    # Make initial guesses for the low-pass filter cutoff frequency.
     lower_edge_mask = (
         (abs(oltf(1j*(ugfs+ugfs*small_number)))
          < abs(oltf(1j*(ugfs-ugfs*small_number))))
@@ -126,7 +126,7 @@ def post_low_pass(
         # Then, find the phase margin using control.stability_margins.
         for ugf in ugfs:
             oltf_ *= 1/abs(oltf_(1j*ugf))  # Equalize the ugf
-            _, pms_, _, _, ugfs_, _ =  control.stability_margins(
+            _, pms_, _, _, ugfs_, _ = control.stability_margins(
                 oltf_, returnall=True)
             for i, ugf_ in enumerate(ugfs_):
                 if i == 0:
@@ -136,13 +136,13 @@ def post_low_pass(
                     if abs(ugf_-ugf) < abs(ugf_phase_eval-ugf):
                         ugf_phase_eval = ugf_
                         index_phase_eval = i
-            pms.append(pms_[index_phase_eval])          
+            pms.append(pms_[index_phase_eval])
         pms = np.array(pms)
 
     # Count phase margins that are already lower than
     # the specified phase margin and ignore them.
     n_pm_ignore = np.sum(pms < phase_margin)
-    
+
     # Count number of phase margins
     n_pm = len(pms)
 
@@ -163,7 +163,7 @@ def post_low_pass(
     # Update 2022-01-17: Use the low-passed OLTF to evaluate UGF
     # but only use the first mode of the plant (if the plant is oscillatory)
     # to evaluate phase.
-    
+
     # Start coarse searching
     while 1:
         oltf_lp = oltf * low_pass(fc, **kwargs)
@@ -186,7 +186,7 @@ def post_low_pass(
             # Then, find the phase margin using control.stability_margins.
             for ugf in ugfs:
                 oltf_ *= 1/abs(oltf_(1j*ugf))  # Equalize the ugf
-                _, pms_, _, _, ugfs_, _ =  control.stability_margins(
+                _, pms_, _, _, ugfs_, _ = control.stability_margins(
                     oltf_, returnall=True)
                 for i, ugf_ in enumerate(ugfs_):
                     if i == 0:
@@ -196,18 +196,18 @@ def post_low_pass(
                         if abs(ugf_-ugf) < abs(ugf_phase_eval-ugf):
                             ugf_phase_eval = ugf_
                             index_phase_eval = i
-                pms.append(pms_[index_phase_eval])          
+                pms.append(pms_[index_phase_eval])
             pms = np.array(pms)
-        
-        # Check number of phase margins and see if it changed. 
-        # If it changed, 
+
+        # Check number of phase margins and see if it changed.
+        # If it changed,
         # recount the number of phase margins already lower than target.
         if len(pms) != n_pm:
             if n_pm_ignore > np.sum(pms < phase_margin):
                 # In case the low-pass filter suppressed the problematic peak
                 n_pm_ignore = np.sum(pms < phase_margin)
             n_pm = len(pms)
-        
+
         # Find the minimum phase margin. (Don't count ignored ones.)
         pms_order = np.argsort(pms)
         min_pm_index = pms_order[n_pm_ignore]
@@ -222,7 +222,7 @@ def post_low_pass(
             pm_upper_bound = min_pm
             pm_was_higher = True
             fc /= f_step
-        
+
         # Phase margin crosses specification
         # memorize the two frequencies f1, f2 and break.
         if pm_was_lower and pm_was_higher:
@@ -252,7 +252,7 @@ def post_low_pass(
             # Then, find the phase margin using control.stability_margins.
             for ugf in ugfs:
                 oltf_ *= 1/abs(oltf_(1j*ugf))  # Equalize the ugf
-                _, pms_, _, _, ugfs_, _ =  control.stability_margins(
+                _, pms_, _, _, ugfs_, _ = control.stability_margins(
                     oltf_, returnall=True)
                 for i, ugf_ in enumerate(ugfs_):
                     if i == 0:
@@ -262,7 +262,7 @@ def post_low_pass(
                         if abs(ugf_-ugf) < abs(ugf_phase_eval-ugf):
                             ugf_phase_eval = ugf_
                             index_phase_eval = i
-                pms.append(pms_[index_phase_eval])          
+                pms.append(pms_[index_phase_eval])
             #
             pms = np.array(pms)
 
@@ -279,7 +279,7 @@ def post_low_pass(
             f2 = fm
         if min_pm < pm_lower_bound or min_pm > pm_upper_bound:
             raise ValueError("Phase margin diverges during refinement.")
-    
+
     return low_pass(fm, **kwargs)
 
 
@@ -315,7 +315,7 @@ def post_notch(
         Notch modes that has freqeuncies above ``notch_peaks_above``.
         If not specified, defaults to the highest unity gain frequency that
         is above ``phase_margin``
-        Defaults to None. 
+        Defaults to None.
     notch : func(frequency, q, depth) -> TransferFunction, optional
         The notch filter.
         If not specified, ``kontrol.Notch()`` will be used.
@@ -360,7 +360,7 @@ def post_notch(
     q = q[notch_mask]  # Quality factors
     k = k[notch_mask]  # DC gains
     gain_peak = q*k  # magnitude at the resonance
-    
+
     # Choose modes that have peak higher than the DC gain.
     gain_mask = abs(gain_peak) > abs(k)
     fn = fn[gain_mask]
