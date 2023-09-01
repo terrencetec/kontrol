@@ -55,8 +55,7 @@ a seismic isolation system they you can find example usages of them in
 the :ref:`Tutorials`.
 
 
-References
-----------
+**References**
 
 .. [1]
    Terrence Tak Lun Tsang. Optimizing Active Vibration Isolation Systems in
