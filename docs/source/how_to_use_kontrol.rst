@@ -40,7 +40,7 @@ a control system.
 ``Kontrol`` also provides advanced features for optimizing seismic isolation
 systems.
 
-#. H-infinity optimization for solve complementary filter problems
+#. H-infinity optimization for solving complementary filter problems
    (``kontrol.ComplementaryFilter``).
 
    #. Optimizes complementary filters for sensor fusion.
@@ -51,7 +51,7 @@ systems.
 
 All aforementioned funtionalities are detailed in Chapter 6 and 8 in Ref. [1]_.
 These methods solve the static optimal control problem for
-a seismic isolation system they you can find example usages of them in
+a seismic isolation system. And, you can find example usages of them in
 the :ref:`Tutorials`.
 
 
