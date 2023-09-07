@@ -1,6 +1,6 @@
 package:
   name: "kontrol"
-  version: "1.0.0-beta"
+  version: "1.0.0"
 
 about:
   summary: "Python package for KAGRA suspension and seismic isolation control."
