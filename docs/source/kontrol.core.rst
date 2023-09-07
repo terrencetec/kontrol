@@ -1,5 +1,5 @@
-kontrol.core package
-====================
+kontrol.core
+============
 
 kontrol.core.controlutils module
 --------------------------------

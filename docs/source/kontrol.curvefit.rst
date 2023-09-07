@@ -1,19 +1,19 @@
-kontrol.curvefit package
-================================
+kontrol.curvefit
+================
 
 Primary modules
 ---------------
 
-kontrol.curvefit.curvefit module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kontrol.curvefit.curvefit
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.curvefit.curvefit
    :members:
    :undoc-members:
    :show-inheritance:
 
-kontrol.curvefit.transfer_function_fit module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kontrol.curvefit.transfer_function_fit
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.curvefit.transfer_function_fit
    :members:
@@ -23,16 +23,16 @@ kontrol.curvefit.transfer_function_fit module
 Secondary modules
 -----------------
 
-kontrol.curvefit.cost module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kontrol.curvefit.cost
+^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.curvefit.cost
    :members:
    :undoc-members:
    :show-inheritance:
 
-kontrol.curvefit.error_func module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kontrol.curvefit.error_func
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.curvefit.error_func
    :members:
@@ -42,8 +42,8 @@ kontrol.curvefit.error_func module
 Subpackages
 -----------
 
-kontrol.curve.model subpackage
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kontrol.curve.model
+^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.curvefit.model.model
    :members:

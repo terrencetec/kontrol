@@ -1,19 +1,19 @@
-kontrol.dmd package
-===================
+kontrol.dmd
+===========
 
 Primary modules
 ---------------
 
-kontrol.dmd.dmd module
-^^^^^^^^^^^^^^^^^^^^^^
+kontrol.dmd.dmd
+^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.dmd.dmd
    :members:
    :undoc-members:
    :show-inheritance:
 
-kontrol.dmd.forecast module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kontrol.dmd.forecast
+^^^^^^^^^^^^^^^^^^^^
 .. automodule:: kontrol.dmd.forecast
    :members:
    :undoc-members:
@@ -21,8 +21,8 @@ kontrol.dmd.forecast module
 
 Secondary modules
 -----------------
-kontrol.dmd.utils module
-^^^^^^^^^^^^^^^^^^^^^^^^
+kontrol.dmd.utils
+^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.dmd.utils
    :members:

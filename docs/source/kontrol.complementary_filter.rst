@@ -1,11 +1,11 @@
-kontrol.complementary_filter package
-====================================
+kontrol.complementary_filter
+============================
 
 Primary modules
 ---------------
 
-kontrol.complementary_filter.complementary_filter module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kontrol.complementary_filter.complementary_filter
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.complementary_filter.complementary_filter
    :members:
@@ -15,16 +15,16 @@ kontrol.complementary_filter.complementary_filter module
 Secondary modules
 -----------------
 
-kontrol.complementary_filter.predefined module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kontrol.complementary_filter.predefined
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.complementary_filter.predefined
    :members:
    :undoc-members:
    :show-inheritance:
 
-kontrol.complementary_filter.synthesis module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kontrol.complementary_filter.synthesis
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.complementary_filter.synthesis
    :members:

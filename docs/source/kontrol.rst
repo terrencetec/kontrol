@@ -7,14 +7,19 @@ Subpackages
 .. toctree::
    :maxdepth: 5
 
-   kontrol.core
    kontrol.complementary_filter
+   kontrol.core
    kontrol.curvefit
    kontrol.dmd
-   kontrol.sensact
    kontrol.regulator
+   kontrol.sensact
    kontrol.transfer_function
 
 
 Submodules
 ----------
+
+.. toctree::
+   :maxdepth: 2
+
+   kontrol.ezca

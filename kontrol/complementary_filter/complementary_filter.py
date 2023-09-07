@@ -58,9 +58,9 @@ class ComplementaryFilter():
     This is a utility class for complementary filter synthesis,
     sensor noise estimation and analysis.
     To use synthesis methods, specify ``noise1`` and ``noise2`` as
-    the transfer function modesl for the sensor noises, and
-    specify ``weight1`` and ``weight2`` as the frequency dependent
-    specification for the two sensor noises.
+    the transfer function models for the sensor noises, and
+    specify ``weight1`` and ``weight2`` as the frequency-dependent
+    specifications for the two sensor noises.
 
     References
     ----------

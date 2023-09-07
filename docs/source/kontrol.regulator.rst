@@ -1,27 +1,27 @@
-kontrol.regulator package
-=========================
+kontrol.regulator
+=================
 
 Primary modules
 ---------------
 
-kontrol.regulator.feedback module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kontrol.regulator.feedback
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.regulator.feedback
    :members:
    :undoc-members:
    :show-inheritance:
 
-kontrol.regulator.oscillator module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kontrol.regulator.oscillator
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.regulator.oscillator
    :members:
    :undoc-members:
    :show-inheritance:
 
-kontrol.regulator.post_filter module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kontrol.regulator.post_filter
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.regulator.post_filter
    :members:
@@ -31,8 +31,8 @@ kontrol.regulator.post_filter module
 
 Secondary modules
 -----------------
-kontrol.regulator.predefined module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+kontrol.regulator.predefined
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: kontrol.regulator.predefined
    :members:

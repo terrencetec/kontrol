@@ -86,11 +86,14 @@ Content
                
       #. :ref:`Sensor correction filter synthesis`
 
+      #. :ref:`Sensor fusion and optimal controller (just words)`
+
 #. :ref:`General Utilities`
 
+
 Kontrol has more than what's covered in the tutorials.
-Be sure to check out the :ref:`Main Utilities` and :ref:`Kontrol API`
-sections for detailed documentation.
+Be sure to check out the :ref:`Kontrol API`
+section for detailed documentation.
 
 
 Basic Suspension Commissioning
@@ -185,7 +188,8 @@ The goal is to fit the frequency response with the transfer function model
 
    tutorials/sensors_and_actuators/calibration_of_an_inertial_sensor
 
-And we obtained a Foton string of the calibration filter
+To install the calibration filter to the KAGRA digital system,
+we have obtained a Foton string of the calibration filter
 using the ``kontrol.TransferFunction`` class:
 
 .. code:: Python
@@ -213,9 +217,9 @@ a (geometric) sensing matrix
 
    \mathbf{A} =
    \begin{pmatrix}
-   -0.33333333 & -0.33333333 &  0.66666667\\
-   0.57735027 & -0.57735027 & 0.\\
-   0.33333333 &  0.33333333 &  0.33333333
+   -0.333 & -0.333 &  0.666\\
+   0.577 & -0.577 & 0.\\
+   0.333 &  0.333 &  0.333
    \end{pmatrix}\,,
 
 such that :math:`\vec{x} \approx \mathbf{A}\vec{y}`.
@@ -243,9 +247,9 @@ we were able to obtain a new sensing matrix,
 
    \mathbf{A}_\mathrm{new} =
    \begin{pmatrix}
-   -0.34648554 & -0.30189757 &  0.67664218\\
-   0.56999299 & -0.58521291 & -0.00830399\\
-   0.31314695 &  0.33465657 &  0.35344143
+   -0.346 & -0.301 &  0.676\\
+   0.569 & -0.585 & -0.00830\\
+   0.313 &  0.334 &  0.353
    \end{pmatrix}\,,
 
 that aligns the sensors to the control basis.
@@ -509,7 +513,7 @@ as a sensor fusion problem, it is beneficial to show how a
 sensor fusion problem is solved before going into other problems.
 This is why we begin with a hypotheical sensor fusion scenario.
 
-The way to go is to
+The correct procedure is:
 
 #. Firstly optimize a sensor correction filter.
 
@@ -676,7 +680,7 @@ Seismic noise spectrum modification and modeling
 ************************************************
 We read Chapter 8.3.3 in Ref. [1]_ and realized we need to modify the seismic
 noise spectrum before modeling it.
-Otherwise the sensor correction filter might actually amplifies the
+Otherwise the sensor correction filter might actually amplify the
 seismometer noise and the seismic noise, instead of attenuating them.
 Click the link below to see how we can obtain a proper seismic noise model
 for the optimization purpose.
@@ -688,7 +692,9 @@ for the optimization purpose.
 
 And we've obtained a seismic noise model that has a flat spectrum above
 the secondary microseism.
-The main reasons we had to do this are because
+The reasons behind this are rather involved and the explanation can be found
+in the references.
+But in simple words, the main reasons we had to do this are because
 
 #. Make the sensor correction filter a high-pass filter.
 #. So the sensor correction filter won't amplify any seismometer and seismic

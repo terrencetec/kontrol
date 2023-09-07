@@ -69,7 +69,6 @@ can be used for the physical systems.
    getting_started
    how_to_use_kontrol
    tutorial
-   main_utilities
    kontrol
    contact
    developers
