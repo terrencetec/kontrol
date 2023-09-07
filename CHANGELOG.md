@@ -8,8 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Reviving this changelog, removed logs from before v1.0.0-a0
 - Refined documentations and tutorials.
-- Updated version number to v1.0.0
-- Todo: PEP8 check
+- Updated version number to v1.0.0-beta
+- PEP8 check
+- Added Conda.
 
 ### Removed
 - Modules that are not being used, kontrol.frequency_series, kontrol.unused.

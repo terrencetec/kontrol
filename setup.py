@@ -5,9 +5,9 @@ with open("README.rst", "r") as fh:
 
 setuptools.setup(
     name="kontrol", # Replace with your own username
-    version="1.0.0",
+    version="1.0.0-beta",
     author="TSANG Terrence Tak Lun",
-    author_email="ttltsang@link.cuhk.edu.hk",
+    author_email="terrencetec@gmail.com",
     description="KAGRA control python package",
     long_description=long_description,
     long_description_content_type="text/x-rst",
