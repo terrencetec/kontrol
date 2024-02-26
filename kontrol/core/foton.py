@@ -288,6 +288,7 @@ def zpk2tf(foton_string):
     ---------
     foton_string : str
         The Foton ZPK string, e.g. zpk([0], [1; 1], 1, "n").
+
     Returns
     -------
     tf : TransferFunction
@@ -334,7 +335,7 @@ def zpk2tf(foton_string):
 
     root_location = root_location.replace("'", "")
     root_location = root_location.replace('"', "")
-    # print(root_location)
+
     if root_location in "nf":
         # zeros poles are in Hz. Gain is DC.
         zeros *= 2*np.pi  # Convert to rad/s
@@ -342,6 +343,78 @@ def zpk2tf(foton_string):
     #     print("nf")
 
     if root_location in "sf":
+        # Negate for (s+z), (s+p) convention.
+        zeros = -zeros
+        poles = -poles
+
+    tf = get_zpk2tf((zeros, poles, gain))
+    # print(root_location)
+
+    # tf = control.tf([1], [1])
+    # s = control.tf("s")
+
+    # for zero in zeros:
+    #     if zero == 0:
+    #         tf *= (s+zero)/(2*np.pi)
+    #     elif zero.imag > 0 and zero.real != 0:
+    #         wn = np.sqrt(zero.real**2 + zero.imag**2)
+    #         q = wn / (2*zero.real)
+    #         tf *= (s**2 + wn/q*s + wn**2) / wn**2
+    #     elif zero.imag > 0 and zero.real == 0:
+    #         wn = zero.imag
+    #         tf *= (s**2 + wn**2)/wn**2
+    #     elif zero.imag == 0 and zero.real != 0:
+    #         tf *= (s+zero.real)/zero.real
+
+    # for pole in poles:
+    #     if pole == 0:
+    #         tf /= (s+pole)/(2*np.pi)
+    #     elif pole.imag > 0 and pole.real != 0:
+    #         wn = np.sqrt(pole.real**2 + pole.imag**2)
+    #         q = wn / (2*pole.real)
+    #         tf /= (s**2 + wn/q*s + wn**2) / wn**2
+    #     elif pole.imag > 0 and pole.real == 0:
+    #         wn = pole.imag
+    #         tf /= (s**2 + wn**2)/wn**2
+    #     elif pole.imag == 0 and pole.real != 0:
+    #         tf /= (s+pole.real)/pole.real
+
+    # if root_location == "n":
+    #     tf *= gain
+    # elif root_location in "sf":
+    #     tf *= gain / (tf.num[0][0][0]/tf.den[0][0][0])
+
+    return kontrol.TransferFunction(tf)
+
+
+def get_zpk2tf(get_zpk, plane="s"):
+    """Converts Foton's get_zpk() output to TransferFunction
+    
+    Parameters
+    ----------
+    get_zpk : tuple(array, array, float)
+        The output from Foton's get_zpk() method of a filter instance.
+    plane : str, optional
+        "s", "f", or "n".
+        Default "s".
+
+    Returns
+    -------
+    tf : TransferFunction
+        The converted transfer function.
+    """
+    zeros = get_zpk[0]
+    poles = get_zpk[1]
+    gain = get_zpk[2]
+
+    if plane in "nf":
+        # zeros poles are in Hz. Gain is DC.
+        zeros *= 2*np.pi  # Convert to rad/s
+        poles *= 2*np.pi
+        raise ValueError('plane="n" or "f" not supported in this version.')
+    #     print("nf")
+
+    if plane in "sf":
         # Negate for (s+z), (s+p) convention.
         zeros = -zeros
         poles = -poles
@@ -375,9 +448,9 @@ def zpk2tf(foton_string):
         elif pole.imag == 0 and pole.real != 0:
             tf /= (s+pole.real)/pole.real
 
-    if root_location == "n":
+    if plane == "n":
         tf *= gain
-    elif root_location in "sf":
+    elif plane in "sf":
         tf *= gain / (tf.num[0][0][0]/tf.den[0][0][0])
 
     return kontrol.TransferFunction(tf)
