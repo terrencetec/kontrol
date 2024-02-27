@@ -8,3 +8,4 @@ nbsphinx
 
 # Required to build sphinx (2021-10-28)
 docutils<0.18
+recommonmark
