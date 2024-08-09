@@ -342,10 +342,13 @@ def zpk2tf(foton_string):
         poles *= 2*np.pi
     #     print("nf")
 
-    if root_location in "sf":
-        # Negate for (s+z), (s+p) convention.
-        zeros = -zeros
-        poles = -poles
+    # update 2024-08-09 commented.
+    # Due to: already negated in get_zpk2tf() 
+    # if root_location in "sf":
+    #     print("true")
+    #     # Negate for (s+z), (s+p) convention.
+    #     zeros = -zeros
+    #     poles = -poles
 
     tf = get_zpk2tf((zeros, poles, gain))
     # print(root_location)
