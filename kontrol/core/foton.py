@@ -317,6 +317,15 @@ def zpk2tf(foton_string):
             if len(split) == 2:
                 real_string, imag_string = split
                 sign = real_string[-1]
+                if imag_string[0] == "-":
+                    if sign == "-":
+                        sign = "+"
+                    elif sign == "+":
+                        sign = "-"
+                    imag_string = imag_string.lstrip("-")
+                if imag_string[0] == "+":
+                    imag_string = imag_string.lstrip("+")
+
             else:
                 real_string, = split
                 imag_string = "0"
